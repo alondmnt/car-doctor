@@ -11,7 +11,7 @@ const CONFIG = {
   faultWeights: {           // relative weights — higher = more likely
     flatTyre: 2,
     engine: 1,
-    paint: 1,
+    paint: 3,
     sticker: 3,
   },
   multiFaultChance: 0.3,    // chance of 2 faults per car
