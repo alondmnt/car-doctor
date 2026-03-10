@@ -624,8 +624,6 @@ html, body {
 .car__screw.hint-glow .car__screw-halo {
   fill: rgba(255, 255, 50, 0.55) !important;
 }
-  animation: svg-glow-pulse 1s ease-in-out infinite;
-}
 
 /* ===== Rocket flame (DOM element appended to car) ===== */
 .car__flame {
@@ -634,7 +632,7 @@ html, body {
   top: 40%;
   width: 0;
   height: 0;
-  z-index: -1;
+  z-index: 15;
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
   border-left: 30px solid #ff6600;
