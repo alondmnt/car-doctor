@@ -11,6 +11,7 @@ const Game = (() => {
 
   function init() {
     garage = document.getElementById('garage');
+    garage.style.setProperty('--garage-colour', CONFIG.garageColour);
     document.getElementById('splash').addEventListener('click', start);
     document.getElementById('splash').addEventListener('touchend', start);
     document.getElementById('reset-btn').addEventListener('click', resetCar);
@@ -45,19 +46,31 @@ const Game = (() => {
     });
   }
 
-  /** Highlight the current step target */
+  /** Highlight the current step target, with optional arrow direction */
   function highlightStep() {
     if (!CONFIG.hintsOn || stepIndex >= steps.length) return;
     const step = steps[stepIndex];
     const target = currentCar.el.querySelector(step.target);
-    if (target) target.classList.add('hint-glow');
+    if (!target) return;
+    target.classList.add('hint-glow');
+    // Show directional arrow on jack steps
+    if (step.hintArrow) {
+      const arrow = target.querySelector('.car__jack-arrow');
+      if (arrow) {
+        arrow.classList.add('car__jack-arrow--visible');
+        arrow.dataset.direction = step.hintArrow;
+      }
+    }
   }
 
-  /** Remove highlight from all elements */
+  /** Remove highlight and arrows from all elements */
   function clearHighlights() {
     if (!currentCar) return;
     currentCar.el.querySelectorAll('.hint-glow').forEach(
       el => el.classList.remove('hint-glow')
+    );
+    currentCar.el.querySelectorAll('.car__jack-arrow--visible').forEach(
+      el => el.classList.remove('car__jack-arrow--visible')
     );
   }
 
