@@ -126,40 +126,42 @@ html, body {
 
 /* ===== Car shape variants ===== */
 
-/* Boxy — squared off, taller */
+/* Boxy — tall van/SUV look, flat roof, big windows */
 .car--boxy .car__body {
-  border-radius: 4px 4px 2px 2px;
-  height: 70%;
+  border-radius: 4px;
+  height: 60%;
 }
 .car--boxy .car__roof {
-  top: -25%;
-  left: 22%; right: 22%;
-  height: 35%;
-  border-radius: 2px 2px 0 0;
+  top: -50%;
+  left: 15%; right: 15%;
+  height: 60%;
+  border-radius: 3px 3px 0 0;
 }
 .car--boxy .car__window {
-  top: -18%;
-  height: 26%;
+  top: -42%;
+  height: 50%;
   border-radius: 2px 2px 0 0;
 }
+.car--boxy .car__window--front { left: 17%; width: 28%; }
+.car--boxy .car__window--rear  { left: 48%; width: 24%; }
 
-/* Sporty — low, wide, sleek */
+/* Sporty — very low, long nose, small windshield */
 .car--sporty .car__body {
-  border-radius: 20px 8px 4px 4px;
-  height: 55%;
+  border-radius: 30px 6px 4px 4px;
+  height: 50%;
 }
 .car--sporty .car__roof {
-  top: -20%;
-  left: 30%; right: 20%;
-  height: 30%;
-  border-radius: 12px 4px 0 0;
+  top: -16%;
+  left: 40%; right: 18%;
+  height: 22%;
+  border-radius: 10px 3px 0 0;
 }
 .car--sporty .car__window {
-  top: -14%;
-  height: 22%;
+  top: -12%;
+  height: 16%;
 }
-.car--sporty .car__window--front { left: 32%; width: 18%; }
-.car--sporty .car__window--rear  { left: 52%; width: 12%; }
+.car--sporty .car__window--front { left: 42%; width: 14%; }
+.car--sporty .car__window--rear  { left: 58%; width: 8%; }
 
 /* ===== Car body ===== */
 .car__body {
