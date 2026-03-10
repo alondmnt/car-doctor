@@ -108,7 +108,11 @@ const Game = (() => {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
 
-    if (step.picker === 'colour') {
+    if (step.warehouse) {
+      showWarehousePart(step.warehouse, () => {
+        onStepComplete(step, target);
+      });
+    } else if (step.picker === 'colour') {
       showColourPicker((chosenColour) => {
         currentCar.el.style.setProperty('--car-colour', chosenColour);
         onStepComplete(step, target);
@@ -143,6 +147,34 @@ const Game = (() => {
       target.addEventListener('click', handler);
       target.addEventListener('touchend', handler);
     }
+  }
+
+  /** Show a part on the warehouse shelf for the player to grab */
+  function showWarehousePart(partType, onGrab) {
+    const warehouse = document.getElementById('warehouse');
+    warehouse.classList.add('warehouse--active');
+
+    const part = document.createElement('div');
+    part.className = `warehouse__part warehouse__part--${partType}`;
+
+    // Visual label
+    const icons = { tyre: '⚫', engine: '⚙️' };
+    part.textContent = icons[partType] || '📦';
+
+    function grab(e) {
+      e.preventDefault();
+      Audio.play('pop');
+      part.classList.add('warehouse__part--grabbed');
+      setTimeout(() => {
+        part.remove();
+        warehouse.classList.remove('warehouse--active');
+        onGrab();
+      }, 250);
+    }
+
+    part.addEventListener('click', grab);
+    part.addEventListener('touchend', grab);
+    warehouse.appendChild(part);
   }
 
   /** Show a row of colour swatches above the car */
@@ -263,6 +295,10 @@ const Game = (() => {
     if (!currentCar) return;
     if (activeCleanup) { activeCleanup(); activeCleanup = null; }
     clearHighlights();
+    // Clear warehouse
+    const wh = document.getElementById('warehouse');
+    wh.innerHTML = '';
+    wh.classList.remove('warehouse--active');
     currentCar.remove();
     currentCar = null;
     stepIndex = 0;

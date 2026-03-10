@@ -56,9 +56,9 @@ const Repair = (() => {
       },
       {
         id: 'add-new-tyre',
-        description: 'Drag the new tyre on',
+        description: 'Grab the new tyre from the shelf',
+        warehouse: 'tyre',
         target: tyreSelector,
-        drag: { direction: 'up', threshold: 30 },
         sound: 'pop',
         action: (el) => {
           el.classList.remove('car__tyre--removed', 'car__tyre--flat');
@@ -112,9 +112,9 @@ const Repair = (() => {
       },
       {
         id: 'add-engine',
-        description: 'Drag the new engine in',
+        description: 'Grab the new engine from the shelf',
+        warehouse: 'engine',
         target: '.car__engine',
-        drag: { direction: 'down', threshold: 30 },
         sound: 'pop',
         action: (el) => {
           el.classList.remove('car__engine--removed');
