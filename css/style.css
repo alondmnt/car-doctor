@@ -28,6 +28,99 @@ html, body {
   height: 30%;
   background: #555;
   border-top: 4px solid #777;
+  z-index: 1;
+}
+
+/* ===== Garage decorations ===== */
+.garage-decor {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Tool pegboard */
+.garage-decor--pegboard {
+  z-index: 3;
+  right: 6%;
+  bottom: 30%;
+  width: 18%;
+  max-width: 140px;
+  aspect-ratio: 5 / 4;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 96'%3E%3Crect x='0' y='0' width='120' height='96' rx='3' fill='%236b4c2a' stroke='%23553a1e' stroke-width='2'/%3E%3Crect x='4' y='4' width='112' height='88' rx='2' fill='%237a5a34'/%3E%3Ccircle cx='12' cy='10' r='2' fill='%23553a1e'/%3E%3Ccircle cx='108' cy='10' r='2' fill='%23553a1e'/%3E%3Ccircle cx='12' cy='86' r='2' fill='%23553a1e'/%3E%3Ccircle cx='108' cy='86' r='2' fill='%23553a1e'/%3E%3Cg fill='%23333' opacity='0.5'%3E%3Cpath d='M18 72 L18 30 L22 30 L22 24 L18 18 L26 18 L22 24 L26 30 L26 72 Z'/%3E%3Cpath d='M38 72 L38 36 Q36 32 34 32 L34 28 Q36 26 38 26 L42 26 Q44 26 46 28 L46 32 Q44 32 42 36 L42 72 Z'/%3E%3Cpath d='M58 72 L58 38 L54 38 L54 34 L58 34 L58 22 L60 18 L62 22 L62 34 L66 34 L66 38 L62 38 L62 72 Z'/%3E%3Cpath d='M80 72 L78 42 L74 36 L80 40 L80 22 L84 22 L84 40 L90 36 L86 42 L84 72 Z'/%3E%3Cpath d='M100 72 L98 40 L92 34 L96 34 L98 36 L98 22 L102 22 L102 36 L104 34 L108 34 L102 40 L104 72 Z'/%3E%3C/g%3E%3C/svg%3E") no-repeat center / contain;
+  transform: translateY(-4px);
+}
+
+/* Floor markings — safety chevrons + tyre tracks */
+.garage-decor--floor-marks {
+  z-index: 2;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(212, 160, 23, 0.7) 0px, rgba(212, 160, 23, 0.7) 8px,
+      transparent 8px, transparent 18px
+    ) left top / 100% 12px no-repeat,
+    linear-gradient(to right,
+      transparent 28%, rgba(20,20,20,0.1) 30%, rgba(20,20,20,0.06) 32%, transparent 34%,
+      transparent 66%, rgba(20,20,20,0.1) 68%, rgba(20,20,20,0.06) 70%, transparent 72%
+    ) left 12px / 100% calc(100% - 12px) no-repeat;
+}
+
+/* Hanging work lamp */
+.garage-decor--lamp {
+  z-index: 4;
+  top: 0;
+  left: 38%;
+  width: 4px;
+  height: 12%;
+  background: #333;
+}
+.garage-decor--lamp::before {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 16px;
+  background: #444;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+  border-radius: 0 0 3px 3px;
+}
+.garage-decor--lamp::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(50vw, 300px);
+  height: min(60vh, 400px);
+  background: radial-gradient(ellipse at top center, rgba(255,240,180,0.18) 0%, transparent 65%);
+}
+
+/* Garage door frame (right edge — cars enter from right) */
+.garage-decor--door-frame {
+  z-index: 3;
+  right: 0; top: 0;
+  width: 14px;
+  height: 70%;
+  background: linear-gradient(to right, #666, #888, #777, #666);
+}
+.garage-decor--door-frame::before {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: min(40vw, 280px);
+  height: 10px;
+  background: linear-gradient(to bottom, #777, #666, #555);
+}
+.garage-decor--door-frame::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: min(40vw, 280px);
+  height: 10px;
+  background: linear-gradient(to bottom, #555, #777, #666);
 }
 
 /* ===== Splash screen ===== */
