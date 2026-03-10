@@ -40,7 +40,7 @@ html, body {
 /* Tool pegboard */
 .garage-decor--pegboard {
   z-index: 3;
-  right: 6%;
+  left: 6%;
   bottom: 30%;
   width: 18%;
   max-width: 140px;
