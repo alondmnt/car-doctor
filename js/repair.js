@@ -142,37 +142,19 @@ const Repair = (() => {
     ];
   }
 
-  /** Paint job — 3 steps */
+  /** Paint job — 1 step: select spray tool, tap stains, pick colour → car repainted */
   function paint(_car) {
     return [
       {
-        id: 'sand-body',
-        description: 'Sand off old paint',
+        id: 'spray-paint',
+        description: 'Select the spray tool and tap the damage',
         target: '.car__paint-damage',
-        tool: 'hand',
-        sound: 'ratchet',
-        action: (el) => {
-          el.classList.add('car__paint-damage--sanded');
-        },
-      },
-      {
-        id: 'pick-colour',
-        description: 'Pick a new colour',
-        target: '.car__body',
+        tool: 'spray',
         sound: 'tap',
         picker: 'colour',
-        action: () => {},
-      },
-      {
-        id: 'apply-paint',
-        description: 'Spray the new paint',
-        target: '.car__body',
-        tool: 'spray',
-        sound: 'whoosh',
         action: (_el, carEl) => {
           const damage = carEl.querySelector('.car__paint-damage');
           if (damage) {
-            damage.classList.remove('car__paint-damage--sanded');
             damage.classList.add('car__paint-damage--hidden');
           }
           carEl.querySelector('.car__body').classList.add('car__body--fresh-paint');

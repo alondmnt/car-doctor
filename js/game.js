@@ -257,7 +257,25 @@ const Game = (() => {
         target.removeEventListener('click', handler);
         target.removeEventListener('touchend', handler);
         hideToolbox();
-        onStepComplete(step, target);
+        // If step also has a picker, show it before completing
+        if (step.picker === 'colour') {
+          showColourPicker((chosenColour) => {
+            currentCar.el.style.setProperty('--car-colour', chosenColour);
+            onStepComplete(step, target);
+          });
+        } else if (step.picker === 'sticker') {
+          showStickerPicker((emoji) => {
+            const zone = currentCar.el.querySelector('.car__sticker-zone');
+            if (zone) {
+              const textEl = zone.querySelector('text') || zone;
+              textEl.textContent = emoji;
+              zone.classList.add('car__sticker-zone--applied');
+            }
+            onStepComplete(step, target);
+          });
+        } else {
+          onStepComplete(step, target);
+        }
       }
       target.addEventListener('click', handler);
       target.addEventListener('touchend', handler);
