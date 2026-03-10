@@ -166,5 +166,21 @@ const Repair = (() => {
     ];
   }
 
-  return { flatTyre, engine, paint };
+  /** Sticker — 1 step: pick a sticker to slap on the car */
+  function sticker(_car) {
+    return [
+      {
+        id: 'pick-sticker',
+        description: 'Pick a sticker for the car',
+        target: '.car__sticker-zone',
+        sound: 'tap',
+        picker: 'sticker',  // signals game.js to show sticker picker
+        action: (_el, _carEl) => {
+          // sticker is applied by the picker handler in game.js
+        },
+      },
+    ];
+  }
+
+  return { flatTyre, engine, paint, sticker };
 })();

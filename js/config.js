@@ -7,4 +7,5 @@ const CONFIG = {
   hintsOn: true,
   gameSpeed: 1,                  // multiplier: 0.5 = slow, 2 = fast
   carPalette: ['#e63946', '#457b9d', '#f4a261', '#2a9d8f', '#e9c46a', '#264653'],
+  stickers: ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'],
 };

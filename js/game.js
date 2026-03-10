@@ -35,7 +35,7 @@ const Game = (() => {
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
     // Pick 1–2 faults from the pool
-    const allFaults = ['flatTyre', 'engine', 'paint'];
+    const allFaults = ['flatTyre', 'engine', 'paint', 'sticker'];
     const shuffled = allFaults.sort(() => Math.random() - 0.5);
     const faultCount = Math.random() < 0.3 ? 2 : 1;
     const faults = shuffled.slice(0, faultCount);
@@ -62,6 +62,8 @@ const Game = (() => {
       steps = Repair.engine(currentCar);
     } else if (currentFault === 'paint') {
       steps = Repair.paint(currentCar);
+    } else if (currentFault === 'sticker') {
+      steps = Repair.sticker(currentCar);
     } else {
       steps = Repair.flatTyre(currentCar);
     }
@@ -106,9 +108,17 @@ const Game = (() => {
     if (!target) return;
 
     if (step.picker === 'colour') {
-      // Show colour picker instead of normal interaction
       showColourPicker((chosenColour) => {
         currentCar.el.style.setProperty('--car-colour', chosenColour);
+        onStepComplete(step, target);
+      });
+    } else if (step.picker === 'sticker') {
+      showStickerPicker((emoji) => {
+        const zone = currentCar.el.querySelector('.car__sticker-zone');
+        if (zone) {
+          zone.textContent = emoji;
+          zone.classList.add('car__sticker-zone--applied');
+        }
         onStepComplete(step, target);
       });
     } else if (step.drag) {
@@ -156,6 +166,27 @@ const Game = (() => {
     garage.appendChild(picker);
   }
 
+  /** Show a row of sticker emojis to pick from */
+  function showStickerPicker(onPick) {
+    const picker = document.createElement('div');
+    picker.className = 'colour-picker';  // reuse same layout
+    CONFIG.stickers.forEach(emoji => {
+      const btn = document.createElement('div');
+      btn.className = 'sticker-picker__option';
+      btn.textContent = emoji;
+      function pick(e) {
+        e.preventDefault();
+        Audio.play('pop');
+        picker.remove();
+        onPick(emoji);
+      }
+      btn.addEventListener('click', pick);
+      btn.addEventListener('touchend', pick);
+      picker.appendChild(btn);
+    });
+    garage.appendChild(picker);
+  }
+
   /** Handle step completion */
   function onStepComplete(step, targetEl) {
     busy = true;
@@ -169,7 +200,7 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint' };
+      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint', sticker: '.car__indicator--sticker' };
       const indicatorClass = indicatorMap[currentFault] || '.car__indicator--tyre';
       const indicator = currentCar.el.querySelector(indicatorClass);
       if (indicator) {

@@ -27,6 +27,7 @@ const Car = (() => {
     const hasFlatTyre = faults.includes('flatTyre');
     const hasEngine = faults.includes('engine');
     const hasPaint = faults.includes('paint');
+    const hasSticker = faults.includes('sticker');
 
     const el = document.createElement('div');
     el.className = `car car--${shape}`;
@@ -37,6 +38,7 @@ const Car = (() => {
         <div class="car__indicator car__indicator--tyre ${hasFlatTyre ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--engine ${hasEngine ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--paint ${hasPaint ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
+        <div class="car__indicator car__indicator--sticker ${hasSticker ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
       </div>
       <div class="car__bonnet ${hasEngine ? '' : 'car__bonnet--hidden'}">
         <div class="car__bonnet-lid"></div>
@@ -55,6 +57,7 @@ const Car = (() => {
           <div class="car__engine car__engine--broken"></div>
         </div>
         <div class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}"></div>
+        <div class="car__sticker-zone ${hasSticker ? '' : 'car__sticker-zone--hidden'}"></div>
         <div class="car__headlight"></div>
         <div class="car__taillight"></div>
       </div>

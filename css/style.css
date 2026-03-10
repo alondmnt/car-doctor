@@ -366,6 +366,57 @@ html, body {
   100% { filter: brightness(1); }
 }
 
+/* ===== Sticker zone ===== */
+.car__sticker-zone {
+  position: absolute;
+  top: 15%;
+  right: 12%;
+  width: 28%;
+  height: 55%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0;
+  border: 2px dashed rgba(255,255,255,0.4);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: font-size 0.3s, border-color 0.3s;
+}
+.car__sticker-zone--hidden { display: none; }
+
+/* Sticker applied — show it big, hide dashed border */
+.car__sticker-zone--applied {
+  font-size: clamp(20px, 6vw, 36px);
+  border-color: transparent;
+  animation: sticker-slap 0.4s ease-out;
+}
+
+@keyframes sticker-slap {
+  0%   { transform: scale(2) rotate(-10deg); opacity: 0.5; }
+  60%  { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Sticker picker options */
+.sticker-picker__option {
+  width: 48px;
+  height: 48px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: transform 0.15s;
+}
+.sticker-picker__option:active {
+  transform: scale(0.85);
+}
+
 /* ===== Colour picker ===== */
 .colour-picker {
   position: fixed;
