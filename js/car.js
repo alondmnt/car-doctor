@@ -25,7 +25,7 @@ const Car = (() => {
       const a = deg * Math.PI / 180;
       const i = hub + 1, o = rim - 2;
       return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
-             `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" stroke="#aaa" stroke-width="2.5"/>`;
+             `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:#aaa;stroke-width:2.5"/>`;
     }).join('');
 
     // 3 lug nuts (120° apart, starting top)
@@ -35,19 +35,19 @@ const Car = (() => {
       const sy = cy + Math.sin(a) * sd;
       const cr = sr * 0.6;
       return `<g class="car__screw car__screw--${i+1}" data-screw="${i+1}">
-        <circle cx="${sx}" cy="${sy}" r="${touch}" fill="transparent"/>
-        <circle cx="${sx}" cy="${sy}" r="${sr}" fill="#999" stroke="#777" stroke-width="1.5"/>
-        <line x1="${sx-cr}" y1="${sy}" x2="${sx+cr}" y2="${sy}" stroke="#555" stroke-width="2"/>
-        <line x1="${sx}" y1="${sy-cr}" x2="${sx}" y2="${sy+cr}" stroke="#555" stroke-width="2"/>
+        <circle cx="${sx}" cy="${sy}" r="${touch}" style="fill:transparent"/>
+        <circle cx="${sx}" cy="${sy}" r="${sr}" style="fill:#999;stroke:#777;stroke-width:1.5"/>
+        <line x1="${sx-cr}" y1="${sy}" x2="${sx+cr}" y2="${sy}" style="stroke:#555;stroke-width:2"/>
+        <line x1="${sx}" y1="${sy-cr}" x2="${sx}" y2="${sy+cr}" style="stroke:#555;stroke-width:2"/>
       </g>`;
     }).join('');
 
     return `<g class="car__tyre car__tyre--${position}" data-position="${position}">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
-      <circle cx="${cx}" cy="${cy}" r="${r-2}" fill="#222"/>
-      <circle cx="${cx}" cy="${cy}" r="${rim}" fill="#d0d0d0" stroke="#bbb" stroke-width="1"/>
+      <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}"/>
+      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${r-2}"/>
+      <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}"/>
       ${spokes}
-      <circle cx="${cx}" cy="${cy}" r="${hub}" fill="#e0e0e0" stroke="#ccc" stroke-width="1"/>
+      <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}"/>
       ${nuts}
     </g>`;
   }
@@ -56,8 +56,8 @@ const Car = (() => {
   function _jackSVG(cx, gy) {
     const bw = 36, bh = 10, aw = 14, ah = 18;
     return `<g class="car__jack">
-      <rect class="car__jack-base" x="${cx-bw/2}" y="${gy-bh}" width="${bw}" height="${bh}" rx="2" fill="#c44"/>
-      <rect class="car__jack-arm" x="${cx-aw/2}" y="${gy-bh-ah}" width="${aw}" height="${ah}" rx="2" fill="#a33"/>
+      <rect class="car__jack-base" x="${cx-bw/2}" y="${gy-bh}" width="${bw}" height="${bh}" rx="2" style="fill:#c44"/>
+      <rect class="car__jack-arm" x="${cx-aw/2}" y="${gy-bh-ah}" width="${aw}" height="${ah}" rx="2" style="fill:#a33"/>
       <g class="car__jack-arrow">
         <text class="car__jack-arrow-up" x="${cx}" y="${gy-bh-ah-6}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
         <text class="car__jack-arrow-down" x="${cx}" y="${gy-bh-ah-6}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
@@ -129,9 +129,7 @@ const Car = (() => {
       <ellipse cx="200" cy="176" rx="170" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__lower">
-        ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
         ${_jackSVG(200, 176)}
-        ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
       </g>
 
       <g class="car__upper">
@@ -195,6 +193,10 @@ const Car = (() => {
 
         ${interactive}
       </g>
+
+      <!-- Wheels on top so body paint never covers them -->
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
     </svg>`;
   }
 
@@ -220,9 +222,7 @@ const Car = (() => {
       <ellipse cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__lower">
-        ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
         ${_jackSVG(200, 176)}
-        ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
       </g>
 
       <g class="car__upper">
@@ -287,6 +287,9 @@ const Car = (() => {
 
         ${interactive}
       </g>
+
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
     </svg>`;
   }
 
@@ -312,9 +315,7 @@ const Car = (() => {
       <ellipse cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__lower">
-        ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
         ${_jackSVG(200, 176)}
-        ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
       </g>
 
       <g class="car__upper">
@@ -381,6 +382,9 @@ const Car = (() => {
 
         ${interactive}
       </g>
+
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
     </svg>`;
   }
 
