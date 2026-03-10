@@ -34,16 +34,11 @@ const Game = (() => {
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
-    // 30% chance of 2 faults, otherwise 1
-    const allFaults = ['flatTyre', 'engine'];
-    let faults;
-    if (Math.random() < 0.3) {
-      faults = ['flatTyre', 'engine'];
-    } else {
-      faults = [allFaults[Math.floor(Math.random() * allFaults.length)]];
-    }
-    // Shuffle so repair order varies
-    if (faults.length > 1 && Math.random() < 0.5) faults.reverse();
+    // Pick 1–2 faults from the pool
+    const allFaults = ['flatTyre', 'engine', 'paint'];
+    const shuffled = allFaults.sort(() => Math.random() - 0.5);
+    const faultCount = Math.random() < 0.3 ? 2 : 1;
+    const faults = shuffled.slice(0, faultCount);
 
     currentCar = Car.create(garage, { colour, faults, flatTyre });
     faultQueue = [...faults];
@@ -65,6 +60,8 @@ const Game = (() => {
     currentFault = faultQueue.shift();
     if (currentFault === 'engine') {
       steps = Repair.engine(currentCar);
+    } else if (currentFault === 'paint') {
+      steps = Repair.paint(currentCar);
     } else {
       steps = Repair.flatTyre(currentCar);
     }
@@ -108,7 +105,13 @@ const Game = (() => {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
 
-    if (step.drag) {
+    if (step.picker === 'colour') {
+      // Show colour picker instead of normal interaction
+      showColourPicker((chosenColour) => {
+        currentCar.el.style.setProperty('--car-colour', chosenColour);
+        onStepComplete(step, target);
+      });
+    } else if (step.drag) {
       // Drag interaction with tap fallback
       activeCleanup = Drag.attach(target, step.drag, () => {
         if (busy) return;
@@ -131,6 +134,28 @@ const Game = (() => {
     }
   }
 
+  /** Show a row of colour swatches above the car */
+  function showColourPicker(onPick) {
+    const picker = document.createElement('div');
+    picker.className = 'colour-picker';
+    const colours = CONFIG.carPalette;
+    colours.forEach(c => {
+      const swatch = document.createElement('div');
+      swatch.className = 'colour-picker__swatch';
+      swatch.style.background = c;
+      function pick(e) {
+        e.preventDefault();
+        Audio.play('pop');
+        picker.remove();
+        onPick(c);
+      }
+      swatch.addEventListener('click', pick);
+      swatch.addEventListener('touchend', pick);
+      picker.appendChild(swatch);
+    });
+    garage.appendChild(picker);
+  }
+
   /** Handle step completion */
   function onStepComplete(step, targetEl) {
     busy = true;
@@ -144,7 +169,8 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorClass = currentFault === 'engine' ? '.car__indicator--engine' : '.car__indicator--tyre';
+      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint' };
+      const indicatorClass = indicatorMap[currentFault] || '.car__indicator--tyre';
       const indicator = currentCar.el.querySelector(indicatorClass);
       if (indicator) {
         indicator.classList.remove('car__indicator--fault');

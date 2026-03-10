@@ -122,5 +122,49 @@ const Repair = (() => {
     ];
   }
 
-  return { flatTyre, engine };
+  /** Paint job — 3 steps: sand, pick colour, apply */
+  function paint(_car) {
+    return [
+      {
+        id: 'sand-body',
+        description: 'Tap the car body to sand off old paint',
+        target: '.car__paint-damage',
+        sound: 'ratchet',
+        action: (el) => {
+          el.classList.add('car__paint-damage--sanded');
+        },
+      },
+      {
+        id: 'pick-colour',
+        description: 'Pick a new colour',
+        target: '.car__body',
+        sound: 'tap',
+        picker: 'colour',  // signals game.js to show colour picker
+        action: (_el, carEl) => {
+          // colour is applied by the picker handler in game.js
+        },
+      },
+      {
+        id: 'apply-paint',
+        description: 'Tap to apply the new paint',
+        target: '.car__body',
+        sound: 'whoosh',
+        action: (_el, carEl) => {
+          const damage = carEl.querySelector('.car__paint-damage');
+          if (damage) {
+            damage.classList.remove('car__paint-damage--sanded');
+            damage.classList.add('car__paint-damage--hidden');
+          }
+          carEl.querySelector('.car__body').classList.add('car__body--fresh-paint');
+          carEl.querySelector('.car__roof').classList.add('car__roof--fresh-paint');
+          setTimeout(() => {
+            carEl.querySelector('.car__body').classList.remove('car__body--fresh-paint');
+            carEl.querySelector('.car__roof').classList.remove('car__roof--fresh-paint');
+          }, 600);
+        },
+      },
+    ];
+  }
+
+  return { flatTyre, engine, paint };
 })();
