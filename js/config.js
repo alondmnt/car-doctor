@@ -8,4 +8,11 @@ const CONFIG = {
   gameSpeed: 1,                  // multiplier: 0.5 = slow, 2 = fast
   carPalette: ['#e63946', '#457b9d', '#f4a261', '#2a9d8f', '#e9c46a', '#264653'],
   stickers: ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'],
+  faultWeights: {           // relative weights — higher = more likely
+    flatTyre: 2,
+    engine: 1,
+    paint: 1,
+    sticker: 3,
+  },
+  multiFaultChance: 0.3,    // chance of 2 faults per car
 };

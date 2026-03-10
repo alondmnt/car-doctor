@@ -25,6 +25,26 @@ const Game = (() => {
     nextCar();
   }
 
+  /** Pick N unique faults using CONFIG.faultWeights */
+  function _pickWeightedFaults(count) {
+    const weights = { ...CONFIG.faultWeights };
+    const picked = [];
+    for (let i = 0; i < count; i++) {
+      const entries = Object.entries(weights);
+      const total = entries.reduce((sum, [, w]) => sum + w, 0);
+      let roll = Math.random() * total;
+      for (const [fault, w] of entries) {
+        roll -= w;
+        if (roll <= 0) {
+          picked.push(fault);
+          delete weights[fault];  // no duplicates
+          break;
+        }
+      }
+    }
+    return picked;
+  }
+
   let faultQueue = [];  // remaining faults to repair
   let currentFault = null;
 
@@ -35,11 +55,9 @@ const Game = (() => {
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
-    // Pick 1–2 faults from the pool
-    const allFaults = ['flatTyre', 'engine', 'paint', 'sticker'];
-    const shuffled = allFaults.sort(() => Math.random() - 0.5);
-    const faultCount = Math.random() < 0.3 ? 2 : 1;
-    const faults = shuffled.slice(0, faultCount);
+    // Pick 1–2 faults using weighted random selection
+    const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
+    const faults = _pickWeightedFaults(faultCount);
 
     currentCar = Car.create(garage, { colour, faults, flatTyre });
     faultQueue = [...faults];
