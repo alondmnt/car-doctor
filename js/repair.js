@@ -1,15 +1,11 @@
 /**
  * Repair step logic — defines multi-step repair sequences.
- * Each repair is an array of steps. Each step has:
- *   - id: unique key
- *   - target: CSS selector for the tappable element
- *   - action: what happens on tap (callback receives car controller)
- *   - sound: audio effect name
- *   - hint: whether to highlight the target
+ * Each step: id, target, action, sound, and optional drag / hintArrow.
+ * Steps with `drag` get drag-to-complete; all steps still accept tap as fallback.
  */
 const Repair = (() => {
 
-  /** Flat tyre repair — 6 tap steps */
+  /** Flat tyre repair — 6 steps (drag on jack + tyre removal/placement) */
   function flatTyre(car) {
     const tyreSelector = `.car__tyre--${car.flatTyre}`;
 
@@ -23,9 +19,10 @@ const Repair = (() => {
       },
       {
         id: 'jack-up',
-        description: 'Tap the jack to lift the car',
+        description: 'Drag the jack up to lift the car',
         target: '.car__jack',
         hintArrow: 'up',
+        drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
         action: (_el, carEl) => {
           carEl.classList.add('car--jacked');
@@ -34,15 +31,17 @@ const Repair = (() => {
       },
       {
         id: 'remove-tyre',
-        description: 'Tap the tyre to remove it',
+        description: 'Drag the tyre off',
         target: tyreSelector,
+        drag: { direction: 'down', threshold: 30 },
         sound: 'pop',
         action: (el) => el.classList.add('car__tyre--removed'),
       },
       {
         id: 'add-new-tyre',
-        description: 'Tap to put on the new tyre',
+        description: 'Drag the new tyre on',
         target: tyreSelector,
+        drag: { direction: 'up', threshold: 30 },
         sound: 'pop',
         action: (el) => {
           el.classList.remove('car__tyre--removed', 'car__tyre--flat');
@@ -58,9 +57,10 @@ const Repair = (() => {
       },
       {
         id: 'lower-jack',
-        description: 'Tap the jack to lower the car',
+        description: 'Drag the jack down to lower the car',
         target: '.car__jack',
         hintArrow: 'down',
+        drag: { direction: 'down', threshold: 30 },
         sound: 'clank',
         action: (_el, carEl) => {
           carEl.classList.remove('car--jacked');
@@ -70,13 +70,14 @@ const Repair = (() => {
     ];
   }
 
-  /** Broken engine repair — 4 tap steps */
+  /** Broken engine repair — 4 steps (drag on engine removal/placement) */
   function engine(_car) {
     return [
       {
         id: 'open-bonnet',
         description: 'Tap the bonnet to open it',
         target: '.car__bonnet',
+        drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
         action: (el, carEl) => {
           el.classList.add('car__bonnet--open');
@@ -85,8 +86,9 @@ const Repair = (() => {
       },
       {
         id: 'remove-engine',
-        description: 'Tap the broken engine to remove it',
+        description: 'Drag the broken engine out',
         target: '.car__engine',
+        drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
         action: (el) => {
           el.classList.remove('car__engine--broken');
@@ -95,8 +97,9 @@ const Repair = (() => {
       },
       {
         id: 'add-engine',
-        description: 'Tap to install the new engine',
+        description: 'Drag the new engine in',
         target: '.car__engine',
+        drag: { direction: 'down', threshold: 30 },
         sound: 'pop',
         action: (el) => {
           el.classList.remove('car__engine--removed');
@@ -107,6 +110,7 @@ const Repair = (() => {
         id: 'close-bonnet',
         description: 'Tap the bonnet to close it',
         target: '.car__bonnet',
+        drag: { direction: 'down', threshold: 30 },
         sound: 'clank',
         action: (el, carEl) => {
           el.classList.remove('car__bonnet--open');

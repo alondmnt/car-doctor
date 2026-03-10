@@ -75,24 +75,36 @@ const Game = (() => {
     );
   }
 
-  /** Listen for taps on the current step target */
+  let activeCleanup = null;
+
+  /** Listen for interaction on the current step target (drag or tap) */
   function listenForTap() {
     if (stepIndex >= steps.length) return;
     const step = steps[stepIndex];
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
 
-    function handler(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (busy) return;
-      target.removeEventListener('click', handler);
-      target.removeEventListener('touchend', handler);
-      onStepComplete(step, target);
-    }
+    if (step.drag) {
+      // Drag interaction with tap fallback
+      activeCleanup = Drag.attach(target, step.drag, () => {
+        if (busy) return;
+        activeCleanup = null;
+        onStepComplete(step, target);
+      });
+    } else {
+      // Tap-only interaction
+      function handler(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (busy) return;
+        target.removeEventListener('click', handler);
+        target.removeEventListener('touchend', handler);
+        onStepComplete(step, target);
+      }
 
-    target.addEventListener('click', handler);
-    target.addEventListener('touchend', handler);
+      target.addEventListener('click', handler);
+      target.addEventListener('touchend', handler);
+    }
   }
 
   /** Handle step completion */
@@ -131,6 +143,7 @@ const Game = (() => {
   /** Reset — send current car away and bring a new one */
   function resetCar() {
     if (!currentCar) return;
+    if (activeCleanup) { activeCleanup(); activeCleanup = null; }
     clearHighlights();
     currentCar.remove();
     currentCar = null;
