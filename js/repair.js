@@ -23,10 +23,14 @@ const Repair = (() => {
       },
       {
         id: 'jack-up',
-        description: 'Tap under the car to jack it up',
-        target: '.car__undercarriage',
+        description: 'Tap the jack to lift the car',
+        target: '.car__jack',
+        hintArrow: 'up',
         sound: 'clank',
-        action: (_el, carEl) => carEl.classList.add('car--jacked'),
+        action: (_el, carEl) => {
+          carEl.classList.add('car--jacked');
+          _el.classList.add('car__jack--raised');
+        },
       },
       {
         id: 'remove-tyre',
@@ -54,10 +58,14 @@ const Repair = (() => {
       },
       {
         id: 'lower-jack',
-        description: 'Tap under the car to lower it',
-        target: '.car__undercarriage',
+        description: 'Tap the jack to lower the car',
+        target: '.car__jack',
+        hintArrow: 'down',
         sound: 'clank',
-        action: (_el, carEl) => carEl.classList.remove('car--jacked'),
+        action: (_el, carEl) => {
+          carEl.classList.remove('car--jacked');
+          _el.classList.remove('car__jack--raised');
+        },
       },
     ];
   }

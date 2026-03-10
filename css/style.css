@@ -198,6 +198,98 @@ html, body {
   animation: bounce-in 0.4s ease-out;
 }
 
+/* ===== Jack ===== */
+.car__jack {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14%;
+  min-width: 60px;
+  height: 100%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 5;
+}
+
+/* Jack base — flat rectangle on the floor */
+.car__jack-base {
+  position: absolute;
+  bottom: 0;
+  left: 15%; right: 15%;
+  height: 20%;
+  background: #c44;
+  border-radius: 2px;
+}
+
+/* Jack arm — extends upward */
+.car__jack-arm {
+  position: absolute;
+  bottom: 20%;
+  left: 35%; right: 35%;
+  height: 40%;
+  background: #a33;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s ease-out;
+}
+
+/* Raised state — arm extends taller */
+.car__jack--raised .car__jack-arm {
+  height: 65%;
+}
+
+/* Arrow indicator — hidden by default */
+.car__jack-arrow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* Arrow visible */
+.car__jack-arrow--visible {
+  opacity: 1;
+  animation: arrow-bounce 0.8s ease-in-out infinite;
+}
+
+/* Up arrow — above the jack */
+.car__jack-arrow--visible[data-direction="up"] {
+  top: -28px;
+}
+.car__jack-arrow--visible[data-direction="up"]::after {
+  content: '▲';
+  color: #ffe066;
+  text-shadow: 0 0 8px rgba(255,255,100,0.6);
+}
+
+/* Down arrow — below the jack arm */
+.car__jack-arrow--visible[data-direction="down"] {
+  top: -28px;
+}
+.car__jack-arrow--visible[data-direction="down"]::after {
+  content: '▼';
+  color: #ffe066;
+  text-shadow: 0 0 8px rgba(255,255,100,0.6);
+}
+
+@keyframes arrow-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* Down arrow bounces downward */
+.car__jack-arrow--visible[data-direction="down"] {
+  animation: arrow-bounce-down 0.8s ease-in-out infinite;
+}
+@keyframes arrow-bounce-down {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(6px); }
+}
+
 /* ===== Hint glow ===== */
 .hint-glow {
   box-shadow: 0 0 0 4px rgba(255, 255, 100, 0.6),
@@ -205,12 +297,59 @@ html, body {
   animation: glow-pulse 1s ease-in-out infinite;
 }
 
+/* ===== Rocket flame ===== */
+.car__flame {
+  position: absolute;
+  right: -8%;
+  top: 20%;
+  width: 0;
+  height: 0;
+  z-index: -1;
+  /* Flame shape via borders */
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 30px solid #ff6600;
+  filter: blur(2px);
+  animation: flame-flicker 0.1s ease-in-out infinite alternate,
+             flame-grow 0.3s ease-out forwards;
+}
+.car__flame::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -30px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 22px solid #ffcc00;
+  filter: blur(1px);
+}
+.car__flame::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -30px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 14px solid #fff5cc;
+}
+
+@keyframes flame-flicker {
+  0%   { transform: scaleY(0.85) scaleX(1); opacity: 0.9; }
+  100% { transform: scaleY(1.15) scaleX(1.1); opacity: 1; }
+}
+
+@keyframes flame-grow {
+  0%   { transform: scaleX(0.3) scaleY(0.5); opacity: 0; }
+  100% { transform: scaleX(1) scaleY(1); opacity: 1; }
+}
+
 /* ===== Exit animations ===== */
 .car--exit-wheelie {
   animation: exit-wheelie 1.2s ease-in forwards;
 }
 .car--exit-rocket {
-  animation: exit-rocket 1s ease-in forwards;
+  overflow: visible;
+  animation: exit-rocket 1.8s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 .car--exit-confetti {
   animation: exit-confetti 1.2s ease-in forwards;
@@ -250,8 +389,9 @@ html, body {
 
 @keyframes exit-rocket {
   0%   { transform: translateX(0) scale(1); }
-  20%  { transform: translateX(5px) scale(1.05); }
-  100% { transform: translateX(-130vw) scale(0.8); }
+  15%  { transform: translateX(8px) scale(1.05); }
+  30%  { transform: translateX(5px) scale(1.05); }
+  100% { transform: translateX(-130vw) scale(1.05); }
 }
 
 @keyframes exit-confetti {

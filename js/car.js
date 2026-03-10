@@ -30,6 +30,11 @@ const Car = (() => {
       <div class="car__undercarriage">
         <div class="car__tyre car__tyre--front ${flatTyre === 'front' ? 'car__tyre--flat' : ''}"
              data-position="front"></div>
+        <div class="car__jack">
+          <div class="car__jack-base"></div>
+          <div class="car__jack-arm"></div>
+          <div class="car__jack-arrow"></div>
+        </div>
         <div class="car__tyre car__tyre--rear ${flatTyre === 'rear' ? 'car__tyre--flat' : ''}"
              data-position="rear"></div>
       </div>
@@ -65,8 +70,16 @@ const Car = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
+          // Add flame effect for rocket exit
+          if (CONFIG.exitAnimation === 'rocket') {
+            const flame = document.createElement('div');
+            flame.className = 'car__flame';
+            el.appendChild(flame);
+          }
           el.classList.add(`car--exit-${CONFIG.exitAnimation}`);
-          el.addEventListener('animationend', () => {
+          el.addEventListener('animationend', (e) => {
+            // Only react to the car's own exit animation, not child animations
+            if (e.target !== el) return;
             el.remove();
             resolve();
           }, { once: true });
