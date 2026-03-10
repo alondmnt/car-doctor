@@ -10,7 +10,7 @@ const CONFIG = {
   stickers: ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'],
   faultWeights: {           // relative weights — higher = more likely
     flatTyre: 2,
-    engine: 1,
+    engine: 2,
     paint: 3,
     sticker: 3,
   },
