@@ -163,6 +163,52 @@ html, body {
 .car--sporty .car__window--front { left: 42%; width: 14%; }
 .car--sporty .car__window--rear  { left: 58%; width: 8%; }
 
+/* ===== Driver ===== */
+.car__driver {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 80%;
+  pointer-events: none;
+}
+
+.car__driver-head {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 75%;
+  background: var(--skin);
+  border-radius: 50% 50% 45% 45%;
+}
+
+.car__driver-hair {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 45%;
+  background: var(--hair);
+  border-radius: 50% 50% 30% 30%;
+}
+
+.car__driver-eyes {
+  position: absolute;
+  bottom: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 8%;
+  /* Two dots for eyes */
+  background:
+    radial-gradient(circle, #222 45%, transparent 46%) 15% center / 40% 100% no-repeat,
+    radial-gradient(circle, #222 45%, transparent 46%) 85% center / 40% 100% no-repeat;
+}
+
 /* ===== Car body ===== */
 .car__body {
   position: relative;

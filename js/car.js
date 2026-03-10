@@ -4,6 +4,13 @@
  */
 const Car = (() => {
 
+  const SKIN_TONES = ['#f5d0a9', '#e0b88a', '#c68c53', '#a0673c', '#6b4226'];
+  const HAIR_COLOURS = ['#222', '#5a3825', '#d4a44c', '#c44', '#e87d2f', '#888'];
+
+  function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function _randomSkin() { return _pick(SKIN_TONES); }
+  function _randomHair() { return _pick(HAIR_COLOURS); }
+
   /**
    * Create a car element and append it to the garage.
    * @param {HTMLElement} garage - container element
@@ -34,7 +41,13 @@ const Car = (() => {
       </div>
       <div class="car__body">
         <div class="car__roof"></div>
-        <div class="car__window car__window--front"></div>
+        <div class="car__window car__window--front">
+          <div class="car__driver" style="--skin:${_randomSkin()};--hair:${_randomHair()}">
+            <div class="car__driver-head"></div>
+            <div class="car__driver-hair"></div>
+            <div class="car__driver-eyes"></div>
+          </div>
+        </div>
         <div class="car__window car__window--rear"></div>
         <div class="car__engine-bay ${hasEngine ? '' : 'car__engine-bay--hidden'}">
           <div class="car__engine car__engine--broken"></div>
