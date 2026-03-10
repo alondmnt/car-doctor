@@ -5,18 +5,31 @@
  */
 const Repair = (() => {
 
-  /** Flat tyre repair — 6 steps (drag on jack + tyre removal/placement) */
+  /** Helper to generate screw steps for a tyre */
+  function _screwSteps(tyreSelector, mode) {
+    return [1, 2, 3].map(n => ({
+      id: `${mode}-screw-${n}`,
+      description: `Tap screw ${n} to ${mode} it`,
+      target: `${tyreSelector} .car__screw--${n}`,
+      sound: 'ratchet',
+      action: (el) => {
+        if (mode === 'loosen') {
+          el.classList.add('car__screw--loose');
+        } else {
+          el.classList.remove('car__screw--loose');
+          el.classList.add('car__screw--tight');
+          setTimeout(() => el.classList.remove('car__screw--tight'), 300);
+        }
+      },
+    }));
+  }
+
+  /** Flat tyre repair — 10 steps: 3 unscrew, jack, remove, add, 3 screw, lower */
   function flatTyre(car) {
     const tyreSelector = `.car__tyre--${car.flatTyre}`;
 
     return [
-      {
-        id: 'loosen-bolts',
-        description: 'Tap the flat tyre to loosen bolts',
-        target: tyreSelector,
-        sound: 'ratchet',
-        action: (el) => el.classList.add('car__tyre--loosened'),
-      },
+      ..._screwSteps(tyreSelector, 'loosen'),
       {
         id: 'jack-up',
         description: 'Drag the jack up to lift the car',
@@ -35,7 +48,11 @@ const Repair = (() => {
         target: tyreSelector,
         drag: { direction: 'down', threshold: 30 },
         sound: 'pop',
-        action: (el) => el.classList.add('car__tyre--removed'),
+        action: (el) => {
+          el.classList.add('car__tyre--removed');
+          // Hide screws when tyre is off
+          el.querySelectorAll('.car__screw').forEach(s => s.classList.add('car__screw--hidden'));
+        },
       },
       {
         id: 'add-new-tyre',
@@ -46,15 +63,13 @@ const Repair = (() => {
         action: (el) => {
           el.classList.remove('car__tyre--removed', 'car__tyre--flat');
           el.classList.add('car__tyre--new');
+          // Show screws again (loose, ready to tighten)
+          el.querySelectorAll('.car__screw').forEach(s => {
+            s.classList.remove('car__screw--hidden');
+          });
         },
       },
-      {
-        id: 'tighten-bolts',
-        description: 'Tap to tighten bolts',
-        target: tyreSelector,
-        sound: 'ratchet',
-        action: (el) => el.classList.remove('car__tyre--loosened', 'car__tyre--new'),
-      },
+      ..._screwSteps(tyreSelector, 'tighten'),
       {
         id: 'lower-jack',
         description: 'Drag the jack down to lower the car',

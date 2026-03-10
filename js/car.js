@@ -63,14 +63,22 @@ const Car = (() => {
       </div>
       <div class="car__undercarriage">
         <div class="car__tyre car__tyre--front ${hasFlatTyre && flatTyre === 'front' ? 'car__tyre--flat' : ''}"
-             data-position="front"></div>
+             data-position="front">
+          <div class="car__screw car__screw--1" data-screw="1">+</div>
+          <div class="car__screw car__screw--2" data-screw="2">+</div>
+          <div class="car__screw car__screw--3" data-screw="3">+</div>
+        </div>
         <div class="car__jack">
           <div class="car__jack-base"></div>
           <div class="car__jack-arm"></div>
           <div class="car__jack-arrow"></div>
         </div>
         <div class="car__tyre car__tyre--rear ${hasFlatTyre && flatTyre === 'rear' ? 'car__tyre--flat' : ''}"
-             data-position="rear"></div>
+             data-position="rear">
+          <div class="car__screw car__screw--1" data-screw="1">+</div>
+          <div class="car__screw car__screw--2" data-screw="2">+</div>
+          <div class="car__screw car__screw--3" data-screw="3">+</div>
+        </div>
       </div>
     `;
 
