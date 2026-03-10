@@ -69,6 +69,54 @@ html, body {
 }
 #reset-btn:active { transform: scale(0.9); }
 
+/* ===== Coin jar ===== */
+#coin-jar {
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 50;
+  width: 48px;
+  height: 56px;
+  border: 3px solid #d4a44c;
+  border-radius: 0 0 10px 10px;
+  background: rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+#coin-jar::before {
+  content: '🪙';
+  position: absolute;
+  top: -10px;
+  font-size: 16px;
+  z-index: 2;
+}
+#coin-jar-fill {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0;
+  background: linear-gradient(to top, #d4a44c, #e9c46a);
+  transition: height 0.4s ease-out;
+  border-radius: 0 0 7px 7px;
+}
+#coin-jar-count {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  padding-bottom: 4px;
+}
+.coin-jar--pop {
+  animation: jar-pop 0.3s ease-out;
+}
+@keyframes jar-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 /* ===== Car ===== */
 .car {
   position: absolute;

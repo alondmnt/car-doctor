@@ -8,6 +8,7 @@ const Game = (() => {
   let steps = [];
   let stepIndex = 0;
   let busy = false;
+  let coins = 0;
 
   function init() {
     garage = document.getElementById('garage');
@@ -218,7 +219,8 @@ const Game = (() => {
           listenForTap();
         }, 400 / CONFIG.gameSpeed);
       } else {
-        // All faults fixed — drive away
+        // All faults fixed — award coins and drive away
+        addCoins(currentCar.faults.length);
         setTimeout(() => {
           Audio.play('success');
           setTimeout(() => {
@@ -238,6 +240,22 @@ const Game = (() => {
         listenForTap();
       }, 250 / CONFIG.gameSpeed);
     }
+  }
+
+  /** Add coins and update the jar display */
+  function addCoins(amount) {
+    coins += amount;
+    const countEl = document.getElementById('coin-jar-count');
+    const fillEl = document.getElementById('coin-jar-fill');
+    countEl.textContent = coins;
+    // Fill jar up to 100% (resets visually at 10 coins)
+    const level = Math.min((coins % 10) / 10 * 100, 100);
+    fillEl.style.height = level + '%';
+    // Pop animation
+    const jar = document.getElementById('coin-jar');
+    jar.classList.remove('coin-jar--pop');
+    jar.offsetHeight;
+    jar.classList.add('coin-jar--pop');
   }
 
   /** Reset — send current car away and bring a new one */
