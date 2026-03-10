@@ -9,6 +9,7 @@ const Game = (() => {
   let stepIndex = 0;
   let busy = false;
   let coins = 0;
+  let generation = 0;  // incremented on reset/new car to cancel stale callbacks
 
   function init() {
     garage = document.getElementById('garage');
@@ -50,6 +51,8 @@ const Game = (() => {
 
   /** Bring in a new car with 1–2 random faults */
   function nextCar() {
+    generation++;
+    const gen = generation;
     busy = true;
     const palette = CONFIG.carPalette;
     const colour = palette[Math.floor(Math.random() * palette.length)];
@@ -65,8 +68,10 @@ const Game = (() => {
 
     // Slide car in
     requestAnimationFrame(() => {
+      if (generation !== gen) return;
       currentCar.slideIn();
       setTimeout(() => {
+        if (generation !== gen) return;
         busy = false;
         highlightStep();
         listenForTap();
@@ -394,6 +399,7 @@ const Game = (() => {
   /** Handle step completion */
   function onStepComplete(step, targetEl) {
     busy = true;
+    const gen = generation;
     clearHighlights();
 
     // Execute step action
@@ -417,6 +423,7 @@ const Game = (() => {
         Audio.play('tap');
         startNextFault();
         setTimeout(() => {
+          if (generation !== gen) return;
           busy = false;
           highlightStep();
           listenForTap();
@@ -425,10 +432,13 @@ const Game = (() => {
         // All faults fixed — award coins and drive away
         addCoins(currentCar.faults.length);
         setTimeout(() => {
+          if (generation !== gen) return;
           Audio.play('success');
           setTimeout(() => {
+            if (generation !== gen) return;
             Audio.play('whoosh');
             currentCar.driveAway().then(() => {
+              if (generation !== gen) return;
               currentCar = null;
               setTimeout(nextCar, 400 / CONFIG.gameSpeed);
             });
@@ -438,6 +448,7 @@ const Game = (() => {
     } else {
       // Next step
       setTimeout(() => {
+        if (generation !== gen) return;
         busy = false;
         highlightStep();
         listenForTap();
@@ -464,6 +475,7 @@ const Game = (() => {
   /** Reset — send current car away and bring a new one */
   function resetCar() {
     if (!currentCar) return;
+    generation++;  // cancel all pending callbacks from previous car
     if (activeCleanup) { activeCleanup(); activeCleanup = null; }
     clearHighlights();
     hideToolbox();
@@ -471,10 +483,13 @@ const Game = (() => {
     const wh = document.getElementById('warehouse');
     wh.innerHTML = '';
     wh.classList.remove('warehouse--active');
+    // Remove any open pickers
+    garage.querySelectorAll('.colour-picker').forEach(el => el.remove());
     currentCar.remove();
     currentCar = null;
     stepIndex = 0;
     steps = [];
+    faultQueue = [];
     busy = false;
     nextCar();
   }
