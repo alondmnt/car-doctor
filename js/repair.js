@@ -109,11 +109,12 @@ const Repair = (() => {
       {
         id: 'close-bonnet',
         description: 'Tap the bonnet to close it',
-        target: '.car__bonnet',
+        target: '.car__bonnet-lid',
         drag: { direction: 'down', threshold: 30 },
         sound: 'clank',
         action: (el, carEl) => {
-          el.classList.remove('car__bonnet--open');
+          const bonnet = carEl.querySelector('.car__bonnet');
+          bonnet.classList.remove('car__bonnet--open');
           carEl.querySelector('.car__engine-bay').classList.remove('car__engine-bay--visible');
           carEl.querySelector('.car__engine').classList.remove('car__engine--new');
         },

@@ -223,9 +223,15 @@ html, body {
   transition: transform 0.4s ease-out;
 }
 
-/* Open state — lid rotates up */
+/* Open state — lid rotates up, stop blocking engine bay */
 .car__bonnet--open .car__bonnet-lid {
   transform: rotate(-45deg);
+}
+.car__bonnet--open {
+  pointer-events: none;
+}
+.car__bonnet--open .car__bonnet-lid {
+  pointer-events: auto;
 }
 
 /* Engine bay — sits inside the car body */
