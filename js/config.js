@@ -2,7 +2,7 @@
 const CONFIG = {
   garageColour: '#4a8c5c',       // green walls
   carColour: '#e63946',
-  carShapes: ['rounded', 'boxy', 'sporty'],  // random pick per car
+  carShapes: ['sedan', 'suv', 'sports'],  // random pick per car
   exitAnimations: ['rocket', 'wheelie', 'honk'],  // random pick per car
   hintsOn: true,
   gameSpeed: 1,                  // multiplier: 0.5 = slow, 2 = fast
