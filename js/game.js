@@ -75,10 +75,19 @@ const Game = (() => {
   function highlightStep() {
     if (!CONFIG.hintsOn || stepIndex >= steps.length) return;
     const step = steps[stepIndex];
+    // If step needs a tool, highlight the tool in the toolbox instead
+    if (step.tool) {
+      showToolbox(step.tool);
+      return;  // don't highlight car target yet — wait for tool selection
+    }
+    highlightCarTarget(step);
+  }
+
+  /** Highlight the target element on the car */
+  function highlightCarTarget(step) {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
     target.classList.add('hint-glow');
-    // Show directional arrow on jack steps
     if (step.hintArrow) {
       const arrow = target.querySelector('.car__jack-arrow');
       if (arrow) {
@@ -101,12 +110,40 @@ const Game = (() => {
 
   let activeCleanup = null;
 
+  /** Show the toolbox and highlight the needed tool */
+  function showToolbox(neededTool) {
+    const toolbox = document.getElementById('toolbox');
+    toolbox.classList.add('toolbox--active');
+    // Highlight the correct tool
+    toolbox.querySelectorAll('.toolbox__tool').forEach(t => {
+      t.classList.remove('toolbox__tool--hint', 'toolbox__tool--selected');
+      if (t.dataset.tool === neededTool && CONFIG.hintsOn) {
+        t.classList.add('toolbox__tool--hint');
+      }
+    });
+  }
+
+  /** Hide the toolbox */
+  function hideToolbox() {
+    const toolbox = document.getElementById('toolbox');
+    toolbox.classList.remove('toolbox--active');
+    toolbox.querySelectorAll('.toolbox__tool').forEach(t => {
+      t.classList.remove('toolbox__tool--hint', 'toolbox__tool--selected');
+    });
+  }
+
   /** Listen for interaction on the current step target (drag or tap) */
   function listenForTap() {
     if (stepIndex >= steps.length) return;
     const step = steps[stepIndex];
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
+
+    // If step needs a tool, wait for tool selection first
+    if (step.tool) {
+      waitForToolSelection(step, target);
+      return;
+    }
 
     if (step.warehouse) {
       showWarehousePart(step.warehouse, () => {
@@ -144,6 +181,65 @@ const Game = (() => {
         onStepComplete(step, target);
       }
 
+      target.addEventListener('click', handler);
+      target.addEventListener('touchend', handler);
+    }
+  }
+
+  /** Wait for the player to pick the right tool, then activate the car target */
+  function waitForToolSelection(step, target) {
+    const toolbox = document.getElementById('toolbox');
+
+    function onToolClick(e) {
+      const toolEl = e.target.closest('.toolbox__tool');
+      if (!toolEl) return;
+      e.preventDefault();
+
+      if (toolEl.dataset.tool === step.tool) {
+        // Correct tool selected
+        Audio.play('tap');
+        toolbox.removeEventListener('click', onToolClick);
+        toolbox.removeEventListener('touchend', onToolClick);
+        toolEl.classList.add('toolbox__tool--selected');
+        // Now highlight the car target and listen for action
+        highlightCarTarget(step);
+        attachCarAction(step, target);
+      } else {
+        // Wrong tool — shake feedback
+        toolEl.classList.add('toolbox__tool--wrong');
+        setTimeout(() => toolEl.classList.remove('toolbox__tool--wrong'), 400);
+      }
+    }
+
+    toolbox.addEventListener('click', onToolClick);
+    toolbox.addEventListener('touchend', onToolClick);
+
+    // Store cleanup for reset
+    activeCleanup = () => {
+      toolbox.removeEventListener('click', onToolClick);
+      toolbox.removeEventListener('touchend', onToolClick);
+    };
+  }
+
+  /** Attach the car interaction (drag or tap) after tool is selected */
+  function attachCarAction(step, target) {
+    if (step.drag) {
+      activeCleanup = Drag.attach(target, step.drag, () => {
+        if (busy) return;
+        activeCleanup = null;
+        hideToolbox();
+        onStepComplete(step, target);
+      });
+    } else {
+      function handler(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (busy) return;
+        target.removeEventListener('click', handler);
+        target.removeEventListener('touchend', handler);
+        hideToolbox();
+        onStepComplete(step, target);
+      }
       target.addEventListener('click', handler);
       target.addEventListener('touchend', handler);
     }
@@ -295,6 +391,7 @@ const Game = (() => {
     if (!currentCar) return;
     if (activeCleanup) { activeCleanup(); activeCleanup = null; }
     clearHighlights();
+    hideToolbox();
     // Clear warehouse
     const wh = document.getElementById('warehouse');
     wh.innerHTML = '';

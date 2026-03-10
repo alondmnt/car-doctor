@@ -117,6 +117,76 @@ html, body {
   100% { transform: scale(1); }
 }
 
+/* ===== Toolbox ===== */
+#toolbox {
+  position: fixed;
+  bottom: 4%;
+  right: 12px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(60, 50, 40, 0.9);
+  border-radius: 12px;
+  border: 2px solid #8b7355;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+#toolbox.toolbox--active {
+  opacity: 1;
+  pointer-events: auto;
+  animation: shelf-slide-up 0.3s ease-out;
+}
+
+.toolbox__tool {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, border-color 0.2s;
+}
+.toolbox__tool:active {
+  transform: scale(0.85);
+}
+
+/* Hint glow on the correct tool */
+.toolbox__tool--hint {
+  border-color: rgba(255, 255, 100, 0.7);
+  box-shadow: 0 0 0 3px rgba(255, 255, 100, 0.4),
+              0 0 12px rgba(255, 255, 100, 0.3);
+  animation: glow-pulse 1s ease-in-out infinite;
+}
+
+/* Selected tool */
+.toolbox__tool--selected {
+  border-color: #2a9d8f;
+  background: rgba(42, 157, 143, 0.3);
+  box-shadow: 0 0 8px rgba(42, 157, 143, 0.5);
+}
+
+/* Wrong tool — shake */
+.toolbox__tool--wrong {
+  animation: tool-shake 0.4s ease-out;
+  border-color: #e63946;
+}
+
+@keyframes tool-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-5px); }
+  40%      { transform: translateX(5px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(3px); }
+}
+
 /* ===== Warehouse / parts shelf ===== */
 #warehouse {
   position: fixed;
@@ -391,6 +461,7 @@ html, body {
   border-radius: 50%;
   border: 3px solid #444;
   cursor: pointer;
+  overflow: visible;
   transition: transform 0.2s, border-radius 0.3s, opacity 0.3s;
   -webkit-tap-highlight-color: transparent;
   /* Generous touch target */
@@ -403,32 +474,36 @@ html, body {
 /* ===== Screws ===== */
 .car__screw {
   position: absolute;
-  width: 28%;
-  height: 28%;
-  background: #888;
+  width: 30%;
+  height: 30%;
+  min-width: 20px;
+  min-height: 20px;
+  background: #999;
   border-radius: 50%;
-  border: 1px solid #666;
+  border: 2px solid #777;
   color: #555;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
-  z-index: 3;
-  transition: transform 0.2s, opacity 0.2s;
+  z-index: 5;
+  transition: transform 0.2s, opacity 0.2s, background 0.2s;
 }
-/* Position screws around the tyre */
-.car__screw--1 { top: 8%; left: 36%; }
-.car__screw--2 { bottom: 15%; left: 12%; }
-.car__screw--3 { bottom: 15%; right: 12%; }
+/* Position screws around the tyre — offset outside so they're easier to tap */
+.car__screw--1 { top: -5%; left: 50%; transform: translateX(-50%); }
+.car__screw--2 { bottom: 5%; left: -5%; }
+.car__screw--3 { bottom: 5%; right: -5%; }
 
-/* Loosened — rotates and pops out slightly */
+/* Loosened — rotates and pops out */
 .car__screw--loose {
   animation: screw-untwist 0.3s ease-out forwards;
-  background: #aaa;
-  border-color: #888;
+  background: #bbb;
+  border-color: #999;
 }
 
 /* Tightened feedback */
@@ -444,13 +519,13 @@ html, body {
 
 @keyframes screw-untwist {
   0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(180deg) scale(1.3); }
-  100% { transform: rotate(360deg) scale(1.15); }
+  50%  { transform: rotate(180deg) scale(1.4); }
+  100% { transform: rotate(360deg) scale(1.2); }
 }
 
 @keyframes screw-twist {
-  0%   { transform: rotate(0deg) scale(1.15); }
-  50%  { transform: rotate(-180deg) scale(0.9); }
+  0%   { transform: rotate(0deg) scale(1.2); }
+  50%  { transform: rotate(-180deg) scale(0.85); }
   100% { transform: rotate(-360deg) scale(1); }
 }
 

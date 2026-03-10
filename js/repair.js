@@ -1,7 +1,7 @@
 /**
  * Repair step logic — defines multi-step repair sequences.
- * Each step: id, target, action, sound, and optional drag / hintArrow.
- * Steps with `drag` get drag-to-complete; all steps still accept tap as fallback.
+ * Each step: id, target, action, sound, and optional drag / hintArrow / tool / warehouse.
+ * `tool` — which toolbox tool must be selected first (drill, wrench, jack, hand, spray).
  */
 const Repair = (() => {
 
@@ -11,6 +11,7 @@ const Repair = (() => {
       id: `${mode}-screw-${n}`,
       description: `Tap screw ${n} to ${mode} it`,
       target: `${tyreSelector} .car__screw--${n}`,
+      tool: 'drill',
       sound: 'ratchet',
       action: (el) => {
         if (mode === 'loosen') {
@@ -34,6 +35,7 @@ const Repair = (() => {
         id: 'jack-up',
         description: 'Drag the jack up to lift the car',
         target: '.car__jack',
+        tool: 'jack',
         hintArrow: 'up',
         drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
@@ -44,13 +46,13 @@ const Repair = (() => {
       },
       {
         id: 'remove-tyre',
-        description: 'Drag the tyre off',
+        description: 'Pull the tyre off',
         target: tyreSelector,
+        tool: 'hand',
         drag: { direction: 'down', threshold: 30 },
         sound: 'pop',
         action: (el) => {
           el.classList.add('car__tyre--removed');
-          // Hide screws when tyre is off
           el.querySelectorAll('.car__screw').forEach(s => s.classList.add('car__screw--hidden'));
         },
       },
@@ -63,7 +65,6 @@ const Repair = (() => {
         action: (el) => {
           el.classList.remove('car__tyre--removed', 'car__tyre--flat');
           el.classList.add('car__tyre--new');
-          // Show screws again (loose, ready to tighten)
           el.querySelectorAll('.car__screw').forEach(s => {
             s.classList.remove('car__screw--hidden');
           });
@@ -72,8 +73,9 @@ const Repair = (() => {
       ..._screwSteps(tyreSelector, 'tighten'),
       {
         id: 'lower-jack',
-        description: 'Drag the jack down to lower the car',
+        description: 'Lower the jack',
         target: '.car__jack',
+        tool: 'jack',
         hintArrow: 'down',
         drag: { direction: 'down', threshold: 30 },
         sound: 'clank',
@@ -85,13 +87,14 @@ const Repair = (() => {
     ];
   }
 
-  /** Broken engine repair — 4 steps (drag on engine removal/placement) */
+  /** Broken engine repair — 4 steps */
   function engine(_car) {
     return [
       {
         id: 'open-bonnet',
-        description: 'Tap the bonnet to open it',
+        description: 'Open the bonnet',
         target: '.car__bonnet',
+        tool: 'hand',
         drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
         action: (el, carEl) => {
@@ -101,8 +104,9 @@ const Repair = (() => {
       },
       {
         id: 'remove-engine',
-        description: 'Drag the broken engine out',
+        description: 'Pull the broken engine out',
         target: '.car__engine',
+        tool: 'wrench',
         drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
         action: (el) => {
@@ -123,8 +127,9 @@ const Repair = (() => {
       },
       {
         id: 'close-bonnet',
-        description: 'Tap the bonnet to close it',
+        description: 'Close the bonnet',
         target: '.car__bonnet-lid',
+        tool: 'hand',
         drag: { direction: 'down', threshold: 30 },
         sound: 'clank',
         action: (el, carEl) => {
@@ -137,13 +142,14 @@ const Repair = (() => {
     ];
   }
 
-  /** Paint job — 3 steps: sand, pick colour, apply */
+  /** Paint job — 3 steps */
   function paint(_car) {
     return [
       {
         id: 'sand-body',
-        description: 'Tap the car body to sand off old paint',
+        description: 'Sand off old paint',
         target: '.car__paint-damage',
+        tool: 'hand',
         sound: 'ratchet',
         action: (el) => {
           el.classList.add('car__paint-damage--sanded');
@@ -154,15 +160,14 @@ const Repair = (() => {
         description: 'Pick a new colour',
         target: '.car__body',
         sound: 'tap',
-        picker: 'colour',  // signals game.js to show colour picker
-        action: (_el, carEl) => {
-          // colour is applied by the picker handler in game.js
-        },
+        picker: 'colour',
+        action: () => {},
       },
       {
         id: 'apply-paint',
-        description: 'Tap to apply the new paint',
+        description: 'Spray the new paint',
         target: '.car__body',
+        tool: 'spray',
         sound: 'whoosh',
         action: (_el, carEl) => {
           const damage = carEl.querySelector('.car__paint-damage');
@@ -181,7 +186,7 @@ const Repair = (() => {
     ];
   }
 
-  /** Sticker — 1 step: pick a sticker to slap on the car */
+  /** Sticker — 1 step */
   function sticker(_car) {
     return [
       {
@@ -189,10 +194,8 @@ const Repair = (() => {
         description: 'Pick a sticker for the car',
         target: '.car__sticker-zone',
         sound: 'tap',
-        picker: 'sticker',  // signals game.js to show sticker picker
-        action: (_el, _carEl) => {
-          // sticker is applied by the picker handler in game.js
-        },
+        picker: 'sticker',
+        action: () => {},
       },
     ];
   }
