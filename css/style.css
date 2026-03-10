@@ -250,13 +250,13 @@ html, body {
   100% { transform: scale(0.5) translateY(-80px); opacity: 0; }
 }
 
-/* ===== Car ===== */
+/* ===== Car container ===== */
 .car {
   position: absolute;
-  bottom: 18%;
-  width: 55vw;
-  max-width: 320px;
-  aspect-ratio: 2.2 / 1;
+  bottom: 28%;
+  width: 70vw;
+  max-width: 400px;
+  aspect-ratio: 400 / 182;
   z-index: 10;
   transition: transform 0.5s ease-out;
 }
@@ -265,14 +265,17 @@ html, body {
 .car--entering { transform: translateX(120vw); }
 .car--parked   { transform: translateX(0); }
 
-/* Jacked up */
-.car--jacked .car__body { transform: translateY(-12px); }
-.car--jacked .car__undercarriage { transform: translateY(0); }
+/* ===== Inline SVG ===== */
+.car__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
 
-/* ===== Dashboard indicators ===== */
+/* ===== Dashboard indicators (DOM, above SVG) ===== */
 .car__dashboard {
   position: absolute;
-  top: -50px;
+  top: -40px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -284,7 +287,7 @@ html, body {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  font-size: 0;  /* hide text, use background */
+  font-size: 0;
   border: 2px solid rgba(0,0,0,0.3);
   transition: background 0.3s, box-shadow 0.3s;
 }
@@ -305,284 +308,141 @@ html, body {
   50%      { box-shadow: 0 0 12px rgba(230, 57, 70, 0.8); }
 }
 
-/* ===== Car shape variants ===== */
+/* ===== SVG state rules ===== */
 
-/* Boxy — tall van/SUV look, flat roof, big windows */
-.car--boxy .car__body {
-  border-radius: 4px;
-  height: 60%;
-}
-.car--boxy .car__roof {
-  top: -50%;
-  left: 15%; right: 15%;
-  height: 60%;
-  border-radius: 3px 3px 0 0;
-}
-.car--boxy .car__window {
-  top: -42%;
-  height: 50%;
-  border-radius: 2px 2px 0 0;
-}
-.car--boxy .car__window--front { left: 17%; width: 28%; }
-.car--boxy .car__window--rear  { left: 48%; width: 24%; }
-
-/* Sporty — very low, long nose, small windshield */
-.car--sporty .car__body {
-  border-radius: 30px 6px 4px 4px;
-  height: 50%;
-}
-.car--sporty .car__roof {
-  top: -16%;
-  left: 40%; right: 18%;
-  height: 22%;
-  border-radius: 10px 3px 0 0;
-}
-.car--sporty .car__window {
-  top: -12%;
-  height: 16%;
-}
-.car--sporty .car__window--front { left: 42%; width: 14%; }
-.car--sporty .car__window--rear  { left: 58%; width: 8%; }
-
-/* ===== Driver ===== */
-.car__driver {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 80%;
-  pointer-events: none;
+/* Common SVG transform setup */
+.car__tyre, .car__screw, .car__engine, .car__jack-arm, .car__bonnet-lid {
+  transform-box: fill-box;
+  transform-origin: center center;
 }
 
-.car__driver-head {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70%;
-  height: 75%;
-  background: var(--skin);
-  border-radius: 50% 50% 45% 45%;
+/* Jacked up — lift upper group, wheels/jack stay */
+.car--jacked .car__upper {
+  transform: translateY(-12px);
+  transition: transform 0.3s ease-out;
+}
+.car__upper {
+  transition: transform 0.3s ease-out;
 }
 
-.car__driver-hair {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 45%;
-  background: var(--hair);
-  border-radius: 50% 50% 30% 30%;
-}
-
-.car__driver-eyes {
-  position: absolute;
-  bottom: 35%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40%;
-  height: 8%;
-  /* Two dots for eyes */
-  background:
-    radial-gradient(circle, #222 45%, transparent 46%) 15% center / 40% 100% no-repeat,
-    radial-gradient(circle, #222 45%, transparent 46%) 85% center / 40% 100% no-repeat;
-}
-
-/* ===== Car body ===== */
-.car__body {
-  position: relative;
-  width: 100%;
-  height: 65%;
-  background: var(--car-colour, #e63946);
-  border-radius: 12px 12px 6px 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: transform 0.3s;
-}
-
-/* Roof */
-.car__roof {
-  position: absolute;
-  top: -30%;
-  left: 20%; right: 25%;
-  height: 45%;
-  background: var(--car-colour, #e63946);
-  border-radius: 8px 8px 0 0;
-  filter: brightness(1.1);
-}
-
-/* Windows */
-.car__window {
-  position: absolute;
-  top: -22%;
-  height: 34%;
-  background: rgba(135, 206, 250, 0.7);
-  border-radius: 6px 6px 0 0;
-}
-.car__window--front { left: 22%; width: 22%; }
-.car__window--rear  { left: 48%; width: 18%; }
-
-/* Lights */
-.car__headlight {
-  position: absolute;
-  left: -3%;
-  top: 30%;
-  width: 8%;
-  height: 20%;
-  background: #ffe066;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #ffe066;
-}
-.car__taillight {
-  position: absolute;
-  right: -2%;
-  top: 30%;
-  width: 6%;
-  height: 16%;
-  background: #ff3333;
-  border-radius: 50%;
-}
-
-/* ===== Tyres ===== */
-.car__undercarriage {
-  position: relative;
-  width: 100%;
-  height: 35%;
-  transition: transform 0.3s;
-}
-
+/* ===== Tyre states ===== */
 .car__tyre {
-  position: absolute;
-  bottom: 0;
-  width: 18%;
-  aspect-ratio: 1;
-  background: #222;
-  border-radius: 50%;
-  border: 3px solid #444;
   cursor: pointer;
-  overflow: visible;
-  transition: transform 0.2s, border-radius 0.3s, opacity 0.3s;
   -webkit-tap-highlight-color: transparent;
-  /* Generous touch target */
-  min-width: 60px;
-  min-height: 60px;
-}
-.car__tyre--front { left: 10%; }
-.car__tyre--rear  { right: 10%; }
-
-/* ===== Screws ===== */
-.car__screw {
-  position: absolute;
-  width: 30%;
-  height: 30%;
-  min-width: 20px;
-  min-height: 20px;
-  background: #999;
-  border-radius: 50%;
-  border: 2px solid #777;
-  color: #555;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  pointer-events: auto;
-  -webkit-tap-highlight-color: transparent;
-  z-index: 5;
-  transition: transform 0.2s, opacity 0.2s, background 0.2s;
-}
-/* Position screws around the tyre — offset outside so they're easier to tap */
-.car__screw--1 { top: -5%; left: 50%; transform: translateX(-50%); }
-.car__screw--2 { bottom: 5%; left: -5%; }
-.car__screw--3 { bottom: 5%; right: -5%; }
-
-/* Loosened — rotates and pops out */
-.car__screw--loose {
-  animation: screw-untwist 0.3s ease-out forwards;
-  background: #bbb;
-  border-color: #999;
+  transition: transform 0.3s, opacity 0.3s;
 }
 
-/* Tightened feedback */
-.car__screw--tight {
-  animation: screw-twist 0.3s ease-out;
-}
-
-/* Hidden when tyre is removed */
-.car__screw--hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-@keyframes screw-untwist {
-  0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(180deg) scale(1.4); }
-  100% { transform: rotate(360deg) scale(1.2); }
-}
-
-@keyframes screw-twist {
-  0%   { transform: rotate(0deg) scale(1.2); }
-  50%  { transform: rotate(-180deg) scale(0.85); }
-  100% { transform: rotate(-360deg) scale(1); }
-}
-
-/* Flat tyre — squashed */
+/* Flat — squashed */
 .car__tyre--flat {
-  border-radius: 50% 50% 40% 40%;
-  transform: scaleY(0.7);
-  background: #333;
+  transform: scaleY(0.75);
+  transform-origin: center bottom;
 }
 
-/* Loosened — slight wobble */
-.car__tyre--loosened {
-  animation: wobble 0.4s ease-in-out infinite;
-}
-
-/* Removed — invisible but still tappable */
+/* Removed — faded */
 .car__tyre--removed {
   opacity: 0.15;
   transform: scale(0.6);
 }
 
-/* New tyre placed */
+/* New tyre */
 .car__tyre--new {
-  background: #111;
-  border-color: #555;
-  animation: bounce-in 0.3s ease-out;
+  animation: svg-bounce 0.3s ease-out;
 }
 
 /* Fixing feedback */
 .car__tyre--fixing {
-  animation: bounce-in 0.4s ease-out;
+  animation: svg-bounce 0.4s ease-out;
 }
 
-/* ===== Paint damage ===== */
+/* ===== Screw states ===== */
+.car__screw {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+/* Loosened — rotates and pops */
+.car__screw--loose {
+  animation: svg-screw-untwist 0.3s ease-out forwards;
+}
+
+/* Tightened feedback */
+.car__screw--tight {
+  animation: svg-screw-twist 0.3s ease-out;
+}
+
+/* Hidden when tyre removed */
+.car__screw--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===== Bonnet states ===== */
+.car__bonnet {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.car__bonnet--hidden { display: none; }
+
+.car__bonnet-lid {
+  transform-origin: left bottom;
+  transition: transform 0.4s ease-out;
+}
+.car__bonnet--open .car__bonnet-lid {
+  transform: rotate(-45deg);
+}
+.car__bonnet--open {
+  pointer-events: none;
+}
+.car__bonnet--open .car__bonnet-lid {
+  pointer-events: auto;
+}
+
+/* ===== Engine bay states ===== */
+.car__engine-bay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.car__engine-bay--hidden { display: none; }
+.car__engine-bay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Engine block */
+.car__engine {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.car__engine--broken {
+  animation: engine-smoke 1s ease-in-out infinite;
+}
+.car__engine--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+.car__engine--new {
+  animation: svg-bounce 0.3s ease-out;
+}
+
+@keyframes engine-smoke {
+  0%, 100% { filter: drop-shadow(0 -3px 4px rgba(100,100,80,0.4)); }
+  50%      { filter: drop-shadow(0 -6px 8px rgba(100,100,80,0.6)); }
+}
+
+/* ===== Paint damage states ===== */
 .car__paint-damage {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
   pointer-events: auto;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  /* Patchy faded paint — random blotches via gradients */
-  background:
-    radial-gradient(ellipse 35% 40% at 20% 30%, rgba(180,160,130,0.7) 0%, transparent 100%),
-    radial-gradient(ellipse 25% 35% at 60% 60%, rgba(160,140,110,0.6) 0%, transparent 100%),
-    radial-gradient(ellipse 30% 25% at 80% 25%, rgba(190,170,140,0.5) 0%, transparent 100%),
-    radial-gradient(ellipse 20% 30% at 40% 80%, rgba(170,150,120,0.6) 0%, transparent 100%);
   transition: opacity 0.3s;
 }
 .car__paint-damage--hidden { display: none; }
 
-/* Sanded — damage fades to grey primer */
-.car__paint-damage--sanded {
-  background:
-    radial-gradient(ellipse 35% 40% at 20% 30%, rgba(150,150,150,0.5) 0%, transparent 100%),
-    radial-gradient(ellipse 25% 35% at 60% 60%, rgba(150,150,150,0.4) 0%, transparent 100%);
+.car__paint-damage--sanded ellipse {
+  fill: rgba(150,150,150,0.4);
   animation: sand-shake 0.3s ease-out;
 }
 
@@ -606,30 +466,20 @@ html, body {
   100% { filter: brightness(1); }
 }
 
-/* ===== Sticker zone ===== */
+/* ===== Sticker zone states ===== */
 .car__sticker-zone {
-  position: absolute;
-  top: 15%;
-  right: 12%;
-  width: 28%;
-  height: 55%;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0;
-  border: 2px dashed rgba(255,255,255,0.4);
-  border-radius: 6px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: font-size 0.3s, border-color 0.3s;
 }
 .car__sticker-zone--hidden { display: none; }
 
-/* Sticker applied — show it big, hide dashed border */
+.car__sticker-zone--applied .car__sticker-text {
+  font-size: 32px;
+}
+.car__sticker-zone--applied rect[stroke] {
+  stroke: transparent;
+}
 .car__sticker-zone--applied {
-  font-size: clamp(20px, 6vw, 36px);
-  border-color: transparent;
   animation: sticker-slap 0.4s ease-out;
 }
 
@@ -690,191 +540,50 @@ html, body {
   100% { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* ===== Bonnet & Engine ===== */
-.car__bonnet {
-  position: absolute;
-  top: 0;
-  left: -2%;
-  width: 28%;
-  height: 60%;
-  z-index: 15;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.car__bonnet--hidden { display: none; }
-
-.car__bonnet-lid {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 30%;
-  background: var(--car-colour, #e63946);
-  filter: brightness(0.9);
-  border-radius: 4px 0 0 0;
-  transform-origin: bottom left;
-  transition: transform 0.4s ease-out;
-}
-
-/* Open state — lid rotates up, stop blocking engine bay */
-.car__bonnet--open .car__bonnet-lid {
-  transform: rotate(-45deg);
-}
-.car__bonnet--open {
-  pointer-events: none;
-}
-.car__bonnet--open .car__bonnet-lid {
-  pointer-events: auto;
-}
-
-/* Engine bay — sits inside the car body */
-.car__engine-bay {
-  position: absolute;
-  top: 20%;
-  left: 2%;
-  width: 30%;
-  height: 55%;
-  background: #333;
-  border-radius: 4px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-.car__engine-bay--hidden { display: none; }
-.car__engine-bay--visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Engine block */
-.car__engine {
-  position: absolute;
-  inset: 15%;
-  background: #666;
-  border-radius: 4px;
-  border: 2px solid #555;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.3s, opacity 0.3s;
-  min-width: 40px;
-  min-height: 40px;
-}
-
-/* Broken engine — smoky / discoloured */
-.car__engine--broken {
-  background: #554;
-  border-color: #443;
-  animation: engine-smoke 1s ease-in-out infinite;
-}
-
-/* Removed — faded out but tappable */
-.car__engine--removed {
-  opacity: 0.15;
-  transform: scale(0.6);
-}
-
-/* New engine — shiny */
-.car__engine--new {
-  background: #888;
-  border-color: #999;
-  animation: bounce-in 0.3s ease-out;
-}
-
-@keyframes engine-smoke {
-  0%, 100% { box-shadow: 0 -4px 8px rgba(100,100,80,0.4); }
-  50%      { box-shadow: 0 -8px 16px rgba(100,100,80,0.6); }
-}
-
-/* ===== Jack ===== */
+/* ===== Jack states ===== */
 .car__jack {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14%;
-  min-width: 60px;
-  height: 100%;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  z-index: 5;
 }
 
-/* Jack base — flat rectangle on the floor */
-.car__jack-base {
-  position: absolute;
-  bottom: 0;
-  left: 15%; right: 15%;
-  height: 20%;
-  background: #c44;
-  border-radius: 2px;
-}
-
-/* Jack arm — extends upward */
 .car__jack-arm {
-  position: absolute;
-  bottom: 20%;
-  left: 35%; right: 35%;
-  height: 40%;
-  background: #a33;
-  border-radius: 2px 2px 0 0;
-  transition: height 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transform-origin: center bottom;
 }
 
-/* Raised state — arm extends taller */
+/* Raised — arm extends upward */
 .car__jack--raised .car__jack-arm {
-  height: 65%;
+  transform: scaleY(1.8);
 }
 
-/* Arrow indicator — hidden by default */
-.car__jack-arrow {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  line-height: 1;
+/* Arrow indicators — hidden by default */
+.car__jack-arrow text {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
 }
 
-/* Arrow visible */
-.car__jack-arrow--visible {
+/* Show correct arrow based on data-direction */
+.car__jack-arrow--visible .car__jack-arrow-up,
+.car__jack-arrow--visible .car__jack-arrow-down {
+  opacity: 0;
+}
+.car__jack-arrow--visible[data-direction="up"] .car__jack-arrow-up {
   opacity: 1;
   animation: arrow-bounce 0.8s ease-in-out infinite;
 }
-
-/* Up arrow — above the jack */
-.car__jack-arrow--visible[data-direction="up"] {
-  top: -28px;
-}
-.car__jack-arrow--visible[data-direction="up"]::after {
-  content: '▲';
-  color: #ffe066;
-  text-shadow: 0 0 8px rgba(255,255,100,0.6);
-}
-
-/* Down arrow — below the jack arm */
-.car__jack-arrow--visible[data-direction="down"] {
-  top: -28px;
-}
-.car__jack-arrow--visible[data-direction="down"]::after {
-  content: '▼';
-  color: #ffe066;
-  text-shadow: 0 0 8px rgba(255,255,100,0.6);
+.car__jack-arrow--visible[data-direction="down"] .car__jack-arrow-down {
+  opacity: 1;
+  animation: arrow-bounce-down 0.8s ease-in-out infinite;
 }
 
 @keyframes arrow-bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(-6px); }
-}
-
-/* Down arrow bounces downward */
-.car__jack-arrow--visible[data-direction="down"] {
-  animation: arrow-bounce-down 0.8s ease-in-out infinite;
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
 }
 @keyframes arrow-bounce-down {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(6px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
 }
 
 /* ===== Drag feedback ===== */
@@ -883,22 +592,21 @@ html, body {
   transition: none !important;
 }
 
-/* ===== Hint glow ===== */
+/* ===== Hint glow (works on both SVG and DOM elements) ===== */
 .hint-glow {
-  box-shadow: 0 0 0 4px rgba(255, 255, 100, 0.6),
-              0 0 16px rgba(255, 255, 100, 0.4);
-  animation: glow-pulse 1s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 100, 0.7))
+          drop-shadow(0 0 12px rgba(255, 255, 100, 0.4));
+  animation: svg-glow-pulse 1s ease-in-out infinite;
 }
 
-/* ===== Rocket flame ===== */
+/* ===== Rocket flame (DOM element appended to car) ===== */
 .car__flame {
   position: absolute;
   right: -8%;
-  top: 20%;
+  top: 40%;
   width: 0;
   height: 0;
   z-index: -1;
-  /* Flame shape via borders */
   border-top: 12px solid transparent;
   border-bottom: 12px solid transparent;
   border-left: 30px solid #ff6600;
@@ -957,18 +665,30 @@ html, body {
   50%      { transform: scale(1.15); }
 }
 
-@keyframes wobble {
-  0%, 100% { transform: rotate(0deg) scaleY(0.7); }
-  25%      { transform: rotate(-3deg) scaleY(0.7); }
-  75%      { transform: rotate(3deg) scaleY(0.7); }
+@keyframes svg-bounce {
+  0%   { transform: scale(0.5); transform-box: fill-box; }
+  60%  { transform: scale(1.15); transform-box: fill-box; }
+  100% { transform: scale(1); transform-box: fill-box; }
 }
 
-@keyframes bounce-in {
-  0%   { transform: scale(0.5); }
-  60%  { transform: scale(1.15); }
-  100% { transform: scale(1); }
+@keyframes svg-screw-untwist {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.4); }
+  100% { transform: rotate(360deg) scale(1.2); }
 }
 
+@keyframes svg-screw-twist {
+  0%   { transform: rotate(0deg) scale(1.2); }
+  50%  { transform: rotate(-180deg) scale(0.85); }
+  100% { transform: rotate(-360deg) scale(1); }
+}
+
+@keyframes svg-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255,255,100,0.7)) drop-shadow(0 0 12px rgba(255,255,100,0.4)); }
+  50%      { filter: drop-shadow(0 0 8px rgba(255,255,100,0.4)) drop-shadow(0 0 20px rgba(255,255,100,0.2)); }
+}
+
+/* Toolbox hint still uses box-shadow */
 @keyframes glow-pulse {
   0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,100,0.6), 0 0 16px rgba(255,255,100,0.4); }
   50%      { box-shadow: 0 0 0 8px rgba(255,255,100,0.3), 0 0 24px rgba(255,255,100,0.2); }
