@@ -13,6 +13,7 @@ const Car = (() => {
   function create(garage, opts = {}) {
     const colour = opts.colour || CONFIG.carColour;
     const shape = opts.shape || CONFIG.carShape;
+    const fault = opts.fault || 'flatTyre';
     const flatTyre = opts.flatTyre ?? 'front'; // 'front' | 'rear'
 
     const el = document.createElement('div');
@@ -20,22 +21,28 @@ const Car = (() => {
     el.style.setProperty('--car-colour', colour);
 
     el.innerHTML = `
+      <div class="car__bonnet ${fault === 'engine' ? '' : 'car__bonnet--hidden'}">
+        <div class="car__bonnet-lid"></div>
+      </div>
       <div class="car__body">
         <div class="car__roof"></div>
         <div class="car__window car__window--front"></div>
         <div class="car__window car__window--rear"></div>
+        <div class="car__engine-bay ${fault === 'engine' ? '' : 'car__engine-bay--hidden'}">
+          <div class="car__engine car__engine--broken"></div>
+        </div>
         <div class="car__headlight"></div>
         <div class="car__taillight"></div>
       </div>
       <div class="car__undercarriage">
-        <div class="car__tyre car__tyre--front ${flatTyre === 'front' ? 'car__tyre--flat' : ''}"
+        <div class="car__tyre car__tyre--front ${fault === 'flatTyre' && flatTyre === 'front' ? 'car__tyre--flat' : ''}"
              data-position="front"></div>
         <div class="car__jack">
           <div class="car__jack-base"></div>
           <div class="car__jack-arm"></div>
           <div class="car__jack-arrow"></div>
         </div>
-        <div class="car__tyre car__tyre--rear ${flatTyre === 'rear' ? 'car__tyre--flat' : ''}"
+        <div class="car__tyre car__tyre--rear ${fault === 'flatTyre' && flatTyre === 'rear' ? 'car__tyre--flat' : ''}"
              data-position="rear"></div>
       </div>
     `;
@@ -44,6 +51,7 @@ const Car = (() => {
 
     return {
       el,
+      fault,
       flatTyre,
       /** Get the flat tyre element */
       getFlatTyreEl() {

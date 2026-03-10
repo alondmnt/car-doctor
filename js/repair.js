@@ -70,5 +70,52 @@ const Repair = (() => {
     ];
   }
 
-  return { flatTyre };
+  /** Broken engine repair — 4 tap steps */
+  function engine(_car) {
+    return [
+      {
+        id: 'open-bonnet',
+        description: 'Tap the bonnet to open it',
+        target: '.car__bonnet',
+        sound: 'clank',
+        action: (el, carEl) => {
+          el.classList.add('car__bonnet--open');
+          carEl.querySelector('.car__engine-bay').classList.add('car__engine-bay--visible');
+        },
+      },
+      {
+        id: 'remove-engine',
+        description: 'Tap the broken engine to remove it',
+        target: '.car__engine',
+        sound: 'clank',
+        action: (el) => {
+          el.classList.remove('car__engine--broken');
+          el.classList.add('car__engine--removed');
+        },
+      },
+      {
+        id: 'add-engine',
+        description: 'Tap to install the new engine',
+        target: '.car__engine',
+        sound: 'pop',
+        action: (el) => {
+          el.classList.remove('car__engine--removed');
+          el.classList.add('car__engine--new');
+        },
+      },
+      {
+        id: 'close-bonnet',
+        description: 'Tap the bonnet to close it',
+        target: '.car__bonnet',
+        sound: 'clank',
+        action: (el, carEl) => {
+          el.classList.remove('car__bonnet--open');
+          carEl.querySelector('.car__engine-bay').classList.remove('car__engine-bay--visible');
+          carEl.querySelector('.car__engine').classList.remove('car__engine--new');
+        },
+      },
+    ];
+  }
+
+  return { flatTyre, engine };
 })();

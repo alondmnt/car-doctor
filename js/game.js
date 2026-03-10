@@ -29,10 +29,11 @@ const Game = (() => {
     busy = true;
     const palette = CONFIG.carPalette;
     const colour = palette[Math.floor(Math.random() * palette.length)];
+    const fault = Math.random() < 0.5 ? 'flatTyre' : 'engine';
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
-    currentCar = Car.create(garage, { colour, flatTyre });
-    steps = Repair.flatTyre(currentCar);
+    currentCar = Car.create(garage, { colour, fault, flatTyre });
+    steps = fault === 'engine' ? Repair.engine(currentCar) : Repair.flatTyre(currentCar);
     stepIndex = 0;
 
     // Slide car in
