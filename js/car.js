@@ -91,6 +91,7 @@ const Car = (() => {
 
       <!-- Paint damage -->
       <g class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}">
+        <rect x="40" y="28" width="330" height="130" fill="transparent"/>
         ${paint.map(p => `<ellipse cx="${p.cx}" cy="${p.cy}" rx="${p.rx}" ry="${p.ry}" fill="rgba(180,160,130,${p.o})"/>`).join('')}
       </g>
 
