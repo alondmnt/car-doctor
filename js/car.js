@@ -74,8 +74,8 @@ const Car = (() => {
     return `
       <!-- Bonnet -->
       <g class="car__bonnet ${hasEngine ? '' : 'car__bonnet--hidden'}">
-        <rect class="car__bonnet-lid" x="${bonnet.x}" y="${bonnet.y}" width="${bonnet.w}" height="${bonnet.h}" rx="2"
-              fill="var(--car-colour, #e63946)" opacity="0.9"/>
+        <rect class="car__bonnet-lid svg-paint" x="${bonnet.x}" y="${bonnet.y}" width="${bonnet.w}" height="${bonnet.h}" rx="2"
+              opacity="0.9"/>
         <rect x="${bonnet.x}" y="${bonnet.y}" width="${bonnet.w}" height="${bonnet.h + 30}" fill="transparent"/>
       </g>
 
@@ -142,15 +142,15 @@ const Car = (() => {
                    L ${wr.cx + wr.r + 4} 155 A 32 32 0 0 1 ${wr.cx - wr.r - 4} 155
                    L ${wf.cx + wf.r + 4} 155 A 32 32 0 0 1 ${wf.cx - wf.r - 4} 155
                    L 42 155 L 42 92 Q 42 82 52 80 Z"
-                fill="var(--car-colour, #e63946)"/>
+                class="svg-paint"/>
           <!-- Upper gloss band -->
           <path d="M 52 80 L 350 80 Q 360 82 360 92 L 360 100 L 42 100 L 42 92 Q 42 82 52 80 Z"
                 fill="rgba(255,255,255,0.1)"/>
           <!-- Lower trim -->
           <rect x="42" y="142" width="318" height="13" rx="2" fill="rgba(0,0,0,0.1)"/>
           <!-- Roof (invisible same-colour layer for fresh-paint animation target) -->
-          <path class="car__roof" d="M 136 38 Q 139 28 150 28 L 268 28 Q 278 28 282 38 L 290 78 L 128 78 Z"
-                fill="var(--car-colour, #e63946)" opacity="0"/>
+          <path class="car__roof svg-paint" d="M 136 38 Q 139 28 150 28 L 268 28 Q 278 28 282 38 L 290 78 L 128 78 Z"
+                opacity="0"/>
           <!-- Roof gloss -->
           <rect x="148" y="28" width="126" height="7" rx="3" fill="rgba(255,255,255,0.14)"/>
         </g>
@@ -164,7 +164,7 @@ const Car = (() => {
         <path d="M 140 73 L 146 42 L 156 34 L 152 73 Z" fill="rgba(255,255,255,0.22)"/>
         <path d="M 210 73 L 210 34 L 220 34 L 220 73 Z" fill="rgba(255,255,255,0.18)"/>
         <!-- B-pillar -->
-        <rect x="195" y="30" width="10" height="48" rx="1" fill="var(--car-colour, #e63946)"/>
+        <rect x="195" y="30" width="10" height="48" rx="1" class="svg-paint"/>
 
         <!-- Taxi sign -->
         <rect x="200" y="18" width="42" height="12" rx="4" fill="#ffe066" stroke="#d4a44c" stroke-width="1"/>
@@ -190,7 +190,7 @@ const Car = (() => {
         <line x1="235" y1="78" x2="235" y2="152" stroke="rgba(0,0,0,0.1)" stroke-width="1.5"/>
         <rect x="244" y="108" width="14" height="4" rx="2" fill="rgba(0,0,0,0.18)"/>
         <!-- Side mirror -->
-        <path d="M 130 74 L 122 70 L 120 77 L 128 80 Z" fill="var(--car-colour, #e63946)"/>
+        <path d="M 130 74 L 122 70 L 120 77 L 128 80 Z" class="svg-paint"/>
         <path d="M 122 70 L 120 77 L 116 75 L 118 69 Z" fill="rgba(135,206,250,0.35)"/>
 
         ${interactive}
@@ -234,14 +234,14 @@ const Car = (() => {
                    L 362 155 L 362 68 Q 362 60 355 62
                    L 300 58 Q 298 18 280 14 L 120 14 Q 102 18 100 58
                    L 45 62 Z"
-                fill="var(--car-colour, #e63946)"/>
+                class="svg-paint"/>
           <!-- Gloss -->
           <path d="M 45 62 L 100 58 L 300 58 L 355 62 Q 362 64 362 68 L 362 82 L 38 82 L 38 68 Q 38 64 45 62 Z"
                 fill="rgba(255,255,255,0.1)"/>
           <!-- Lower trim -->
           <rect x="38" y="142" width="324" height="13" rx="2" fill="rgba(0,0,0,0.1)"/>
-          <path class="car__roof" d="M 100 58 Q 102 18 120 14 L 280 14 Q 298 18 300 58 Z"
-                fill="var(--car-colour, #e63946)" opacity="0"/>
+          <path class="car__roof svg-paint" d="M 100 58 Q 102 18 120 14 L 280 14 Q 298 18 300 58 Z"
+                opacity="0"/>
           <!-- Roof gloss -->
           <rect x="128" y="14" width="144" height="6" rx="3" fill="rgba(255,255,255,0.14)"/>
         </g>
@@ -260,7 +260,7 @@ const Car = (() => {
         <path d="M 140 54 L 144 26 L 154 18 L 150 54 Z" fill="rgba(255,255,255,0.22)"/>
         <path d="M 205 54 L 205 18 L 216 18 L 216 54 Z" fill="rgba(255,255,255,0.18)"/>
         <!-- B-pillar -->
-        <rect x="190" y="14" width="10" height="44" rx="1" fill="var(--car-colour, #e63946)"/>
+        <rect x="190" y="14" width="10" height="44" rx="1" class="svg-paint"/>
 
         <!-- Driver -->
         <g class="car__driver">
@@ -282,7 +282,7 @@ const Car = (() => {
         <line x1="225" y1="58" x2="225" y2="152" stroke="rgba(0,0,0,0.1)" stroke-width="1.5"/>
         <rect x="232" y="95" width="14" height="4" rx="2" fill="rgba(0,0,0,0.18)"/>
         <!-- Side mirror -->
-        <path d="M 102 56 L 94 52 L 92 58 L 100 62 Z" fill="var(--car-colour, #e63946)"/>
+        <path d="M 102 56 L 94 52 L 92 58 L 100 62 Z" class="svg-paint"/>
         <path d="M 94 52 L 92 58 L 88 56 L 90 51 Z" fill="rgba(135,206,250,0.35)"/>
 
         ${interactive}
@@ -326,14 +326,14 @@ const Car = (() => {
                    L 368 155 L 368 96 Q 368 90 362 92
                    L 310 88 Q 305 62 290 58 L 225 58 Q 215 62 210 88
                    L 38 92 Z"
-                fill="var(--car-colour, #e63946)"/>
+                class="svg-paint"/>
           <!-- Gloss band -->
           <path d="M 38 92 L 210 88 L 310 88 L 362 92 Q 368 94 368 96 L 368 108 L 32 108 L 32 96 Q 32 94 38 92 Z"
                 fill="rgba(255,255,255,0.1)"/>
           <!-- Side skirt -->
           <rect x="50" y="146" width="300" height="9" rx="2" fill="rgba(0,0,0,0.15)"/>
-          <path class="car__roof" d="M 210 88 Q 215 62 225 58 L 290 58 Q 305 62 310 88 Z"
-                fill="var(--car-colour, #e63946)" opacity="0"/>
+          <path class="car__roof svg-paint" d="M 210 88 Q 215 62 225 58 L 290 58 Q 305 62 310 88 Z"
+                opacity="0"/>
           <rect x="232" y="58" width="50" height="5" rx="2" fill="rgba(255,255,255,0.14)"/>
         </g>
 
@@ -349,10 +349,10 @@ const Car = (() => {
               fill="rgba(135,206,250,0.5)" stroke="rgba(0,0,0,0.12)" stroke-width="1"/>
         <path d="M 220 84 L 225 67 L 234 62 L 230 84 Z" fill="rgba(255,255,255,0.2)"/>
         <!-- B-pillar -->
-        <rect x="260" y="58" width="8" height="30" rx="1" fill="var(--car-colour, #e63946)"/>
+        <rect x="260" y="58" width="8" height="30" rx="1" class="svg-paint"/>
 
         <!-- Spoiler -->
-        <path d="M 340 88 L 365 80 L 370 83 L 345 90 Z" fill="var(--car-colour, #e63946)" opacity="0.8"/>
+        <path d="M 340 88 L 365 80 L 370 83 L 345 90 Z" class="svg-paint" opacity="0.8"/>
 
         <!-- Driver -->
         <g class="car__driver">
@@ -376,7 +376,7 @@ const Car = (() => {
         <!-- Door line -->
         <line x1="262" y1="86" x2="262" y2="150" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
         <!-- Side mirror -->
-        <path d="M 212 84 L 206 80 L 204 86 L 210 88 Z" fill="var(--car-colour, #e63946)"/>
+        <path d="M 212 84 L 206 80 L 204 86 L 210 88 Z" class="svg-paint"/>
         <path d="M 206 80 L 204 86 L 200 84 L 202 79 Z" fill="rgba(135,206,250,0.35)"/>
 
         ${interactive}

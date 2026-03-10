@@ -308,6 +308,11 @@ html, body {
   50%      { box-shadow: 0 0 12px rgba(230, 57, 70, 0.8); }
 }
 
+/* ===== SVG car paint — fill via CSS variable ===== */
+.svg-paint {
+  fill: var(--car-colour, #e63946);
+}
+
 /* ===== SVG state rules ===== */
 
 /* Common SVG transform setup */
