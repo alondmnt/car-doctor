@@ -176,7 +176,8 @@ const Game = (() => {
       showStickerPicker((emoji) => {
         const zone = currentCar.el.querySelector('.car__sticker-zone');
         if (zone) {
-          zone.textContent = emoji;
+          const textEl = zone.querySelector('text') || zone;
+          textEl.textContent = emoji;
           zone.classList.add('car__sticker-zone--applied');
         }
         onStepComplete(step, target);
