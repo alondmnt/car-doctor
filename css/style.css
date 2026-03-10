@@ -445,7 +445,7 @@ html, body {
 
 /* ===== Paint damage states ===== */
 .car__paint-damage {
-  pointer-events: auto;
+  pointer-events: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: opacity 0.3s;
@@ -489,10 +489,17 @@ html, body {
 
 /* ===== Sticker zone states ===== */
 .car__sticker-zone {
+  pointer-events: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 .car__sticker-zone--hidden { display: none; }
+
+.car__sticker-zone.hint-glow rect[stroke] {
+  fill: rgba(255, 255, 50, 0.3);
+  stroke: rgba(255, 255, 50, 0.8);
+  stroke-dasharray: none;
+}
 
 .car__sticker-zone--applied .car__sticker-text {
   font-size: 32px;

@@ -173,8 +173,9 @@ const Repair = (() => {
     return [
       {
         id: 'pick-sticker',
-        description: 'Pick a sticker for the car',
+        description: 'Select hand tool and tap sticker zone',
         target: '.car__sticker-zone',
+        tool: 'hand',
         sound: 'tap',
         picker: 'sticker',
         action: () => {},

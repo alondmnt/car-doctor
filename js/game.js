@@ -105,7 +105,18 @@ const Game = (() => {
   function highlightCarTarget(step) {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
-    target.classList.add('hint-glow');
+    // Sticker zone: yellow fill hint; paint damage: glow individual stains
+    if (target.classList.contains('car__sticker-zone')) {
+      const rect = target.querySelector('rect');
+      if (rect) {
+        rect.setAttribute('fill', 'rgba(255, 255, 50, 0.3)');
+        rect.dataset.wasHinted = '1';
+      }
+    } else if (target.classList.contains('car__paint-damage')) {
+      target.querySelectorAll('ellipse').forEach(el => el.classList.add('hint-glow'));
+    } else {
+      target.classList.add('hint-glow');
+    }
     if (step.hintArrow) {
       const arrow = target.querySelector('.car__jack-arrow');
       if (arrow) {
@@ -121,8 +132,15 @@ const Game = (() => {
     currentCar.el.querySelectorAll('.hint-glow').forEach(
       el => el.classList.remove('hint-glow')
     );
+    currentCar.el.querySelectorAll('[data-was-hinted]').forEach(
+      el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
+    );
     currentCar.el.querySelectorAll('.car__jack-arrow--visible').forEach(
       el => el.classList.remove('car__jack-arrow--visible')
+    );
+    // Reset pointer-events on overlay groups
+    currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone').forEach(
+      el => el.style.pointerEvents = ''
     );
   }
 
@@ -157,6 +175,9 @@ const Game = (() => {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
 
+    // Enable pointer-events on target (paint-damage/sticker-zone are off by default)
+    target.style.pointerEvents = 'auto';
+
     // If step needs a tool, wait for tool selection first
     if (step.tool) {
       waitForToolSelection(step, target);
@@ -179,6 +200,11 @@ const Game = (() => {
           const textEl = zone.querySelector('text') || zone;
           textEl.textContent = emoji;
           zone.classList.add('car__sticker-zone--applied');
+          const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
+          if (borderRect) {
+            borderRect.setAttribute('stroke', 'transparent');
+            borderRect.setAttribute('stroke-dasharray', '0');
+          }
         }
         onStepComplete(step, target);
       });
@@ -270,6 +296,12 @@ const Game = (() => {
               const textEl = zone.querySelector('text') || zone;
               textEl.textContent = emoji;
               zone.classList.add('car__sticker-zone--applied');
+              // Hide dashed border (CSS attribute selectors unreliable on SVG)
+              const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
+              if (borderRect) {
+                borderRect.setAttribute('stroke', 'transparent');
+                borderRect.setAttribute('stroke-dasharray', '0');
+              }
             }
             onStepComplete(step, target);
           });
@@ -314,6 +346,7 @@ const Game = (() => {
   function showColourPicker(onPick) {
     const picker = document.createElement('div');
     picker.className = 'colour-picker';
+    let picked = false;
     const colours = CONFIG.carPalette;
     colours.forEach(c => {
       const swatch = document.createElement('div');
@@ -321,6 +354,8 @@ const Game = (() => {
       swatch.style.background = c;
       function pick(e) {
         e.preventDefault();
+        if (picked) return;
+        picked = true;
         Audio.play('pop');
         picker.remove();
         onPick(c);
@@ -336,12 +371,15 @@ const Game = (() => {
   function showStickerPicker(onPick) {
     const picker = document.createElement('div');
     picker.className = 'colour-picker';  // reuse same layout
+    let picked = false;
     CONFIG.stickers.forEach(emoji => {
       const btn = document.createElement('div');
       btn.className = 'sticker-picker__option';
       btn.textContent = emoji;
       function pick(e) {
         e.preventDefault();
+        if (picked) return;
+        picked = true;
         Audio.play('pop');
         picker.remove();
         onPick(emoji);
