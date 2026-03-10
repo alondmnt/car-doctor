@@ -175,6 +175,27 @@ html, body {
 }
 #reset-btn:active { transform: scale(0.9); }
 
+/* ===== Hint toggle ===== */
+#hint-btn {
+  position: fixed;
+  top: 12px; right: 68px;
+  z-index: 50;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.2s;
+}
+#hint-btn:active { transform: scale(0.9); }
+#hint-btn.hint-btn--off { opacity: 0.35; }
+
 /* ===== Coin jar ===== */
 #coin-jar {
   position: fixed;

@@ -10,6 +10,7 @@ const Game = (() => {
   let busy = false;
   let coins = 0;
   let generation = 0;  // incremented on reset/new car to cancel stale callbacks
+  const seenFaults = new Set();  // auto-disable hints once all fault types seen
 
   function init() {
     garage = document.getElementById('garage');
@@ -17,6 +18,9 @@ const Game = (() => {
     document.getElementById('splash').addEventListener('click', start);
     document.getElementById('splash').addEventListener('touchend', start);
     document.getElementById('reset-btn').addEventListener('click', resetCar);
+
+    // Hint toggle — always starts on, can be toggled per session
+    document.getElementById('hint-btn').addEventListener('click', toggleHints);
   }
 
   function start(e) {
@@ -64,6 +68,15 @@ const Game = (() => {
 
     currentCar = Car.create(garage, { colour, faults, flatTyre });
     faultQueue = [...faults];
+
+    // Track seen fault types — auto-disable hints once all seen
+    faults.forEach(f => seenFaults.add(f));
+    const allFaultTypes = Object.keys(CONFIG.faultWeights);
+    if (CONFIG.hintsOn && allFaultTypes.every(f => seenFaults.has(f))) {
+      CONFIG.hintsOn = false;
+      document.getElementById('hint-btn').classList.add('hint-btn--off');
+    }
+
     startNextFault();
 
     // Slide car in
@@ -94,16 +107,16 @@ const Game = (() => {
     stepIndex = 0;
   }
 
-  /** Highlight the current step target, with optional arrow direction */
+  /** Show toolbox if step needs a tool, then optionally highlight hints */
   function highlightStep() {
-    if (!CONFIG.hintsOn || stepIndex >= steps.length) return;
+    if (stepIndex >= steps.length) return;
     const step = steps[stepIndex];
-    // If step needs a tool, highlight the tool in the toolbox instead
+    // Always show toolbox when step requires a tool (functional, not just a hint)
     if (step.tool) {
       showToolbox(step.tool);
       return;  // don't highlight car target yet — wait for tool selection
     }
-    highlightCarTarget(step);
+    if (CONFIG.hintsOn) highlightCarTarget(step);
   }
 
   /** Highlight the target element on the car */
@@ -251,8 +264,8 @@ const Game = (() => {
         toolbox.removeEventListener('click', onToolClick);
         toolbox.removeEventListener('touchend', onToolClick);
         toolEl.classList.add('toolbox__tool--selected');
-        // Now highlight the car target and listen for action
-        highlightCarTarget(step);
+        // Now highlight the car target (if hints on) and listen for action
+        if (CONFIG.hintsOn) highlightCarTarget(step);
         attachCarAction(step, target);
       } else {
         // Wrong tool — shake feedback
@@ -273,6 +286,8 @@ const Game = (() => {
 
   /** Attach the car interaction (drag or tap) after tool is selected */
   function attachCarAction(step, target) {
+    // Ensure target is clickable (may have been reset by clearHighlights)
+    target.style.pointerEvents = 'auto';
     if (step.drag) {
       activeCleanup = Drag.attach(target, step.drag, () => {
         if (busy) return;
@@ -492,6 +507,32 @@ const Game = (() => {
     faultQueue = [];
     busy = false;
     nextCar();
+  }
+
+  /** Toggle hints on/off */
+  function toggleHints() {
+    CONFIG.hintsOn = !CONFIG.hintsOn;
+    document.getElementById('hint-btn').classList.toggle('hint-btn--off', !CONFIG.hintsOn);
+    if (CONFIG.hintsOn) {
+      // Re-show hints for current step
+      if (currentCar && !busy) highlightStep();
+    } else {
+      // Clear visual hints only — don't reset pointer-events (would break active targets)
+      if (currentCar) {
+        currentCar.el.querySelectorAll('.hint-glow').forEach(el => el.classList.remove('hint-glow'));
+        currentCar.el.querySelectorAll('[data-was-hinted]').forEach(
+          el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
+        );
+        currentCar.el.querySelectorAll('.car__jack-arrow--visible').forEach(
+          el => el.classList.remove('car__jack-arrow--visible')
+        );
+      }
+      // Remove tool hint glow but keep toolbox open if it's active
+      const toolbox = document.getElementById('toolbox');
+      toolbox.querySelectorAll('.toolbox__tool--hint').forEach(
+        t => t.classList.remove('toolbox__tool--hint')
+      );
+    }
   }
 
   return { init };
