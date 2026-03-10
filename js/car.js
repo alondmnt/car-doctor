@@ -70,13 +70,15 @@ const Car = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
+          const anims = CONFIG.exitAnimations;
+          const anim = anims[Math.floor(Math.random() * anims.length)];
           // Add flame effect for rocket exit
-          if (CONFIG.exitAnimation === 'rocket') {
+          if (anim === 'rocket') {
             const flame = document.createElement('div');
             flame.className = 'car__flame';
             el.appendChild(flame);
           }
-          el.classList.add(`car--exit-${CONFIG.exitAnimation}`);
+          el.classList.add(`car--exit-${anim}`);
           el.addEventListener('animationend', (e) => {
             // Only react to the car's own exit animation, not child animations
             if (e.target !== el) return;
