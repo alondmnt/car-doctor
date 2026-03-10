@@ -24,17 +24,30 @@ const Game = (() => {
     nextCar();
   }
 
-  /** Bring in a new car with a random problem */
+  let faultQueue = [];  // remaining faults to repair
+  let currentFault = null;
+
+  /** Bring in a new car with 1–2 random faults */
   function nextCar() {
     busy = true;
     const palette = CONFIG.carPalette;
     const colour = palette[Math.floor(Math.random() * palette.length)];
-    const fault = Math.random() < 0.5 ? 'flatTyre' : 'engine';
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
-    currentCar = Car.create(garage, { colour, fault, flatTyre });
-    steps = fault === 'engine' ? Repair.engine(currentCar) : Repair.flatTyre(currentCar);
-    stepIndex = 0;
+    // 30% chance of 2 faults, otherwise 1
+    const allFaults = ['flatTyre', 'engine'];
+    let faults;
+    if (Math.random() < 0.3) {
+      faults = ['flatTyre', 'engine'];
+    } else {
+      faults = [allFaults[Math.floor(Math.random() * allFaults.length)]];
+    }
+    // Shuffle so repair order varies
+    if (faults.length > 1 && Math.random() < 0.5) faults.reverse();
+
+    currentCar = Car.create(garage, { colour, faults, flatTyre });
+    faultQueue = [...faults];
+    startNextFault();
 
     // Slide car in
     requestAnimationFrame(() => {
@@ -45,6 +58,17 @@ const Game = (() => {
         listenForTap();
       }, 600 / CONFIG.gameSpeed);
     });
+  }
+
+  /** Load the next fault's repair steps */
+  function startNextFault() {
+    currentFault = faultQueue.shift();
+    if (currentFault === 'engine') {
+      steps = Repair.engine(currentCar);
+    } else {
+      steps = Repair.flatTyre(currentCar);
+    }
+    stepIndex = 0;
   }
 
   /** Highlight the current step target, with optional arrow direction */
@@ -119,17 +143,36 @@ const Game = (() => {
     stepIndex++;
 
     if (stepIndex >= steps.length) {
-      // All steps done — car is fixed
-      setTimeout(() => {
-        Audio.play('success');
+      // Current fault repaired — update dashboard indicator
+      const indicatorClass = currentFault === 'engine' ? '.car__indicator--engine' : '.car__indicator--tyre';
+      const indicator = currentCar.el.querySelector(indicatorClass);
+      if (indicator) {
+        indicator.classList.remove('car__indicator--fault');
+        indicator.classList.add('car__indicator--ok');
+      }
+
+      if (faultQueue.length > 0) {
+        // More faults to fix — brief pause then start next
+        Audio.play('tap');
+        startNextFault();
         setTimeout(() => {
-          Audio.play('whoosh');
-          currentCar.driveAway().then(() => {
-            currentCar = null;
-            setTimeout(nextCar, 400 / CONFIG.gameSpeed);
-          });
-        }, 500 / CONFIG.gameSpeed);
-      }, 300 / CONFIG.gameSpeed);
+          busy = false;
+          highlightStep();
+          listenForTap();
+        }, 400 / CONFIG.gameSpeed);
+      } else {
+        // All faults fixed — drive away
+        setTimeout(() => {
+          Audio.play('success');
+          setTimeout(() => {
+            Audio.play('whoosh');
+            currentCar.driveAway().then(() => {
+              currentCar = null;
+              setTimeout(nextCar, 400 / CONFIG.gameSpeed);
+            });
+          }, 500 / CONFIG.gameSpeed);
+        }, 300 / CONFIG.gameSpeed);
+      }
     } else {
       // Next step
       setTimeout(() => {

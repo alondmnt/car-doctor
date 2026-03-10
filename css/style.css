@@ -88,6 +88,79 @@ html, body {
 .car--jacked .car__body { transform: translateY(-12px); }
 .car--jacked .car__undercarriage { transform: translateY(0); }
 
+/* ===== Dashboard indicators ===== */
+.car__dashboard {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+}
+
+.car__indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0;  /* hide text, use background */
+  border: 2px solid rgba(0,0,0,0.3);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.car__indicator--fault {
+  background: #e63946;
+  box-shadow: 0 0 6px rgba(230, 57, 70, 0.6);
+  animation: indicator-pulse 1s ease-in-out infinite;
+}
+
+.car__indicator--ok {
+  background: #2a9d8f;
+  box-shadow: 0 0 4px rgba(42, 157, 143, 0.4);
+}
+
+@keyframes indicator-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(230, 57, 70, 0.6); }
+  50%      { box-shadow: 0 0 12px rgba(230, 57, 70, 0.8); }
+}
+
+/* ===== Car shape variants ===== */
+
+/* Boxy — squared off, taller */
+.car--boxy .car__body {
+  border-radius: 4px 4px 2px 2px;
+  height: 70%;
+}
+.car--boxy .car__roof {
+  top: -25%;
+  left: 22%; right: 22%;
+  height: 35%;
+  border-radius: 2px 2px 0 0;
+}
+.car--boxy .car__window {
+  top: -18%;
+  height: 26%;
+  border-radius: 2px 2px 0 0;
+}
+
+/* Sporty — low, wide, sleek */
+.car--sporty .car__body {
+  border-radius: 20px 8px 4px 4px;
+  height: 55%;
+}
+.car--sporty .car__roof {
+  top: -20%;
+  left: 30%; right: 20%;
+  height: 30%;
+  border-radius: 12px 4px 0 0;
+}
+.car--sporty .car__window {
+  top: -14%;
+  height: 22%;
+}
+.car--sporty .car__window--front { left: 32%; width: 18%; }
+.car--sporty .car__window--rear  { left: 52%; width: 12%; }
+
 /* ===== Car body ===== */
 .car__body {
   position: relative;
