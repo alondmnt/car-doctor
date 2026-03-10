@@ -1,0 +1,267 @@
+/* ===== Reset & base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden;
+  font-family: sans-serif;
+  touch-action: manipulation;          /* kill 300ms tap delay */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ===== Garage ===== */
+#garage {
+  position: relative;
+  width: 100%; height: 100%;
+  background: var(--garage-colour, #3a7d44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Floor */
+#garage::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  background: #555;
+  border-top: 4px solid #777;
+}
+
+/* ===== Splash screen ===== */
+.splash {
+  position: fixed; inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.4s;
+}
+.splash--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash__icon {
+  font-size: min(30vw, 180px);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== Reset button ===== */
+#reset-btn {
+  position: fixed;
+  top: 12px; right: 12px;
+  z-index: 50;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+#reset-btn:active { transform: scale(0.9); }
+
+/* ===== Car ===== */
+.car {
+  position: absolute;
+  bottom: 18%;
+  width: 55vw;
+  max-width: 320px;
+  aspect-ratio: 2.2 / 1;
+  z-index: 10;
+  transition: transform 0.5s ease-out;
+}
+
+/* Entry / parked states */
+.car--entering { transform: translateX(120vw); }
+.car--parked   { transform: translateX(0); }
+
+/* Jacked up */
+.car--jacked .car__body { transform: translateY(-12px); }
+.car--jacked .car__undercarriage { transform: translateY(0); }
+
+/* ===== Car body ===== */
+.car__body {
+  position: relative;
+  width: 100%;
+  height: 65%;
+  background: var(--car-colour, #e63946);
+  border-radius: 12px 12px 6px 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s;
+}
+
+/* Roof */
+.car__roof {
+  position: absolute;
+  top: -30%;
+  left: 20%; right: 25%;
+  height: 45%;
+  background: var(--car-colour, #e63946);
+  border-radius: 8px 8px 0 0;
+  filter: brightness(1.1);
+}
+
+/* Windows */
+.car__window {
+  position: absolute;
+  top: -22%;
+  height: 34%;
+  background: rgba(135, 206, 250, 0.7);
+  border-radius: 6px 6px 0 0;
+}
+.car__window--front { left: 22%; width: 22%; }
+.car__window--rear  { left: 48%; width: 18%; }
+
+/* Lights */
+.car__headlight {
+  position: absolute;
+  left: -3%;
+  top: 30%;
+  width: 8%;
+  height: 20%;
+  background: #ffe066;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ffe066;
+}
+.car__taillight {
+  position: absolute;
+  right: -2%;
+  top: 30%;
+  width: 6%;
+  height: 16%;
+  background: #ff3333;
+  border-radius: 50%;
+}
+
+/* ===== Tyres ===== */
+.car__undercarriage {
+  position: relative;
+  width: 100%;
+  height: 35%;
+  transition: transform 0.3s;
+}
+
+.car__tyre {
+  position: absolute;
+  bottom: 0;
+  width: 18%;
+  aspect-ratio: 1;
+  background: #222;
+  border-radius: 50%;
+  border: 3px solid #444;
+  cursor: pointer;
+  transition: transform 0.2s, border-radius 0.3s, opacity 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  /* Generous touch target */
+  min-width: 60px;
+  min-height: 60px;
+}
+.car__tyre--front { left: 10%; }
+.car__tyre--rear  { right: 10%; }
+
+/* Flat tyre — squashed */
+.car__tyre--flat {
+  border-radius: 50% 50% 40% 40%;
+  transform: scaleY(0.7);
+  background: #333;
+}
+
+/* Loosened — slight wobble */
+.car__tyre--loosened {
+  animation: wobble 0.4s ease-in-out infinite;
+}
+
+/* Removed — invisible but still tappable */
+.car__tyre--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+
+/* New tyre placed */
+.car__tyre--new {
+  background: #111;
+  border-color: #555;
+  animation: bounce-in 0.3s ease-out;
+}
+
+/* Fixing feedback */
+.car__tyre--fixing {
+  animation: bounce-in 0.4s ease-out;
+}
+
+/* ===== Hint glow ===== */
+.hint-glow {
+  box-shadow: 0 0 0 4px rgba(255, 255, 100, 0.6),
+              0 0 16px rgba(255, 255, 100, 0.4);
+  animation: glow-pulse 1s ease-in-out infinite;
+}
+
+/* ===== Exit animations ===== */
+.car--exit-wheelie {
+  animation: exit-wheelie 1.2s ease-in forwards;
+}
+.car--exit-rocket {
+  animation: exit-rocket 1s ease-in forwards;
+}
+.car--exit-confetti {
+  animation: exit-confetti 1.2s ease-in forwards;
+}
+.car--exit-honk {
+  animation: exit-honk 1.2s ease-in forwards;
+}
+
+/* ===== Keyframes ===== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.15); }
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0deg) scaleY(0.7); }
+  25%      { transform: rotate(-3deg) scaleY(0.7); }
+  75%      { transform: rotate(3deg) scaleY(0.7); }
+}
+
+@keyframes bounce-in {
+  0%   { transform: scale(0.5); }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(255,255,100,0.6), 0 0 16px rgba(255,255,100,0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,255,100,0.3), 0 0 24px rgba(255,255,100,0.2); }
+}
+
+@keyframes exit-wheelie {
+  0%   { transform: translateX(0) rotate(0); }
+  30%  { transform: translateX(0) rotate(-8deg); }
+  100% { transform: translateX(-120vw) rotate(-8deg); }
+}
+
+@keyframes exit-rocket {
+  0%   { transform: translateX(0) scale(1); }
+  20%  { transform: translateX(5px) scale(1.05); }
+  100% { transform: translateX(-130vw) scale(0.8); }
+}
+
+@keyframes exit-confetti {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-120vw); }
+}
+
+@keyframes exit-honk {
+  0%   { transform: translateX(0); }
+  10%  { transform: translateX(8px); }
+  20%  { transform: translateX(-5px); }
+  100% { transform: translateX(-120vw); }
+}
