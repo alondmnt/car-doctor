@@ -494,6 +494,31 @@ html, body {
   pointer-events: none;
 }
 
+/* ===== Smoke puffs (engine fault indicator) ===== */
+.car__smoke--hidden { display: none; }
+
+.car__smoke-puff {
+  fill: rgba(160, 160, 160, 0.7);
+  animation: smoke-rise 1.8s ease-out infinite;
+}
+.car__smoke-puff--2 { animation-delay: 0.4s; }
+.car__smoke-puff--3 { animation-delay: 0.9s; }
+.car__smoke-puff--4 { animation-delay: 1.3s; }
+
+.car__smoke--clearing .car__smoke-puff {
+  animation: smoke-clear 0.5s ease-out forwards;
+}
+
+@keyframes smoke-rise {
+  0%   { opacity: 0.7; transform: translateY(0) scale(1); }
+  50%  { opacity: 0.4; }
+  100% { opacity: 0; transform: translateY(-30px) scale(1.8); }
+}
+
+@keyframes smoke-clear {
+  to { opacity: 0; transform: translateY(-20px) scale(2); }
+}
+
 /* ===== Bonnet states ===== */
 .car__bonnet {
   cursor: pointer;

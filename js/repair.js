@@ -109,9 +109,15 @@ const Repair = (() => {
         tool: 'wrench',
         drag: { direction: 'up', threshold: 30 },
         sound: 'clank',
-        action: (el) => {
+        action: (el, carEl) => {
           el.classList.remove('car__engine--broken');
           el.classList.add('car__engine--removed');
+          // Clear smoke when broken engine is removed
+          const smoke = carEl.querySelector('.car__smoke');
+          if (smoke) {
+            smoke.classList.add('car__smoke--clearing');
+            setTimeout(() => smoke.classList.add('car__smoke--hidden'), 500);
+          }
         },
       },
       {

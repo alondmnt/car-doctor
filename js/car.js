@@ -71,7 +71,19 @@ const Car = (() => {
     const { hasEngine, hasPaint, hasSticker } = opts;
     const { bonnet, engine, paint, sticker } = layout;
 
+    // Smoke puff positions — staggered across the bonnet top
+    const smokeX = bonnet.x + bonnet.w / 2;
+    const smokeY = bonnet.y;
+
     return `
+      <!-- Smoke puffs (visible only with engine fault) -->
+      <g class="car__smoke ${hasEngine ? '' : 'car__smoke--hidden'}">
+        <circle class="car__smoke-puff car__smoke-puff--1" cx="${smokeX - 10}" cy="${smokeY}" r="5"/>
+        <circle class="car__smoke-puff car__smoke-puff--2" cx="${smokeX + 5}" cy="${smokeY - 3}" r="6"/>
+        <circle class="car__smoke-puff car__smoke-puff--3" cx="${smokeX + 18}" cy="${smokeY + 2}" r="4"/>
+        <circle class="car__smoke-puff car__smoke-puff--4" cx="${smokeX - 2}" cy="${smokeY - 6}" r="5"/>
+      </g>
+
       <!-- Bonnet -->
       <g class="car__bonnet ${hasEngine ? '' : 'car__bonnet--hidden'}">
         <rect class="car__bonnet-lid svg-paint" x="${bonnet.x}" y="${bonnet.y}" width="${bonnet.w}" height="${bonnet.h}" rx="2"
