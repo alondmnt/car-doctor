@@ -758,6 +758,12 @@ html, body {
           drop-shadow(0 0 24px rgba(255, 255, 50, 0.3));
 }
 
+/* Engine — bright outline when highlighted inside dark engine bay */
+.car__engine.hint-glow {
+  stroke: rgba(255, 255, 50, 0.8) !important;
+  stroke-width: 3 !important;
+}
+
 /* Screws — light up the touch-target halo when highlighted */
 .car__screw.hint-glow .car__screw-halo {
   fill: rgba(255, 255, 50, 0.55) !important;
