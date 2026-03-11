@@ -1257,6 +1257,13 @@ html, body {
   filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
 }
 
+/* Arm and leg interactivity */
+.robot__arm, .robot__leg {
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Arm states */
 .robot__arm--loose {
   animation: arm-hang 1.5s ease-in-out infinite;
