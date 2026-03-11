@@ -17,7 +17,31 @@ const Game = (() => {
     garage.style.setProperty('--garage-colour', CONFIG.garageColour);
     document.getElementById('splash').addEventListener('click', start);
     document.getElementById('splash').addEventListener('touchend', start);
-    document.getElementById('reset-btn').addEventListener('click', resetCar);
+    // Short tap = reset car; long-press (2s) = reset all progress
+    const resetBtn = document.getElementById('reset-btn');
+    let resetTimer = null;
+    resetBtn.addEventListener('pointerdown', () => {
+      resetTimer = setTimeout(() => {
+        resetTimer = 'fired';
+        Progress.resetAll();
+        coins = 0;
+        document.getElementById('coin-jar-count').textContent = '0';
+        document.getElementById('coin-jar-fill').style.height = '0';
+        resetBtn.classList.add('reset-btn--flash');
+        setTimeout(() => resetBtn.classList.remove('reset-btn--flash'), 400);
+        if (currentCar) resetCar();
+      }, 2000);
+    });
+    resetBtn.addEventListener('pointerup', () => {
+      if (resetTimer === 'fired') { resetTimer = null; return; }
+      clearTimeout(resetTimer);
+      resetTimer = null;
+      resetCar();
+    });
+    resetBtn.addEventListener('pointerleave', () => {
+      if (resetTimer && resetTimer !== 'fired') clearTimeout(resetTimer);
+      resetTimer = null;
+    });
 
     // Hint toggle — always starts on, can be toggled per session
     document.getElementById('hint-btn').addEventListener('click', toggleHints);

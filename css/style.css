@@ -174,6 +174,13 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 #reset-btn:active { transform: scale(0.9); }
+.reset-btn--flash {
+  animation: reset-flash 0.4s ease-out;
+}
+@keyframes reset-flash {
+  0%   { background: rgba(230,57,70,0.8); }
+  100% { background: rgba(0,0,0,0.35); }
+}
 
 /* ===== Hint toggle ===== */
 #hint-btn {

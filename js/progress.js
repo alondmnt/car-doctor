@@ -89,6 +89,20 @@ const Progress = (() => {
   /** Return current coin count (for game.js to sync display) */
   function getCoins() { return coins; }
 
+  /** Wipe all progress — coins, unlocks, localStorage */
+  function resetAll() {
+    coins = 0;
+    unlocked = [];
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* silent */ }
+    // Reset CONFIG to defaults (undo tier unlocks)
+    CONFIG.robotEnabled = false;
+    CONFIG.robotFaultWeights = { flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2 };
+    CONFIG.stickers = ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'];
+    CONFIG.carPalette = ['#e63946', '#457b9d', '#f4a261', '#2a9d8f', '#e9c46a', '#264653'];
+    CONFIG.wheelStyles = ['standard'];
+    renderPreview();
+  }
+
   /* ─── Preview widget ─── */
 
   /** Update the unlock preview DOM below the coin jar */
@@ -154,5 +168,5 @@ const Progress = (() => {
     setTimeout(dismiss, 2500);
   }
 
-  return { load, addCoins, getCoins, renderPreview };
+  return { load, addCoins, getCoins, resetAll, renderPreview };
 })();
