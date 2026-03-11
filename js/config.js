@@ -20,7 +20,7 @@ const CONFIG = {
 
   /* Robot settings — activated by tier 20 unlock */
   robotEnabled: false,
-  robotChance: 0.5,              // probability of robot vs car once unlocked
+  robotChance: 0.7,              // probability of robot vs car once unlocked
   robotShapes: ['standard'],
   robotFaultWeights: {           // base faults (same keys as car)
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
