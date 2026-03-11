@@ -1031,3 +1031,286 @@ html, body {
   20%  { transform: translateX(-5px); }
   100% { transform: translateX(-120vw); }
 }
+
+/* ===== Robot SVG paint — fill via CSS variable ===== */
+.svg-robot-paint {
+  fill: var(--robot-colour, #7c8a96);
+}
+
+/* ===== Robot base states ===== */
+
+/* Boot (tyre equivalent) */
+.robot__boot {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s, opacity 0.3s;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.robot__boot--flat {
+  transform: scaleY(0.7) scaleX(1.15);
+}
+.robot__boot--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+.robot__boot--new {
+  animation: svg-bounce 0.3s ease-out;
+}
+.robot__boot--fixing {
+  animation: svg-bounce 0.4s ease-out;
+}
+
+/* Bolt screws (lug nut equivalent) */
+.robot__bolt {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.robot__bolt--loose {
+  animation: svg-screw-untwist 0.3s ease-out forwards;
+}
+.robot__bolt--tight {
+  animation: svg-screw-twist 0.3s ease-out;
+}
+.robot__bolt--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.robot__bolt.hint-glow .robot__bolt-halo {
+  fill: rgba(255, 255, 50, 0.55) !important;
+}
+
+/* Lift pad (jack equivalent) */
+.robot__lift-pad {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.robot__lift-pad-arm {
+  transition: transform 0.3s ease-out;
+  transform-origin: center bottom;
+  transform-box: fill-box;
+}
+.robot__lift-pad--raised .robot__lift-pad-arm {
+  transform: scaleY(1.8);
+}
+
+/* Lift pad arrows — hidden by default */
+.robot__lift-pad-arrow text {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.robot__lift-pad-arrow--visible .robot__lift-pad-arrow-up,
+.robot__lift-pad-arrow--visible .robot__lift-pad-arrow-down {
+  opacity: 0;
+}
+.robot__lift-pad-arrow--visible[data-direction="up"] .robot__lift-pad-arrow-up {
+  opacity: 1;
+  animation: arrow-bounce 0.8s ease-in-out infinite;
+}
+.robot__lift-pad-arrow--visible[data-direction="down"] .robot__lift-pad-arrow-down {
+  opacity: 1;
+  animation: arrow-bounce-down 0.8s ease-in-out infinite;
+}
+
+/* Jacked up — lift upper group */
+.car--robot.car--jacked .robot__upper {
+  transform: translateY(-12px);
+  transition: transform 0.3s ease-out;
+}
+.robot__upper {
+  transition: transform 0.3s ease-out;
+}
+
+/* Sparks (smoke equivalent) */
+.robot__sparks--hidden { display: none; }
+.robot__spark {
+  animation: spark-flash 0.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+.robot__spark--2 { animation-delay: 0.15s; }
+.robot__spark--3 { animation-delay: 0.3s; }
+.robot__spark--4 { animation-delay: 0.45s; }
+.robot__sparks--clearing .robot__spark {
+  animation: spark-clear 0.3s ease-out forwards;
+}
+
+@keyframes spark-flash {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%      { opacity: 1; transform: scale(1.3); }
+}
+@keyframes spark-clear {
+  to { opacity: 0; transform: scale(0); }
+}
+
+/* Chest panel (bonnet equivalent) */
+.robot__chest-panel {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.robot__chest-panel--hidden { display: none; }
+.robot__chest-panel-lid {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  transition: transform 0.4s ease-out;
+}
+.robot__chest-panel--open .robot__chest-panel-lid {
+  transform: rotate(-45deg);
+}
+.robot__chest-panel--open {
+  pointer-events: none;
+}
+.robot__chest-panel--open .robot__chest-panel-lid {
+  pointer-events: auto;
+}
+
+/* Power core bay (engine bay equivalent) */
+.robot__power-core-bay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.robot__power-core-bay--hidden { display: none; }
+.robot__power-core-bay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Power core */
+.robot__power-core {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.robot__power-core--broken {
+  animation: core-pulse 1s ease-in-out infinite;
+}
+.robot__power-core--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+.robot__power-core--new {
+  animation: svg-bounce 0.3s ease-out;
+}
+
+@keyframes core-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(100,200,255,0.4)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(100,200,255,0.8)); }
+}
+
+/* Plating damage (paint equivalent) */
+.robot__plating-damage {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.3s;
+}
+.robot__plating-damage--hidden { display: none; }
+.robot__plating-damage.hint-glow line {
+  stroke: rgba(255, 255, 50, 0.8) !important;
+}
+
+/* Badge zone (sticker equivalent) */
+.robot__badge-zone {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.robot__badge-zone--hidden { display: none; }
+.robot__badge-zone--applied .robot__badge-text {
+  font-size: 14px;
+}
+.robot__badge-zone--applied rect[stroke] {
+  stroke: transparent;
+}
+.robot__badge-zone--applied {
+  animation: sticker-slap 0.4s ease-out;
+}
+
+/* Oil grime (wash equivalent) */
+.robot__grime {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.8s;
+}
+.robot__grime--hidden { display: none; }
+.robot__grime--washing {
+  opacity: 0;
+  filter: blur(4px);
+}
+.robot__grime.hint-glow ellipse,
+.robot__grime.hint-glow circle {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+}
+
+/* Arm states */
+.robot__arm--loose {
+  animation: arm-hang 1.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+.robot__arm-damage--hidden { display: none; }
+
+@keyframes arm-hang {
+  0%, 100% { transform: rotate(8deg); }
+  50%      { transform: rotate(12deg); }
+}
+
+/* Leg states */
+.robot__leg--bent {
+  transform-box: fill-box;
+  transform-origin: center top;
+  transform: rotate(10deg) translateX(-4px);
+}
+.robot__leg-damage--hidden { display: none; }
+
+/* Voice module */
+.robot__voice-slot--hidden { display: none; }
+.robot__speech-bubble--hidden { display: none; }
+.robot__speech-bubble--visible {
+  animation: speech-appear 0.5s ease-out;
+}
+
+@keyframes speech-appear {
+  0%   { opacity: 0; transform: scale(0.5); }
+  60%  { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Jetpack */
+.robot__jetpack--hidden { display: none; }
+.robot__jetpack--visible {
+  animation: svg-bounce 0.3s ease-out;
+}
+.robot__jetpack-flames--hidden { display: none; }
+.robot__jetpack-flames--active ellipse {
+  animation: jetpack-flame 0.15s ease-in-out infinite alternate;
+}
+
+@keyframes jetpack-flame {
+  0%   { transform: scaleY(0.8); opacity: 0.7; transform-origin: center top; }
+  100% { transform: scaleY(1.3); opacity: 1; transform-origin: center top; }
+}
+
+/* Fresh plating (paint shine equivalent for robots) */
+.robot__torso-box.robot__torso--fresh {
+  animation: paint-shine 0.6s ease-out;
+}
+.robot__head-box.robot__head--fresh {
+  animation: paint-shine 0.6s ease-out;
+}
+
+/* Sparkle after oil wash (robot) */
+.robot__torso-box.robot__torso--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
+.robot__head-box.robot__head--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
