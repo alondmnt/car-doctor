@@ -322,6 +322,9 @@ const RobotRepair = (() => {
         sound: 'pop',
         action: (el, carEl) => {
           el.classList.add('robot__voice-slot--installed');
+          // Hide voice fault indicator
+          const vf = carEl.querySelector('.robot__voice-fault');
+          if (vf) vf.classList.add('robot__voice-fault--hidden');
           // Show speech bubble
           const bubble = carEl.querySelector('.robot__speech-bubble');
           if (bubble) {
@@ -361,6 +364,9 @@ const RobotRepair = (() => {
             g.classList.remove('robot__jetpack--hidden');
             g.classList.add('robot__jetpack--visible');
           });
+          // Hide mounting brackets
+          const mount = carEl.querySelector('.robot__jetpack-mount');
+          if (mount) mount.classList.add('robot__jetpack-mount--hidden');
         },
       },
       {

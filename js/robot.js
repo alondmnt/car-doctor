@@ -149,6 +149,12 @@ const Robot = (() => {
         <rect x="186" y="78" width="28" height="10" rx="2" fill="#444" stroke="#555" stroke-width="1"/>
       </g>
 
+      <!-- Voice module fault indicator (muted X over mouth area) -->
+      <g class="robot__voice-fault ${hasVoiceModule ? '' : 'robot__voice-fault--hidden'}">
+        <line x1="218" y1="43" x2="226" y2="51" stroke="#e63946" stroke-width="2" stroke-linecap="round"/>
+        <line x1="226" y1="43" x2="218" y2="51" stroke="#e63946" stroke-width="2" stroke-linecap="round"/>
+      </g>
+
       <!-- Speech bubble (shown after voice module installed) -->
       <g class="robot__speech-bubble robot__speech-bubble--hidden">
         <rect x="260" y="10" width="50" height="30" rx="8" fill="#fff" stroke="#ccc" stroke-width="1"/>
@@ -200,6 +206,14 @@ const Robot = (() => {
 
         <!-- Neck -->
         <rect x="190" y="55" width="20" height="8" rx="2" style="fill:#999"/>
+
+        <!-- Jetpack mounting brackets (visible before install) -->
+        <g class="robot__jetpack-mount ${hasJetpack ? '' : 'robot__jetpack-mount--hidden'}">
+          <!-- Left bracket -->
+          <path d="M148,74 L140,74 L140,106 L148,106" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+          <!-- Right bracket -->
+          <path d="M252,74 L260,74 L260,106 L252,106" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"/>
+        </g>
 
         <!-- Jetpack (behind torso — rendered before torso so it sits behind) -->
         <g class="robot__jetpack robot__jetpack--hidden">
@@ -365,17 +379,14 @@ const Robot = (() => {
           el.classList.remove('car--parked');
           // Jetpack fault fixed → launch exit with flames
           const useJetpack = faults.includes('jetpack');
-          const anim = useJetpack ? 'jetpack' : _pick(CONFIG.exitAnimations);
+          const robotAnims = CONFIG.exitAnimations.filter(a => a !== 'rocket');
+          const anim = useJetpack ? 'jetpack' : _pick(robotAnims);
           if (useJetpack) {
             const flames = el.querySelector('.robot__jetpack-flames');
             if (flames) {
               flames.classList.remove('robot__jetpack-flames--hidden');
               flames.classList.add('robot__jetpack-flames--active');
             }
-          } else if (anim === 'rocket') {
-            const flame = document.createElement('div');
-            flame.className = 'car__flame';
-            el.appendChild(flame);
           }
           el.classList.add(`car--exit-${anim}`);
           el.addEventListener('animationend', (e) => {

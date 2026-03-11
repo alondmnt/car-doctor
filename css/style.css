@@ -1331,7 +1331,11 @@ html, body {
   100% { opacity: 1; transform: scale(1); }
 }
 
+/* Voice fault indicator */
+.robot__voice-fault--hidden { display: none; }
+
 /* Jetpack */
+.robot__jetpack-mount--hidden { display: none; }
 .robot__jetpack--hidden { display: none; }
 .robot__jetpack--visible {
   animation: svg-bounce 0.3s ease-out;
