@@ -21,6 +21,10 @@ const Game = (() => {
 
     // Hint toggle — always starts on, can be toggled per session
     document.getElementById('hint-btn').addEventListener('click', toggleHints);
+
+    // Restore persisted progression (coins, unlocks, preview widget)
+    Progress.load();
+    coins = Progress.getCoins();
   }
 
   function start(e) {
@@ -489,6 +493,8 @@ const Game = (() => {
     jar.classList.remove('coin-jar--pop');
     jar.offsetHeight;
     jar.classList.add('coin-jar--pop');
+    // Persist + check tier unlocks
+    Progress.addCoins(amount);
   }
 
   /** Reset — send current car away and bring a new one */
