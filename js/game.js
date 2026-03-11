@@ -124,7 +124,9 @@ const Game = (() => {
         rect.setAttribute('fill', 'rgba(255, 255, 50, 0.3)');
         rect.dataset.wasHinted = '1';
       }
-    } else if (target.classList.contains('car__paint-damage') || target.classList.contains('car__mud')) {
+    } else if (target.classList.contains('car__paint-damage')) {
+      target.querySelectorAll('line').forEach(el => el.classList.add('hint-glow'));
+    } else if (target.classList.contains('car__mud')) {
       target.querySelectorAll('ellipse').forEach(el => el.classList.add('hint-glow'));
     } else {
       target.classList.add('hint-glow');

@@ -104,7 +104,19 @@ const Car = (() => {
       <!-- Paint damage -->
       <g class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}">
         <rect x="40" y="28" width="330" height="130" fill="transparent"/>
-        ${paint.map(p => `<ellipse cx="${p.cx}" cy="${p.cy}" rx="${p.rx}" ry="${p.ry}" fill="rgba(180,160,130,${p.o})"/>`).join('')}
+        ${paint.map(p => {
+          // Render as scratch lines — angled, with rounded caps
+          const len = p.rx * 1.2;
+          const ang = (p.ang || -20) * Math.PI / 180;
+          const dx = Math.cos(ang) * len;
+          const dy = Math.sin(ang) * len;
+          const x1 = p.cx - dx, y1 = p.cy - dy;
+          const x2 = p.cx + dx, y2 = p.cy + dy;
+          const sw = Math.max(2, p.ry * 0.35);
+          return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+                        stroke="rgba(180,160,130,${p.o})" stroke-width="${sw}"
+                        stroke-linecap="round"/>`;
+        }).join('')}
       </g>
 
       <!-- Sticker zone -->
@@ -123,11 +135,11 @@ const Car = (() => {
           // Main splat + 2-3 small drip circles for a splash look
           // Small satellite droplets just outside the main splat edge
           const drips = [
-            `<circle cx="${m.cx - m.rx - 3}" cy="${m.cy - 2}" r="${Math.max(2, m.rx * 0.12)}" fill="rgba(62,55,30,${m.o * 0.9})"/>`,
-            `<circle cx="${m.cx + m.rx + 4}" cy="${m.cy + 1}" r="${Math.max(2.5, m.rx * 0.14)}" fill="rgba(62,55,30,${m.o * 0.85})"/>`,
-            `<circle cx="${m.cx + 2}" cy="${m.cy - m.ry - 3}" r="${Math.max(1.5, m.rx * 0.1)}" fill="rgba(62,55,30,${m.o * 0.75})"/>`,
+            `<circle cx="${m.cx - m.rx - 3}" cy="${m.cy - 2}" r="${Math.max(2, m.rx * 0.12)}" fill="rgba(120,80,30,${m.o * 0.9})"/>`,
+            `<circle cx="${m.cx + m.rx + 4}" cy="${m.cy + 1}" r="${Math.max(2.5, m.rx * 0.14)}" fill="rgba(120,80,30,${m.o * 0.85})"/>`,
+            `<circle cx="${m.cx + 2}" cy="${m.cy - m.ry - 3}" r="${Math.max(1.5, m.rx * 0.1)}" fill="rgba(120,80,30,${m.o * 0.75})"/>`,
           ].join('');
-          return `<ellipse cx="${m.cx}" cy="${m.cy}" rx="${m.rx}" ry="${m.ry}" fill="rgba(62,55,30,${m.o})"/>${drips}`;
+          return `<ellipse cx="${m.cx}" cy="${m.cy}" rx="${m.rx}" ry="${m.ry}" fill="rgba(120,80,30,${m.o})"/>${drips}`;
         }).join('')}
       </g>`;
   }
@@ -144,10 +156,10 @@ const Car = (() => {
       bonnet:  { x: 44, y: 78, w: 82, h: 10 },
       engine:  { x: 48, y: 90, w: 76, h: 55 },
       paint: [
-        { cx: 110, cy: 108, rx: 25, ry: 16, o: 0.55 },
-        { cx: 260, cy: 120, rx: 22, ry: 14, o: 0.45 },
-        { cx: 330, cy: 100, rx: 18, ry: 12, o: 0.45 },
-        { cx: 180, cy: 138, rx: 20, ry: 10, o: 0.45 },
+        { cx: 110, cy: 108, rx: 25, ry: 16, o: 0.55, ang: -15 },
+        { cx: 260, cy: 120, rx: 22, ry: 14, o: 0.45, ang: -25 },
+        { cx: 330, cy: 100, rx: 18, ry: 12, o: 0.45, ang: 10 },
+        { cx: 180, cy: 138, rx: 20, ry: 10, o: 0.45, ang: -30 },
       ],
       sticker: { x: 248, y: 86, w: 80, h: 50 },
       mud: [
@@ -243,10 +255,10 @@ const Car = (() => {
       bonnet:  { x: 40, y: 62, w: 65, h: 10 },
       engine:  { x: 42, y: 74, w: 60, h: 55 },
       paint: [
-        { cx: 100, cy: 95, rx: 22, ry: 14, o: 0.55 },
-        { cx: 240, cy: 110, rx: 24, ry: 16, o: 0.45 },
-        { cx: 330, cy: 90, rx: 18, ry: 12, o: 0.45 },
-        { cx: 180, cy: 130, rx: 22, ry: 10, o: 0.45 },
+        { cx: 100, cy: 95, rx: 22, ry: 14, o: 0.55, ang: -20 },
+        { cx: 240, cy: 110, rx: 24, ry: 16, o: 0.45, ang: 5 },
+        { cx: 330, cy: 90, rx: 18, ry: 12, o: 0.45, ang: -35 },
+        { cx: 180, cy: 130, rx: 22, ry: 10, o: 0.45, ang: -10 },
       ],
       sticker: { x: 240, y: 72, w: 85, h: 55 },
       mud: [
@@ -342,10 +354,10 @@ const Car = (() => {
       bonnet:  { x: 38, y: 90, w: 145, h: 10 },
       engine:  { x: 42, y: 102, w: 135, h: 45 },
       paint: [
-        { cx: 130, cy: 118, rx: 28, ry: 14, o: 0.55 },
-        { cx: 280, cy: 115, rx: 20, ry: 12, o: 0.45 },
-        { cx: 350, cy: 108, rx: 16, ry: 10, o: 0.45 },
-        { cx: 200, cy: 135, rx: 22, ry: 10, o: 0.45 },
+        { cx: 130, cy: 118, rx: 28, ry: 14, o: 0.55, ang: -15 },
+        { cx: 280, cy: 115, rx: 20, ry: 12, o: 0.45, ang: -30 },
+        { cx: 350, cy: 108, rx: 16, ry: 10, o: 0.45, ang: 8 },
+        { cx: 200, cy: 135, rx: 22, ry: 10, o: 0.45, ang: -22 },
       ],
       sticker: { x: 270, y: 92, w: 75, h: 42 },
       mud: [
