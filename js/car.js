@@ -65,11 +65,11 @@ const Car = (() => {
     }).join('');
 
     return `<g class="car__tyre car__tyre--${position}" data-position="${position}">
-      <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}" fill="${s.rubberFill}"/>
-      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${tyreInner}" fill="${s.rubberFill}"/>
-      <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}" fill="${s.rimFill}" stroke="${s.rimFill}" stroke-opacity="0.5"/>
+      <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}" style="fill:${s.rubberFill}"/>
+      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${tyreInner}" style="fill:${s.rubberFill}"/>
+      <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}" style="fill:${s.rimFill};stroke:${s.rimFill};stroke-opacity:0.5"/>
       ${spokes}
-      <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}" fill="${s.hubFill}" stroke="${s.hubFill}" stroke-opacity="0.5"/>
+      <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}" style="fill:${s.hubFill};stroke:${s.hubFill};stroke-opacity:0.5"/>
       ${nuts}
     </g>`;
   }
