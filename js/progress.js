@@ -37,11 +37,25 @@ const Progress = (() => {
     } catch { /* storage full — silent fail */ }
   }
 
+  /** Robot tier keys and their CONFIG effects */
+  const ROBOT_TIER_ACTIONS = {
+    robotDoctor:    () => { CONFIG.robotEnabled = true; },
+    robotArmJoint:  () => { CONFIG.robotFaultWeights.armJoint = 2; },
+    robotLegs:      () => { CONFIG.robotFaultWeights.legsRepair = 2; },
+    robotVoice:     () => { CONFIG.robotFaultWeights.voiceModule = 2; },
+    robotJetpack:   () => { CONFIG.robotFaultWeights.jetpack = 2; },
+  };
+
   /** Extend CONFIG arrays with items from all unlocked tiers */
   function applyUnlocks() {
     for (const tier of UNLOCK_TIERS) {
       if (!unlocked.includes(tier.coins)) continue;
-      if (!tier.items.length) continue;  // stub tiers
+
+      // Handle robot tiers via action map
+      const robotAction = ROBOT_TIER_ACTIONS[tier.key];
+      if (robotAction) { robotAction(); continue; }
+
+      if (!tier.items.length) continue;
 
       const target = CONFIG[tier.key];
       if (!Array.isArray(target)) continue;

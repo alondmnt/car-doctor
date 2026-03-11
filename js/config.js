@@ -17,6 +17,18 @@ const CONFIG = {
   },
   multiFaultChance: 0.3,    // chance of 2 faults per car
   wheelStyles: ['standard'],  // unlockable: 'racing', 'offroad'
+
+  /* Robot settings — activated by tier 20 unlock */
+  robotEnabled: false,
+  robotChance: 0.5,              // probability of robot vs car once unlocked
+  robotShapes: ['standard'],
+  robotFaultWeights: {           // base faults (same keys as car)
+    flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
+  },
+  // Tier 25 adds: armJoint: 2
+  // Tier 30 adds: legsRepair: 2
+  // Tier 35 adds: voiceModule: 2
+  // Tier 40 adds: jetpack: 2
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -27,8 +39,14 @@ const UNLOCK_TIERS = [
     items: ['#c0c0c0', '#ffd700', '#ff00ff', '#00ffcc', '#ff4500', '#7b68ee'] },
   { coins: 15, key: 'wheelStyles', icon: '🛞', label: 'New wheels!',
     items: ['racing', 'offroad'] },
-  { coins: 20, key: 'robotDoctor', icon: '🤖', label: 'Robot Doctor!',
-    items: [] },   // stub — needs #7
-  { coins: 30, key: 'newFaults',   icon: '🔧', label: 'New faults!',
-    items: [] },   // stub — needs new fault types
+  { coins: 20, key: 'robotDoctor',    icon: '🤖', label: 'Robot Doctor!',
+    items: [] },
+  { coins: 25, key: 'robotArmJoint',  icon: '💪', label: 'Arm repair!',
+    items: [] },
+  { coins: 30, key: 'robotLegs',      icon: '🦿', label: 'Legs repair!',
+    items: [] },
+  { coins: 35, key: 'robotVoice',     icon: '🗣️', label: 'Voice module!',
+    items: [] },
+  { coins: 40, key: 'robotJetpack',   icon: '🚀', label: 'Jetpack!',
+    items: [] },
 ];
