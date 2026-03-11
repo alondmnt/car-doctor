@@ -831,7 +831,7 @@ html, body {
 }
 
 .car__sticker-zone--applied .car__sticker-text {
-  font-size: 32px;
+  font-size: 40px;
 }
 .car__sticker-zone--applied rect[stroke] {
   stroke: transparent;
@@ -1326,7 +1326,7 @@ html, body {
 }
 .robot__badge-zone--hidden { display: none; }
 .robot__badge-zone--applied .robot__badge-text {
-  font-size: 14px;
+  font-size: 34px;
 }
 .robot__badge-zone--applied rect[stroke] {
   stroke: transparent;
