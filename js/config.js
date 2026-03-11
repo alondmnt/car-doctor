@@ -22,10 +22,12 @@ const CONFIG = {
   robotEnabled: false,
   robotChance: 0.7,              // probability of robot vs car once unlocked
   robotShapes: ['standard'],
+  armStyles: ['standard'],       // unlockable: 'saw', 'screwdriver', 'hammer'
   robotFaultWeights: {           // base faults (same keys as car)
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
   },
   // Tier 25 adds: armJoint: 2
+  // Tier 28 adds: arm styles (saw, screwdriver, hammer)
   // Tier 30 adds: legsRepair: 2
   // Tier 35 adds: voiceModule: 2
   // Tier 40 adds: jetpack: 2
@@ -43,6 +45,8 @@ const UNLOCK_TIERS = [
     items: [] },
   { coins: 25, key: 'robotArmJoint',  icon: '💪', label: 'Arm repair!',
     items: [] },
+  { coins: 28, key: 'armStyles',      icon: '🔧', label: 'Tool arms!',
+    items: ['saw', 'screwdriver', 'hammer'] },
   { coins: 30, key: 'robotLegs',      icon: '🦿', label: 'Legs repair!',
     items: [] },
   { coins: 35, key: 'robotVoice',     icon: '🗣️', label: 'Voice module!',

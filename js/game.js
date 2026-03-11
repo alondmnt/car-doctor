@@ -15,6 +15,7 @@ const Game = (() => {
   /** Part picker registry — each entry provides available styles and a preview renderer */
   const PARTS = {
     wheel: { styles: () => CONFIG.wheelStyles, preview: (s) => Car.wheelPreviewSVG(s) },
+    arm:   { styles: () => CONFIG.armStyles,   preview: (s) => Robot.armPreviewSVG(s) },
   };
 
   function init() {

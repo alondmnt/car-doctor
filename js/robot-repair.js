@@ -229,10 +229,13 @@ const RobotRepair = (() => {
         id: 'grab-joint',
         description: 'Grab a new arm joint from the warehouse',
         warehouse: 'joint',
+        picker: 'arm',
         target: '.robot__arm--left',
         sound: 'pop',
-        action: (el) => {
-          el.classList.remove('robot__arm--loose');
+        action: (el, _carEl, picked) => {
+          // Replace left arm with chosen style
+          const style = picked || 'standard';
+          el.outerHTML = Robot.replacementArmSVG(style);
         },
       },
       {

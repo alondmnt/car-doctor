@@ -48,8 +48,47 @@ const Robot = (() => {
     </g>`;
   }
 
-  /** Accordion arm — zigzag path with shoulder rivet and claw hand */
-  function _armSVG(x, y, w, h, side) {
+  /** Arm style definitions — shared by renderer and picker */
+  const ARM_STYLES = {
+    standard: {
+      colour: '#aaa', strokeColour: '#888',
+      tool: (midX, clawY, w) => {
+        const clawW = w * 0.4;
+        return `<rect x="${midX - clawW/2}" y="${clawY}" width="${clawW}" height="8" rx="2" style="fill:#999;stroke:#777;stroke-width:1"/>`;
+      },
+    },
+    saw: {
+      colour: '#aaa', strokeColour: '#888',
+      tool: (midX, clawY) => {
+        const r = 7;
+        const teeth = Array.from({ length: 12 }, (_, i) => {
+          const a = i * 30 * Math.PI / 180;
+          const ro = r + 2, ri = r;
+          return `${i === 0 ? 'M' : 'L'} ${midX + Math.cos(a) * ro} ${clawY + 4 + Math.sin(a) * ro} ` +
+                 `L ${midX + Math.cos(a + 15 * Math.PI / 180) * ri} ${clawY + 4 + Math.sin(a + 15 * Math.PI / 180) * ri}`;
+        }).join(' ');
+        return `<circle cx="${midX}" cy="${clawY + 4}" r="${r}" style="fill:#ccc;stroke:#999;stroke-width:1"/>` +
+               `<path d="${teeth} Z" style="fill:#ddd;stroke:#aaa;stroke-width:0.5"/>` +
+               `<circle cx="${midX}" cy="${clawY + 4}" r="2" style="fill:#888"/>`;
+      },
+    },
+    screwdriver: {
+      colour: '#aaa', strokeColour: '#888',
+      tool: (midX, clawY) =>
+        `<rect x="${midX - 2}" y="${clawY}" width="4" height="12" rx="1" style="fill:#f4a261;stroke:#c88030;stroke-width:1"/>` +
+        `<rect x="${midX - 1}" y="${clawY + 12}" width="2" height="6" rx="0.5" style="fill:#bbb;stroke:#999;stroke-width:0.5"/>`,
+    },
+    hammer: {
+      colour: '#aaa', strokeColour: '#888',
+      tool: (midX, clawY) =>
+        `<rect x="${midX - 1.5}" y="${clawY}" width="3" height="10" rx="1" style="fill:#8b6914;stroke:#6b4c10;stroke-width:0.5"/>` +
+        `<rect x="${midX - 6}" y="${clawY + 10}" width="12" height="6" rx="1" style="fill:#888;stroke:#666;stroke-width:1"/>`,
+    },
+  };
+
+  /** Accordion arm — zigzag path with shoulder rivet and tool hand */
+  function _armSVG(x, y, w, h, side, style = 'standard') {
+    const s = ARM_STYLES[style] || ARM_STYLES.standard;
     const midX = x + w / 2;
     // Zigzag segments
     const segH = h / 4;
@@ -60,16 +99,23 @@ const Robot = (() => {
       L ${midX + zag} ${y + segH * 3}
       L ${midX} ${y + h}`;
 
-    // Claw/pincer at bottom
-    const clawY = y + h;
-    const clawW = w * 0.4;
-    const claw = `<rect x="${midX - clawW/2}" y="${clawY}" width="${clawW}" height="8" rx="2" style="fill:#999;stroke:#777;stroke-width:1"/>`;
+    const toolSVG = s.tool(midX, y + h, w);
 
-    return `<g class="robot__arm robot__arm--${side}">
-      <circle cx="${midX}" cy="${y}" r="5" style="fill:#aaa;stroke:#888;stroke-width:1.5"/>
-      <path d="${path}" style="fill:none;stroke:#aaa;stroke-width:5;stroke-linejoin:round;stroke-linecap:round"/>
-      ${claw}
+    return `<g class="robot__arm robot__arm--${side}" data-arm-style="${style}">
+      <circle cx="${midX}" cy="${y}" r="5" style="fill:${s.colour};stroke:${s.strokeColour};stroke-width:1.5"/>
+      <path d="${path}" style="fill:none;stroke:${s.colour};stroke-width:5;stroke-linejoin:round;stroke-linecap:round"/>
+      ${toolSVG}
     </g>`;
+  }
+
+  /** Small standalone arm SVG for picker thumbnails */
+  function armPreviewSVG(style) {
+    return `<svg viewBox="0 0 40 60" width="36" height="52">${_armSVG(6, 2, 28, 34, 'preview', style)}</svg>`;
+  }
+
+  /** Build replacement arm SVG for arm repair (same coords as the left arm in template) */
+  function replacementArmSVG(style) {
+    return _armSVG(118, 70, 28, 44, 'left', style);
   }
 
   /** Robot interactive SVG elements — sparks, chest panel, plating damage, badge zone, grime */
@@ -401,5 +447,5 @@ const Robot = (() => {
     };
   }
 
-  return { create };
+  return { create, armPreviewSVG, replacementArmSVG };
 })();

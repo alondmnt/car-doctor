@@ -100,6 +100,7 @@ const Progress = (() => {
     CONFIG.stickers = ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'];
     CONFIG.carPalette = ['#e63946', '#457b9d', '#f4a261', '#2a9d8f', '#e9c46a', '#264653'];
     CONFIG.wheelStyles = ['standard'];
+    CONFIG.armStyles = ['standard'];
     renderPreview();
   }
 
