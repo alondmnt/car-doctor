@@ -275,7 +275,7 @@ const Robot = (() => {
       <!-- Badge zone (sticker equivalent) -->
       <g class="robot__badge-zone ${hasSticker ? '' : 'robot__badge-zone--hidden'}">
         <rect x="164" y="78" width="72" height="40" rx="4"
-              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="1.5"/>
+              fill="transparent" stroke="rgba(0,0,0,0.35)" stroke-dasharray="4 3" stroke-width="2"/>
         <text class="robot__badge-text" x="200" y="98"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="164" y="78" width="72" height="40" fill="transparent"/>

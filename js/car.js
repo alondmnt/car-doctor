@@ -144,7 +144,7 @@ const Car = (() => {
       <!-- Sticker zone -->
       <g class="car__sticker-zone ${hasSticker ? '' : 'car__sticker-zone--hidden'}">
         <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" rx="5"
-              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="5 3" stroke-width="1.5"/>
+              fill="transparent" stroke="rgba(0,0,0,0.35)" stroke-dasharray="5 3" stroke-width="2"/>
         <text class="car__sticker-text" x="${sticker.x + sticker.w/2}" y="${sticker.y + sticker.h/2}"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" fill="transparent"/>
