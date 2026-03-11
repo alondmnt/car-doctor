@@ -356,9 +356,11 @@ const RobotRepair = (() => {
         warehouse: 'jetpack',
         target: '.robot__jetpack',
         sound: 'pop',
-        action: (el) => {
-          el.classList.remove('robot__jetpack--hidden');
-          el.classList.add('robot__jetpack--visible');
+        action: (_el, carEl) => {
+          carEl.querySelectorAll('.robot__jetpack').forEach(g => {
+            g.classList.remove('robot__jetpack--hidden');
+            g.classList.add('robot__jetpack--visible');
+          });
         },
       },
       {

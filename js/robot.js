@@ -156,19 +156,10 @@ const Robot = (() => {
         <text x="285" y="28" text-anchor="middle" font-size="16">🗣️</text>
       </g>
 
-      <!-- Jetpack (shown after install) -->
+      <!-- Chest strap (rendered on top of torso, after interactive layer) -->
       <g class="robot__jetpack robot__jetpack--hidden">
-        <rect x="130" y="68" width="16" height="40" rx="3" fill="#666" stroke="#555" stroke-width="1.5"/>
-        <rect x="132" y="72" width="12" height="8" rx="2" fill="#888"/>
-        <rect x="132" y="84" width="12" height="8" rx="2" fill="#888"/>
-        <circle cx="138" cy="76" r="2" fill="#e63946"/>
-        <circle cx="138" cy="88" r="2" fill="#e63946"/>
-      </g>
-
-      <!-- Jetpack flames (animated on success) -->
-      <g class="robot__jetpack-flames robot__jetpack-flames--hidden">
-        <ellipse cx="135" cy="112" rx="5" ry="10" fill="#ff6600" opacity="0.8"/>
-        <ellipse cx="141" cy="112" rx="4" ry="8" fill="#ffcc00" opacity="0.7"/>
+        <line x1="148" y1="82" x2="252" y2="82" stroke="#555" stroke-width="2.5"/>
+        <rect x="188" y="78" width="24" height="8" rx="2" fill="#777" stroke="#666" stroke-width="1"/>
       </g>`;
   }
 
@@ -209,6 +200,29 @@ const Robot = (() => {
 
         <!-- Neck -->
         <rect x="190" y="55" width="20" height="8" rx="2" style="fill:#999"/>
+
+        <!-- Jetpack (behind torso — rendered before torso so it sits behind) -->
+        <g class="robot__jetpack robot__jetpack--hidden">
+          <!-- Left thruster (partially behind torso left edge) -->
+          <rect x="138" y="72" width="16" height="36" rx="4" fill="#666" stroke="#555" stroke-width="1.5"/>
+          <rect x="140" y="77" width="12" height="6" rx="2" fill="#888"/>
+          <rect x="140" y="87" width="12" height="6" rx="2" fill="#888"/>
+          <circle cx="146" cy="80" r="2" fill="#e63946"/>
+          <circle cx="146" cy="90" r="2" fill="#e63946"/>
+          <!-- Right thruster (partially behind torso right edge) -->
+          <rect x="246" y="72" width="16" height="36" rx="4" fill="#666" stroke="#555" stroke-width="1.5"/>
+          <rect x="248" y="77" width="12" height="6" rx="2" fill="#888"/>
+          <rect x="248" y="87" width="12" height="6" rx="2" fill="#888"/>
+          <circle cx="254" cy="80" r="2" fill="#e63946"/>
+          <circle cx="254" cy="90" r="2" fill="#e63946"/>
+        </g>
+        <!-- Jetpack flames (from both thrusters) -->
+        <g class="robot__jetpack-flames robot__jetpack-flames--hidden">
+          <ellipse cx="146" cy="112" rx="5" ry="10" fill="#ff6600" opacity="0.8"/>
+          <ellipse cx="147" cy="114" rx="3" ry="7" fill="#ffcc00" opacity="0.7"/>
+          <ellipse cx="254" cy="112" rx="5" ry="10" fill="#ff6600" opacity="0.8"/>
+          <ellipse cx="253" cy="114" rx="3" ry="7" fill="#ffcc00" opacity="0.7"/>
+        </g>
 
         <!-- Torso -->
         <g class="robot__torso">
@@ -349,9 +363,16 @@ const Robot = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
-          const anims = CONFIG.exitAnimations;
-          const anim = _pick(anims);
-          if (anim === 'rocket') {
+          // Jetpack fault fixed → launch exit with flames
+          const useJetpack = faults.includes('jetpack');
+          const anim = useJetpack ? 'jetpack' : _pick(CONFIG.exitAnimations);
+          if (useJetpack) {
+            const flames = el.querySelector('.robot__jetpack-flames');
+            if (flames) {
+              flames.classList.remove('robot__jetpack-flames--hidden');
+              flames.classList.add('robot__jetpack-flames--active');
+            }
+          } else if (anim === 'rocket') {
             const flame = document.createElement('div');
             flame.className = 'car__flame';
             el.appendChild(flame);
