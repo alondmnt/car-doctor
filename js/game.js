@@ -34,19 +34,19 @@ const Game = (() => {
     nextCar();
   }
 
-  /** Pick N unique faults using CONFIG.faultWeights */
-  function _pickWeightedFaults(count) {
-    const weights = { ...CONFIG.faultWeights };
+  /** Pick N unique faults using a given weight map */
+  function _pickWeightedFaults(count, weights) {
+    const pool = { ...(weights || CONFIG.faultWeights) };
     const picked = [];
     for (let i = 0; i < count; i++) {
-      const entries = Object.entries(weights);
+      const entries = Object.entries(pool);
       const total = entries.reduce((sum, [, w]) => sum + w, 0);
       let roll = Math.random() * total;
       for (const [fault, w] of entries) {
         roll -= w;
         if (roll <= 0) {
           picked.push(fault);
-          delete weights[fault];  // no duplicates
+          delete pool[fault];  // no duplicates
           break;
         }
       }
@@ -57,7 +57,7 @@ const Game = (() => {
   let faultQueue = [];  // remaining faults to repair
   let currentFault = null;
 
-  /** Bring in a new car with 1–2 random faults */
+  /** Bring in a new car or robot with 1–2 random faults */
   function nextCar() {
     generation++;
     const gen = generation;
@@ -66,12 +66,26 @@ const Game = (() => {
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
+    // Decide whether to spawn a robot
+    const spawnRobot = CONFIG.robotEnabled && Math.random() < CONFIG.robotChance;
+
     // Pick 1–2 faults using weighted random selection
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
-    const faults = _pickWeightedFaults(faultCount);
+    const weights = spawnRobot ? CONFIG.robotFaultWeights : CONFIG.faultWeights;
+    const faults = _pickWeightedFaults(faultCount, weights);
 
-    currentCar = Car.create(garage, { colour, faults, flatTyre });
+    if (spawnRobot) {
+      currentCar = Robot.create(garage, { colour, faults, flatTyre });
+    } else {
+      currentCar = Car.create(garage, { colour, faults, flatTyre });
+    }
     faultQueue = [...faults];
+
+    // Re-enable hints if the vehicle has any fault type not yet seen
+    if (faults.some(f => !seenFaults.has(f))) {
+      CONFIG.hintsOn = true;
+      document.getElementById('hint-btn').classList.remove('hint-btn--off');
+    }
 
     startNextFault();
 
@@ -91,18 +105,38 @@ const Game = (() => {
   /** Load the next fault's repair steps */
   function startNextFault() {
     currentFault = faultQueue.shift();
-    if (currentFault === 'engine') {
-      steps = Repair.engine(currentCar);
-    } else if (currentFault === 'paint') {
-      steps = Repair.paint(currentCar);
-    } else if (currentFault === 'sticker') {
-      steps = Repair.sticker(currentCar);
-    } else if (currentFault === 'wash') {
-      steps = Repair.wash(currentCar);
+    if (currentCar.type === 'robot') {
+      steps = _robotSteps(currentFault, currentCar);
     } else {
-      steps = Repair.flatTyre(currentCar);
+      steps = _carSteps(currentFault, currentCar);
     }
     stepIndex = 0;
+  }
+
+  /** Resolve car fault → step sequence */
+  function _carSteps(fault, car) {
+    switch (fault) {
+      case 'engine':  return Repair.engine(car);
+      case 'paint':   return Repair.paint(car);
+      case 'sticker': return Repair.sticker(car);
+      case 'wash':    return Repair.wash(car);
+      default:        return Repair.flatTyre(car);
+    }
+  }
+
+  /** Resolve robot fault → step sequence */
+  function _robotSteps(fault, car) {
+    switch (fault) {
+      case 'engine':      return RobotRepair.powerCore(car);
+      case 'paint':       return RobotRepair.plating(car);
+      case 'sticker':     return RobotRepair.badge(car);
+      case 'wash':        return RobotRepair.oilGrime(car);
+      case 'armJoint':    return RobotRepair.armJoint(car);
+      case 'legsRepair':  return RobotRepair.legsRepair(car);
+      case 'voiceModule': return RobotRepair.voiceModule(car);
+      case 'jetpack':     return RobotRepair.jetpack(car);
+      default:            return RobotRepair.brokenBoot(car);
+    }
   }
 
   /** Show toolbox if step needs a tool, then optionally highlight hints */
@@ -117,28 +151,33 @@ const Game = (() => {
     if (CONFIG.hintsOn) highlightCarTarget(step);
   }
 
-  /** Highlight the target element on the car */
+  /** Highlight the target element on the car/robot */
   function highlightCarTarget(step) {
     const target = currentCar.el.querySelector(step.target);
     if (!target) return;
-    // Sticker zone: yellow fill hint; paint damage: glow individual stains
-    if (target.classList.contains('car__sticker-zone')) {
+    // Sticker/badge zone: yellow fill hint
+    if (target.classList.contains('car__sticker-zone') || target.classList.contains('robot__badge-zone')) {
       const rect = target.querySelector('rect');
       if (rect) {
         rect.setAttribute('fill', 'rgba(255, 255, 50, 0.3)');
         rect.dataset.wasHinted = '1';
       }
-    } else if (target.classList.contains('car__paint-damage')) {
+    } else if (target.classList.contains('car__paint-damage') || target.classList.contains('robot__plating-damage')) {
       target.querySelectorAll('line').forEach(el => el.classList.add('hint-glow'));
     } else if (target.classList.contains('car__mud')) {
       target.querySelectorAll('ellipse').forEach(el => el.classList.add('hint-glow'));
+    } else if (target.classList.contains('robot__grime')) {
+      target.querySelectorAll('ellipse, circle').forEach(el => el.classList.add('hint-glow'));
     } else {
       target.classList.add('hint-glow');
     }
     if (step.hintArrow) {
-      const arrow = target.querySelector('.car__jack-arrow');
+      // Support both car jack and robot lift pad arrows
+      const arrow = target.querySelector('.car__jack-arrow') || target.querySelector('.robot__lift-pad-arrow');
       if (arrow) {
-        arrow.classList.add('car__jack-arrow--visible');
+        const visibleClass = arrow.classList.contains('robot__lift-pad-arrow')
+          ? 'robot__lift-pad-arrow--visible' : 'car__jack-arrow--visible';
+        arrow.classList.add(visibleClass);
         arrow.dataset.direction = step.hintArrow;
       }
     }
@@ -153,11 +192,11 @@ const Game = (() => {
     currentCar.el.querySelectorAll('[data-was-hinted]').forEach(
       el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
     );
-    currentCar.el.querySelectorAll('.car__jack-arrow--visible').forEach(
-      el => el.classList.remove('car__jack-arrow--visible')
+    currentCar.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible').forEach(
+      el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible')
     );
     // Reset pointer-events on overlay groups
-    currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud').forEach(
+    currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime').forEach(
       el => el.style.pointerEvents = ''
     );
   }
@@ -209,15 +248,21 @@ const Game = (() => {
     } else if (step.picker === 'colour') {
       showColourPicker((chosenColour) => {
         currentCar.el.style.setProperty('--car-colour', chosenColour);
+        if (currentCar.type === 'robot') {
+          currentCar.el.style.setProperty('--robot-colour', chosenColour);
+        }
         onStepComplete(step, target);
       });
     } else if (step.picker === 'sticker') {
       showStickerPicker((emoji) => {
-        const zone = currentCar.el.querySelector('.car__sticker-zone');
+        const zone = currentCar.el.querySelector('.car__sticker-zone') ||
+                     currentCar.el.querySelector('.robot__badge-zone');
         if (zone) {
           const textEl = zone.querySelector('text') || zone;
           textEl.textContent = emoji;
-          zone.classList.add('car__sticker-zone--applied');
+          const appliedClass = zone.classList.contains('robot__badge-zone')
+            ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
+          zone.classList.add(appliedClass);
           const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
           if (borderRect) {
             borderRect.setAttribute('stroke', 'transparent');
@@ -307,16 +352,21 @@ const Game = (() => {
         if (step.picker === 'colour') {
           showColourPicker((chosenColour) => {
             currentCar.el.style.setProperty('--car-colour', chosenColour);
+            if (currentCar.type === 'robot') {
+              currentCar.el.style.setProperty('--robot-colour', chosenColour);
+            }
             onStepComplete(step, target);
           });
         } else if (step.picker === 'sticker') {
           showStickerPicker((emoji) => {
-            const zone = currentCar.el.querySelector('.car__sticker-zone');
+            const zone = currentCar.el.querySelector('.car__sticker-zone') ||
+                         currentCar.el.querySelector('.robot__badge-zone');
             if (zone) {
               const textEl = zone.querySelector('text') || zone;
               textEl.textContent = emoji;
-              zone.classList.add('car__sticker-zone--applied');
-              // Hide dashed border (CSS attribute selectors unreliable on SVG)
+              const appliedClass = zone.classList.contains('robot__badge-zone')
+                ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
+              zone.classList.add(appliedClass);
               const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
               if (borderRect) {
                 borderRect.setAttribute('stroke', 'transparent');
@@ -343,7 +393,7 @@ const Game = (() => {
     part.className = `warehouse__part warehouse__part--${partType}`;
 
     // Visual label
-    const icons = { tyre: '⚫', engine: '⚙️' };
+    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🔩', chip: '💾', jetpack: '🎒' };
     part.textContent = icons[partType] || '📦';
 
     function grab(e) {
@@ -425,7 +475,13 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint', sticker: '.car__indicator--sticker', wash: '.car__indicator--wash' };
+      const indicatorMap = {
+        engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre',
+        paint: '.car__indicator--paint', sticker: '.car__indicator--sticker',
+        wash: '.car__indicator--wash', armJoint: '.car__indicator--armJoint',
+        legsRepair: '.car__indicator--legsRepair', voiceModule: '.car__indicator--voiceModule',
+        jetpack: '.car__indicator--jetpack',
+      };
       const indicatorClass = indicatorMap[currentFault] || '.car__indicator--tyre';
       const indicator = currentCar.el.querySelector(indicatorClass);
       if (indicator) {
@@ -446,7 +502,9 @@ const Game = (() => {
       } else {
         // All faults fixed — track seen types and auto-disable hints
         currentCar.faults.forEach(f => seenFaults.add(f));
-        const allFaultTypes = Object.keys(CONFIG.faultWeights);
+        const allCarFaults = Object.keys(CONFIG.faultWeights);
+        const allRobotFaults = CONFIG.robotEnabled ? Object.keys(CONFIG.robotFaultWeights) : [];
+        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults])];
         if (CONFIG.hintsOn && allFaultTypes.every(f => seenFaults.has(f))) {
           CONFIG.hintsOn = false;
           document.getElementById('hint-btn').classList.add('hint-btn--off');
@@ -533,8 +591,8 @@ const Game = (() => {
         currentCar.el.querySelectorAll('[data-was-hinted]').forEach(
           el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
         );
-        currentCar.el.querySelectorAll('.car__jack-arrow--visible').forEach(
-          el => el.classList.remove('car__jack-arrow--visible')
+        currentCar.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible').forEach(
+          el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible')
         );
       }
       // Remove tool hint glow but keep toolbox open if it's active

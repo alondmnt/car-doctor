@@ -552,6 +552,7 @@ const Car = (() => {
       el,
       faults,
       flatTyre,
+      type: 'car',
       getFlatTyreEl() {
         return el.querySelector(`.car__tyre--${flatTyre}`);
       },
