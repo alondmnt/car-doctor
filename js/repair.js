@@ -63,11 +63,16 @@ const Repair = (() => {
         target: tyreSelector,
         sound: 'pop',
         action: (el) => {
-          el.classList.remove('car__tyre--removed', 'car__tyre--flat');
-          el.classList.add('car__tyre--new');
-          el.querySelectorAll('.car__screw').forEach(s => {
-            s.classList.remove('car__screw--hidden');
-          });
+          // Replace SVG content with a fresh wheel (may have an unlocked style)
+          const cx = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cx'));
+          const cy = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cy'));
+          const r = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('r'));
+          const position = el.dataset.position;
+          const fresh = Car.replacementWheelSVG(cx, cy, r, position);
+          el.outerHTML = fresh;
+          // Re-query the new element and animate
+          const parent = document.querySelector(tyreSelector);
+          if (parent) parent.classList.add('car__tyre--new');
         },
       },
       ..._screwSteps(tyreSelector, 'tighten'),

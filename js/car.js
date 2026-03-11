@@ -592,5 +592,11 @@ const Car = (() => {
     };
   }
 
-  return { create };
+  /** Build replacement tyre SVG for flat-tyre repair (picks a random unlocked style) */
+  function replacementWheelSVG(cx, cy, r, position) {
+    const style = _pick(CONFIG.wheelStyles);
+    return _wheelSVG(cx, cy, r, position, style);
+  }
+
+  return { create, replacementWheelSVG };
 })();
