@@ -93,6 +93,8 @@ const Game = (() => {
       steps = Repair.paint(currentCar);
     } else if (currentFault === 'sticker') {
       steps = Repair.sticker(currentCar);
+    } else if (currentFault === 'wash') {
+      steps = Repair.wash(currentCar);
     } else {
       steps = Repair.flatTyre(currentCar);
     }
@@ -122,7 +124,7 @@ const Game = (() => {
         rect.setAttribute('fill', 'rgba(255, 255, 50, 0.3)');
         rect.dataset.wasHinted = '1';
       }
-    } else if (target.classList.contains('car__paint-damage')) {
+    } else if (target.classList.contains('car__paint-damage') || target.classList.contains('car__mud')) {
       target.querySelectorAll('ellipse').forEach(el => el.classList.add('hint-glow'));
     } else {
       target.classList.add('hint-glow');
@@ -149,7 +151,7 @@ const Game = (() => {
       el => el.classList.remove('car__jack-arrow--visible')
     );
     // Reset pointer-events on overlay groups
-    currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone').forEach(
+    currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud').forEach(
       el => el.style.pointerEvents = ''
     );
   }
@@ -417,7 +419,7 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint', sticker: '.car__indicator--sticker' };
+      const indicatorMap = { engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre', paint: '.car__indicator--paint', sticker: '.car__indicator--sticker', wash: '.car__indicator--wash' };
       const indicatorClass = indicatorMap[currentFault] || '.car__indicator--tyre';
       const indicator = currentCar.el.querySelector(indicatorClass);
       if (indicator) {

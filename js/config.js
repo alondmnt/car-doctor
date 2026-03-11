@@ -13,6 +13,7 @@ const CONFIG = {
     engine: 2,
     paint: 3,
     sticker: 3,
+    wash: 2,
   },
   multiFaultChance: 0.3,    // chance of 2 faults per car
 };

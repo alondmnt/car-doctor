@@ -66,10 +66,10 @@ const Car = (() => {
     </g>`;
   }
 
-  /** Bonnet, engine bay, paint damage, sticker zone — shared structure */
+  /** Bonnet, engine bay, paint damage, sticker zone, mud overlay — shared structure */
   function _interactiveSVG(opts, layout) {
-    const { hasEngine, hasPaint, hasSticker } = opts;
-    const { bonnet, engine, paint, sticker } = layout;
+    const { hasEngine, hasPaint, hasSticker, hasWash } = opts;
+    const { bonnet, engine, paint, sticker, mud } = layout;
 
     // Smoke puff positions — staggered across the bonnet top
     const smokeX = bonnet.x + bonnet.w / 2;
@@ -114,6 +114,20 @@ const Car = (() => {
         <text class="car__sticker-text" x="${sticker.x + sticker.w/2}" y="${sticker.y + sticker.h/2}"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" fill="transparent"/>
+      </g>
+
+      <!-- Mud overlay (car wash fault) — splatter shapes with drips -->
+      <g class="car__mud ${hasWash ? '' : 'car__mud--hidden'}">
+        <rect x="40" y="28" width="330" height="130" fill="transparent"/>
+        ${mud.map(m => {
+          // Main splat + 2-3 small drip circles for a splash look
+          const drips = [
+            `<circle cx="${m.cx - m.rx * 0.8}" cy="${m.cy - m.ry * 0.6}" r="${m.rx * 0.18}" fill="rgba(101,67,33,${m.o * 0.8})"/>`,
+            `<circle cx="${m.cx + m.rx * 0.9}" cy="${m.cy + m.ry * 0.5}" r="${m.rx * 0.22}" fill="rgba(101,67,33,${m.o * 0.7})"/>`,
+            `<circle cx="${m.cx + m.rx * 0.3}" cy="${m.cy - m.ry * 0.9}" r="${m.rx * 0.14}" fill="rgba(101,67,33,${m.o * 0.6})"/>`,
+          ].join('');
+          return `<ellipse cx="${m.cx}" cy="${m.cy}" rx="${m.rx}" ry="${m.ry}" fill="rgba(101,67,33,${m.o})"/>${drips}`;
+        }).join('')}
       </g>`;
   }
 
@@ -135,6 +149,14 @@ const Car = (() => {
         { cx: 180, cy: 138, rx: 20, ry: 10, o: 0.45 },
       ],
       sticker: { x: 248, y: 86, w: 80, h: 50 },
+      mud: [
+        { cx: 80, cy: 145, rx: 30, ry: 12, o: 0.7 },
+        { cx: 150, cy: 135, rx: 35, ry: 14, o: 0.55 },
+        { cx: 240, cy: 148, rx: 28, ry: 10, o: 0.65 },
+        { cx: 310, cy: 140, rx: 32, ry: 13, o: 0.6 },
+        { cx: 120, cy: 110, rx: 18, ry: 10, o: 0.4 },
+        { cx: 280, cy: 105, rx: 20, ry: 8, o: 0.35 },
+      ],
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
@@ -225,6 +247,14 @@ const Car = (() => {
         { cx: 180, cy: 130, rx: 22, ry: 10, o: 0.45 },
       ],
       sticker: { x: 240, y: 72, w: 85, h: 55 },
+      mud: [
+        { cx: 75, cy: 145, rx: 32, ry: 12, o: 0.7 },
+        { cx: 160, cy: 135, rx: 36, ry: 14, o: 0.55 },
+        { cx: 250, cy: 148, rx: 28, ry: 11, o: 0.65 },
+        { cx: 320, cy: 138, rx: 30, ry: 13, o: 0.6 },
+        { cx: 130, cy: 100, rx: 20, ry: 10, o: 0.4 },
+        { cx: 290, cy: 95, rx: 18, ry: 9, o: 0.35 },
+      ],
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
@@ -315,6 +345,14 @@ const Car = (() => {
         { cx: 200, cy: 135, rx: 22, ry: 10, o: 0.45 },
       ],
       sticker: { x: 270, y: 92, w: 75, h: 42 },
+      mud: [
+        { cx: 85, cy: 148, rx: 28, ry: 10, o: 0.7 },
+        { cx: 170, cy: 140, rx: 34, ry: 12, o: 0.55 },
+        { cx: 260, cy: 150, rx: 26, ry: 10, o: 0.65 },
+        { cx: 330, cy: 142, rx: 30, ry: 11, o: 0.6 },
+        { cx: 140, cy: 118, rx: 18, ry: 9, o: 0.4 },
+        { cx: 300, cy: 112, rx: 16, ry: 8, o: 0.35 },
+      ],
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
@@ -412,6 +450,7 @@ const Car = (() => {
     const hasEngine = faults.includes('engine');
     const hasPaint = faults.includes('paint');
     const hasSticker = faults.includes('sticker');
+    const hasWash = faults.includes('wash');
 
     const el = document.createElement('div');
     el.className = `car car--${shape}`;
@@ -427,8 +466,9 @@ const Car = (() => {
         <div class="car__indicator car__indicator--engine ${hasEngine ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--paint ${hasPaint ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--sticker ${hasSticker ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
+        <div class="car__indicator car__indicator--wash ${hasWash ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
       </div>
-      ${templateFn({ skinColour, hairColour, hasFlatTyre, flatTyre, hasEngine, hasPaint, hasSticker })}
+      ${templateFn({ skinColour, hairColour, hasFlatTyre, flatTyre, hasEngine, hasPaint, hasSticker, hasWash })}
     `;
 
     // Apply flat tyre after DOM construction

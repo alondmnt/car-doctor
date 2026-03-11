@@ -189,5 +189,31 @@ const Repair = (() => {
     ];
   }
 
-  return { flatTyre, engine, paint, sticker };
+  /** Car wash — 1 step: select hose, tap mud → wash away with bubbles */
+  function wash(_car) {
+    return [
+      {
+        id: 'wash-car',
+        description: 'Select the hose and tap the mud',
+        target: '.car__mud',
+        tool: 'hose',
+        sound: 'splash',
+        action: (_el, carEl) => {
+          const mud = carEl.querySelector('.car__mud');
+          if (mud) {
+            mud.classList.add('car__mud--washing');
+            setTimeout(() => mud.classList.add('car__mud--hidden'), 800);
+          }
+          carEl.querySelector('.car__body').classList.add('car__body--sparkle');
+          carEl.querySelector('.car__roof').classList.add('car__roof--sparkle');
+          setTimeout(() => {
+            carEl.querySelector('.car__body').classList.remove('car__body--sparkle');
+            carEl.querySelector('.car__roof').classList.remove('car__roof--sparkle');
+          }, 800);
+        },
+      },
+    ];
+  }
+
+  return { flatTyre, engine, paint, sticker, wash };
 })();

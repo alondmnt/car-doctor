@@ -53,6 +53,24 @@ const Audio = (() => {
       setTimeout(() => _synth(784, 0.2, 'sine'), 240);
     },
     tap:     () => _synth(500, 0.05, 'square'),
+    splash:  () => {
+      // White noise burst for a water splash feel
+      if (!ctx) return;
+      const bufSize = ctx.sampleRate * 0.25;
+      const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 2000;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      src.connect(filter).connect(gain).connect(ctx.destination);
+      src.start();
+    },
   };
 
   function play(name) {

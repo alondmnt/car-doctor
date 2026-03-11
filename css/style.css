@@ -625,6 +625,36 @@ html, body {
   100% { filter: brightness(1); }
 }
 
+/* ===== Mud overlay states (car wash) ===== */
+.car__mud {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.8s;
+}
+.car__mud--hidden { display: none; }
+
+/* Washing — mud fades out with a blur */
+.car__mud--washing {
+  opacity: 0;
+  filter: blur(4px);
+}
+
+/* Sparkle after wash */
+.car__body--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
+.car__roof--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
+
+@keyframes wash-sparkle {
+  0%   { filter: brightness(1); }
+  30%  { filter: brightness(1.6) saturate(1.3); }
+  60%  { filter: brightness(1.3); }
+  100% { filter: brightness(1); }
+}
+
 /* ===== Sticker zone states ===== */
 .car__sticker-zone {
   pointer-events: none;
