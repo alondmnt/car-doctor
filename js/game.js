@@ -69,14 +69,6 @@ const Game = (() => {
     currentCar = Car.create(garage, { colour, faults, flatTyre });
     faultQueue = [...faults];
 
-    // Track seen fault types — auto-disable hints once all seen
-    faults.forEach(f => seenFaults.add(f));
-    const allFaultTypes = Object.keys(CONFIG.faultWeights);
-    if (CONFIG.hintsOn && allFaultTypes.every(f => seenFaults.has(f))) {
-      CONFIG.hintsOn = false;
-      document.getElementById('hint-btn').classList.add('hint-btn--off');
-    }
-
     startNextFault();
 
     // Slide car in
@@ -444,7 +436,15 @@ const Game = (() => {
           listenForTap();
         }, 400 / CONFIG.gameSpeed);
       } else {
-        // All faults fixed — award coins and drive away
+        // All faults fixed — track seen types and auto-disable hints
+        currentCar.faults.forEach(f => seenFaults.add(f));
+        const allFaultTypes = Object.keys(CONFIG.faultWeights);
+        if (CONFIG.hintsOn && allFaultTypes.every(f => seenFaults.has(f))) {
+          CONFIG.hintsOn = false;
+          document.getElementById('hint-btn').classList.add('hint-btn--off');
+        }
+
+        // Award coins and drive away
         addCoins(currentCar.faults.length);
         setTimeout(() => {
           if (generation !== gen) return;
