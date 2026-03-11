@@ -12,21 +12,73 @@ const Car = (() => {
 
   /* ─── SVG helpers (shared across shapes) ─── */
 
-  /** Wheel with rim spokes, hub, and 3 tappable lug-nut screws */
-  function _wheelSVG(cx, cy, r, position) {
-    const rim = r * 0.67;
-    const hub = r * 0.24;
+  /** Wheel with rim spokes, hub, and 3 tappable lug-nut screws.
+   *  @param {string} style - 'standard' | 'racing' | 'offroad' */
+  function _wheelSVG(cx, cy, r, position, style = 'standard') {
+    let rim, hub, spokeColour, spokeWidth, tyreInner;
+
+    switch (style) {
+      case 'racing':
+        rim = r * 0.72;        // thinner rim band
+        hub = r * 0.24;
+        spokeColour = '#ccc';
+        spokeWidth = 2;
+        tyreInner = r - 2;
+        break;
+      case 'offroad':
+        rim = r * 0.67;
+        hub = r * 0.30;        // larger hub
+        spokeColour = '#888';
+        spokeWidth = 5;         // thick spokes
+        tyreInner = r - 4;     // chunkier tyre
+        break;
+      default: // standard
+        rim = r * 0.67;
+        hub = r * 0.24;
+        spokeColour = '#aaa';
+        spokeWidth = 2.5;
+        tyreInner = r - 2;
+    }
+
     const sr = r * 0.17;              // screw visible radius
     const sd = rim * 0.72;            // screw distance from centre
     const touch = sr * 2.8;           // invisible touch-target radius
 
-    // 5 rim spokes
-    const spokes = [0, 72, 144, 216, 288].map(deg => {
-      const a = deg * Math.PI / 180;
-      const i = hub + 1, o = rim - 2;
-      return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
-             `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:#aaa;stroke-width:2.5"/>`;
-    }).join('');
+    // Spoke geometry varies by style
+    let spokes;
+    switch (style) {
+      case 'racing': {
+        // 10 thin spokes at 36° intervals
+        const angles = Array.from({ length: 10 }, (_, k) => k * 36);
+        spokes = angles.map(deg => {
+          const a = deg * Math.PI / 180;
+          const i = hub + 1, o = rim - 2;
+          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
+                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}"/>`;
+        }).join('');
+        break;
+      }
+      case 'offroad': {
+        // 3 thick spokes at 120° intervals
+        const angles = [0, 120, 240];
+        spokes = angles.map(deg => {
+          const a = deg * Math.PI / 180;
+          const i = hub + 1, o = rim - 2;
+          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
+                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}" stroke-linecap="round"/>`;
+        }).join('');
+        break;
+      }
+      default: {
+        // 5 standard spokes at 72° intervals
+        spokes = [0, 72, 144, 216, 288].map(deg => {
+          const a = deg * Math.PI / 180;
+          const i = hub + 1, o = rim - 2;
+          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
+                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}"/>`;
+        }).join('');
+      }
+    }
 
     // 3 lug nuts (120° apart, starting top)
     const nuts = [0, 120, 240].map((deg, i) => {
@@ -44,7 +96,7 @@ const Car = (() => {
 
     return `<g class="car__tyre car__tyre--${position}" data-position="${position}">
       <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}"/>
-      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${r-2}"/>
+      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${tyreInner}"/>
       <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}"/>
       ${spokes}
       <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}"/>
@@ -148,7 +200,7 @@ const Car = (() => {
 
   /** Sedan / taxi — classic proportions, taxi sign on roof */
   function _sedanSVG(opts) {
-    const { skinColour, hairColour } = opts;
+    const { skinColour, hairColour, wheelStyle } = opts;
     const wf = { cx: 100, cy: 158, r: 28 };
     const wr = { cx: 310, cy: 158, r: 28 };
 
@@ -240,14 +292,14 @@ const Car = (() => {
 
       <!-- Jack, wheels on top so body never covers them -->
       ${_jackSVG(200, 176)}
-      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
-      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front', wheelStyle)}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear', wheelStyle)}
     </svg>`;
   }
 
   /** SUV — taller, boxier, roof rack, bigger wheels */
   function _suvSVG(opts) {
-    const { skinColour, hairColour } = opts;
+    const { skinColour, hairColour, wheelStyle } = opts;
     const wf = { cx: 95, cy: 158, r: 30 };
     const wr = { cx: 305, cy: 158, r: 30 };
 
@@ -339,14 +391,14 @@ const Car = (() => {
       </g>
 
       ${_jackSVG(200, 176)}
-      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
-      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front', wheelStyle)}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear', wheelStyle)}
     </svg>`;
   }
 
   /** Sports car — low, long hood, aggressive, spoiler */
   function _sportsSVG(opts) {
-    const { skinColour, hairColour } = opts;
+    const { skinColour, hairColour, wheelStyle } = opts;
     const wf = { cx: 90, cy: 158, r: 26 };
     const wr = { cx: 315, cy: 158, r: 26 };
 
@@ -440,8 +492,8 @@ const Car = (() => {
       </g>
 
       ${_jackSVG(200, 176)}
-      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front')}
-      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear')}
+      ${_wheelSVG(wf.cx, wf.cy, wf.r, 'front', wheelStyle)}
+      ${_wheelSVG(wr.cx, wr.cy, wr.r, 'rear', wheelStyle)}
     </svg>`;
   }
 
@@ -476,6 +528,7 @@ const Car = (() => {
     const hairColour = _pick(HAIR_COLOURS);
     const templateFn = TEMPLATES[shape] || TEMPLATES.sedan;
 
+    const wheelStyle = _pick(CONFIG.wheelStyles);
     el.innerHTML = `
       <div class="car__dashboard">
         <div class="car__indicator car__indicator--tyre ${hasFlatTyre ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
@@ -484,7 +537,7 @@ const Car = (() => {
         <div class="car__indicator car__indicator--sticker ${hasSticker ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--wash ${hasWash ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
       </div>
-      ${templateFn({ skinColour, hairColour, hasFlatTyre, flatTyre, hasEngine, hasPaint, hasSticker, hasWash })}
+      ${templateFn({ skinColour, hairColour, hasFlatTyre, flatTyre, hasEngine, hasPaint, hasSticker, hasWash, wheelStyle })}
     `;
 
     // Apply flat tyre after DOM construction
