@@ -103,6 +103,9 @@ const Game = (() => {
     const weights = spawnRobot ? CONFIG.robotFaultWeights : CONFIG.faultWeights;
     const faults = _pickWeightedFaults(faultCount, weights);
 
+    // Swap garage theme for robots
+    garage.classList.toggle('garage--lab', spawnRobot);
+
     if (spawnRobot) {
       currentCar = Robot.create(garage, { colour, faults, flatTyre });
     } else {

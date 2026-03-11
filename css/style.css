@@ -123,6 +123,55 @@ html, body {
   background: linear-gradient(to bottom, #555, #777, #666);
 }
 
+/* ===== Robot lab theme ===== */
+.garage--lab {
+  background: #2a2d3a;
+}
+
+/* Metal floor */
+.garage--lab::after {
+  background: #3a3d4a;
+  border-top: 4px solid #555;
+}
+
+/* Monitor rack replaces pegboard */
+.garage--lab .garage-decor--pegboard {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 100'%3E%3Crect x='0' y='0' width='140' height='100' rx='3' fill='%23333' stroke='%23555' stroke-width='2'/%3E%3Crect x='8' y='8' width='56' height='38' rx='2' fill='%23111' stroke='%23444' stroke-width='1'/%3E%3Crect x='76' y='8' width='56' height='38' rx='2' fill='%23111' stroke='%23444' stroke-width='1'/%3E%3Cline x1='14' y1='20' x2='50' y2='20' stroke='%2344cc66' stroke-width='1.5' opacity='0.8'/%3E%3Cline x1='14' y1='26' x2='40' y2='26' stroke='%2344cc66' stroke-width='1.5' opacity='0.5'/%3E%3Cline x1='14' y1='32' x2='55' y2='32' stroke='%2344cc66' stroke-width='1.5' opacity='0.6'/%3E%3Ccircle cx='104' cy='22' r='8' fill='none' stroke='%234ae' stroke-width='1.5' opacity='0.7'/%3E%3Cpath d='M96,22 L104,18 L112,22 L104,30 Z' fill='none' stroke='%234ae' stroke-width='1' opacity='0.5'/%3E%3Crect x='82' y='34' width='20' height='4' rx='1' fill='%234ae' opacity='0.3'/%3E%3Ccircle cx='36' cy='70' r='3' fill='%23e63946'/%3E%3Ccircle cx='70' cy='70' r='3' fill='%232a9d8f'/%3E%3Ccircle cx='104' cy='70' r='3' fill='%23f4a261'/%3E%3Crect x='8' y='58' width='124' height='6' rx='1' fill='%23444'/%3E%3Crect x='26' y='80' width='88' height='12' rx='2' fill='%23222' stroke='%23444' stroke-width='1'/%3E%3Cline x1='34' y1='86' x2='106' y2='86' stroke='%2344cc66' stroke-width='1' opacity='0.4'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Grid floor markings replace chevrons + tyre tracks */
+.garage--lab .garage-decor--floor-marks {
+  background:
+    linear-gradient(to right,
+      rgba(100,120,180,0.15) 1px, transparent 1px
+    ) left top / 40px 100%,
+    linear-gradient(to bottom,
+      rgba(100,120,180,0.15) 1px, transparent 1px
+    ) left top / 100% 40px;
+}
+
+/* Cool white strip light replaces warm lamp */
+.garage--lab .garage-decor--lamp {
+  background: #555;
+}
+.garage--lab .garage-decor--lamp::before {
+  background: #666;
+}
+.garage--lab .garage-decor--lamp::after {
+  background: radial-gradient(ellipse at top center, rgba(180,200,255,0.15) 0%, transparent 65%);
+}
+
+/* Door frame — darker metallic */
+.garage--lab .garage-decor--door-frame {
+  background: linear-gradient(to right, #444, #666, #555, #444);
+}
+.garage--lab .garage-decor--door-frame::before {
+  background: linear-gradient(to bottom, #555, #444, #333);
+}
+.garage--lab .garage-decor--door-frame::after {
+  background: linear-gradient(to bottom, #333, #555, #444);
+}
+
 /* ===== Splash screen ===== */
 .splash {
   position: fixed; inset: 0;
