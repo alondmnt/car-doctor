@@ -353,20 +353,20 @@ const RobotRepair = (() => {
     ];
   }
 
-  /** Jetpack install — grab from warehouse, wrench to attach. Flames on success. */
+  /** Booster install — grab from warehouse (pick style), wrench to attach. Exit animation on success. */
   function jetpack(_car) {
     return [
       {
         id: 'grab-jetpack',
-        description: 'Grab the jetpack from the warehouse',
+        description: 'Grab the booster from the warehouse',
         warehouse: 'jetpack',
+        picker: 'booster',
         target: '.robot__jetpack',
         sound: 'pop',
-        action: (_el, carEl) => {
-          carEl.querySelectorAll('.robot__jetpack').forEach(g => {
-            g.classList.remove('robot__jetpack--hidden');
-            g.classList.add('robot__jetpack--visible');
-          });
+        action: (_el, carEl, picked) => {
+          const style = picked || 'jetpack';
+          // Replace booster SVG groups with chosen style
+          Robot.replaceBooster(carEl, style);
           // Hide mounting brackets
           const mount = carEl.querySelector('.robot__jetpack-mount');
           if (mount) mount.classList.add('robot__jetpack-mount--hidden');
@@ -374,7 +374,7 @@ const RobotRepair = (() => {
       },
       {
         id: 'attach-jetpack',
-        description: 'Bolt the jetpack on with a wrench',
+        description: 'Bolt the booster on with a wrench',
         target: '.robot__jetpack',
         tool: 'wrench',
         sound: 'ratchet',

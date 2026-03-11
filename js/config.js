@@ -23,6 +23,7 @@ const CONFIG = {
   robotChance: 0.7,              // probability of robot vs car once unlocked
   robotShapes: ['standard'],
   armStyles: ['standard'],       // unlockable: 'saw', 'screwdriver', 'hammer'
+  boosterStyles: ['jetpack'],    // unlockable: 'rocket', 'propeller', 'balloon'
   robotFaultWeights: {           // base faults (same keys as car)
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
   },
@@ -53,4 +54,6 @@ const UNLOCK_TIERS = [
     items: [] },
   { coins: 40, key: 'robotJetpack',   icon: '🚀', label: 'Jetpack!',
     items: [] },
+  { coins: 45, key: 'boosterStyles',  icon: '🎈', label: 'New boosters!',
+    items: ['rocket', 'propeller', 'balloon'] },
 ];

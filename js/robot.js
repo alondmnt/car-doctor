@@ -86,6 +86,119 @@ const Robot = (() => {
     },
   };
 
+  /** Booster style definitions — SVG generators for behind-torso, flames, and strap */
+  const BOOSTER_STYLES = {
+    jetpack: {
+      exitAnim: 'jetpack',
+      behind: () => `
+        <rect x="138" y="72" width="16" height="36" rx="4" fill="#666" stroke="#555" stroke-width="1.5"/>
+        <rect x="140" y="77" width="12" height="6" rx="2" fill="#888"/>
+        <rect x="140" y="87" width="12" height="6" rx="2" fill="#888"/>
+        <circle cx="146" cy="80" r="2" fill="#e63946"/>
+        <circle cx="146" cy="90" r="2" fill="#e63946"/>
+        <rect x="246" y="72" width="16" height="36" rx="4" fill="#666" stroke="#555" stroke-width="1.5"/>
+        <rect x="248" y="77" width="12" height="6" rx="2" fill="#888"/>
+        <rect x="248" y="87" width="12" height="6" rx="2" fill="#888"/>
+        <circle cx="254" cy="80" r="2" fill="#e63946"/>
+        <circle cx="254" cy="90" r="2" fill="#e63946"/>`,
+      flames: () => `
+        <ellipse cx="146" cy="112" rx="5" ry="10" fill="#ff6600" opacity="0.8"/>
+        <ellipse cx="147" cy="114" rx="3" ry="7" fill="#ffcc00" opacity="0.7"/>
+        <ellipse cx="254" cy="112" rx="5" ry="10" fill="#ff6600" opacity="0.8"/>
+        <ellipse cx="253" cy="114" rx="3" ry="7" fill="#ffcc00" opacity="0.7"/>`,
+      strap: () => `
+        <line x1="148" y1="82" x2="252" y2="82" stroke="#555" stroke-width="2.5"/>
+        <rect x="188" y="78" width="24" height="8" rx="2" fill="#777" stroke="#666" stroke-width="1"/>`,
+    },
+    rocket: {
+      exitAnim: 'rocket-boost',
+      behind: () => `
+        <rect x="140" y="68" width="14" height="44" rx="3" fill="#c44" stroke="#a33" stroke-width="1.5"/>
+        <rect x="142" y="72" width="10" height="10" rx="2" fill="#e63946"/>
+        <rect x="142" y="86" width="10" height="10" rx="2" fill="#e63946"/>
+        <circle cx="147" cy="77" r="2.5" fill="#fff" opacity="0.6"/>
+        <circle cx="147" cy="91" r="2.5" fill="#fff" opacity="0.6"/>
+        <rect x="246" y="68" width="14" height="44" rx="3" fill="#c44" stroke="#a33" stroke-width="1.5"/>
+        <rect x="248" y="72" width="10" height="10" rx="2" fill="#e63946"/>
+        <rect x="248" y="86" width="10" height="10" rx="2" fill="#e63946"/>
+        <circle cx="253" cy="77" r="2.5" fill="#fff" opacity="0.6"/>
+        <circle cx="253" cy="91" r="2.5" fill="#fff" opacity="0.6"/>`,
+      flames: () => `
+        <ellipse cx="147" cy="116" rx="6" ry="14" fill="#ff4400" opacity="0.9"/>
+        <ellipse cx="147" cy="118" rx="3" ry="10" fill="#ffcc00" opacity="0.8"/>
+        <ellipse cx="253" cy="116" rx="6" ry="14" fill="#ff4400" opacity="0.9"/>
+        <ellipse cx="253" cy="118" rx="3" ry="10" fill="#ffcc00" opacity="0.8"/>`,
+      strap: () => `
+        <line x1="148" y1="82" x2="252" y2="82" stroke="#a33" stroke-width="3"/>
+        <rect x="186" y="76" width="28" height="12" rx="3" fill="#c44" stroke="#a33" stroke-width="1"/>`,
+    },
+    propeller: {
+      exitAnim: 'propeller',
+      behind: () => `
+        <rect x="192" y="-12" width="16" height="16" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
+        <circle cx="200" cy="-4" r="3" fill="#555"/>`,
+      flames: () => `
+        <line x1="172" y1="-4" x2="228" y2="-4" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="172" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>
+        <ellipse cx="228" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>`,
+      strap: () => '',
+    },
+    balloon: {
+      exitAnim: 'balloon',
+      behind: () => `
+        <line x1="200" y1="-5" x2="200" y2="10" stroke="#888" stroke-width="1.5"/>`,
+      flames: () => `
+        <ellipse cx="200" cy="-30" rx="22" ry="28" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
+        <ellipse cx="200" cy="-30" rx="22" ry="28" fill="url(#balloonShine)" opacity="0.3"/>
+        <path d="M196,-3 L200,-5 L204,-3" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
+      strap: () => '',
+    },
+  };
+
+  /** Build booster behind-torso SVG for a given style */
+  function _boosterBehindSVG(style) {
+    const s = BOOSTER_STYLES[style] || BOOSTER_STYLES.jetpack;
+    return s.behind();
+  }
+
+  /** Build booster flames SVG */
+  function _boosterFlamesSVG(style) {
+    const s = BOOSTER_STYLES[style] || BOOSTER_STYLES.jetpack;
+    return s.flames();
+  }
+
+  /** Build booster chest strap SVG */
+  function _boosterStrapSVG(style) {
+    const s = BOOSTER_STYLES[style] || BOOSTER_STYLES.jetpack;
+    return s.strap();
+  }
+
+  /** Small standalone booster SVG for picker thumbnails */
+  function boosterPreviewSVG(style) {
+    const s = BOOSTER_STYLES[style] || BOOSTER_STYLES.jetpack;
+    // Render a compact preview centred on a small viewBox
+    const previews = {
+      jetpack: `<rect x="6" y="8" width="10" height="24" rx="3" fill="#666" stroke="#555" stroke-width="1"/>
+        <rect x="24" y="8" width="10" height="24" rx="3" fill="#666" stroke="#555" stroke-width="1"/>
+        <circle cx="11" cy="16" r="2" fill="#e63946"/><circle cx="29" cy="16" r="2" fill="#e63946"/>
+        <ellipse cx="11" cy="36" rx="3" ry="6" fill="#ff6600" opacity="0.8"/>
+        <ellipse cx="29" cy="36" rx="3" ry="6" fill="#ff6600" opacity="0.8"/>`,
+      rocket: `<rect x="6" y="6" width="10" height="28" rx="3" fill="#c44" stroke="#a33" stroke-width="1"/>
+        <rect x="24" y="6" width="10" height="28" rx="3" fill="#c44" stroke="#a33" stroke-width="1"/>
+        <circle cx="11" cy="14" r="2.5" fill="#fff" opacity="0.6"/><circle cx="29" cy="14" r="2.5" fill="#fff" opacity="0.6"/>
+        <ellipse cx="11" cy="38" rx="4" ry="8" fill="#ff4400" opacity="0.9"/>
+        <ellipse cx="29" cy="38" rx="4" ry="8" fill="#ff4400" opacity="0.9"/>`,
+      propeller: `<rect x="16" y="18" width="8" height="10" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
+        <circle cx="20" cy="23" r="2" fill="#555"/>
+        <line x1="4" y1="16" x2="36" y2="16" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="6" cy="16" rx="6" ry="2.5" fill="#ccc"/><ellipse cx="34" cy="16" rx="6" ry="2.5" fill="#ccc"/>`,
+      balloon: `<ellipse cx="20" cy="14" rx="14" ry="18" fill="#e63946" stroke="#c33" stroke-width="1"/>
+        <line x1="20" y1="32" x2="20" y2="42" stroke="#888" stroke-width="1.5"/>
+        <path d="M17,42 L20,40 L23,42" fill="#e63946"/>`,
+    };
+    return `<svg viewBox="0 0 40 48" width="40" height="48">${previews[style] || previews.jetpack}</svg>`;
+  }
+
   /** Accordion arm — zigzag path with shoulder rivet and tool hand */
   function _armSVG(x, y, w, h, side, style = 'standard') {
     const s = ARM_STYLES[style] || ARM_STYLES.standard;
@@ -423,11 +536,11 @@ const Robot = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
-          // Jetpack fault fixed → launch exit with flames
-          const useJetpack = faults.includes('jetpack');
+          // Booster installed → use its exit animation; otherwise random (no rocket)
+          const boosterExit = el.dataset.boosterExit;
           const robotAnims = CONFIG.exitAnimations.filter(a => a !== 'rocket');
-          const anim = useJetpack ? 'jetpack' : _pick(robotAnims);
-          if (useJetpack) {
+          const anim = boosterExit || _pick(robotAnims);
+          if (boosterExit) {
             const flames = el.querySelector('.robot__jetpack-flames');
             if (flames) {
               flames.classList.remove('robot__jetpack-flames--hidden');
@@ -447,5 +560,34 @@ const Robot = (() => {
     };
   }
 
-  return { create, armPreviewSVG, replacementArmSVG };
+  /** Replace booster SVG groups with chosen style and show them */
+  function replaceBooster(carEl, style) {
+    const s = BOOSTER_STYLES[style] || BOOSTER_STYLES.jetpack;
+
+    // Replace behind-torso thrusters
+    const behind = carEl.querySelector('.robot__jetpack');
+    if (behind) {
+      behind.innerHTML = s.behind();
+      behind.classList.remove('robot__jetpack--hidden');
+      behind.classList.add('robot__jetpack--visible');
+    }
+
+    // Replace flames
+    const flames = carEl.querySelector('.robot__jetpack-flames');
+    if (flames) flames.innerHTML = s.flames();
+
+    // Replace/show chest strap (second .robot__jetpack group)
+    const allJetpack = carEl.querySelectorAll('.robot__jetpack');
+    if (allJetpack.length > 1) {
+      const strap = allJetpack[1];
+      strap.innerHTML = s.strap();
+      strap.classList.remove('robot__jetpack--hidden');
+      strap.classList.add('robot__jetpack--visible');
+    }
+
+    // Store chosen exit animation on the element
+    carEl.dataset.boosterExit = s.exitAnim;
+  }
+
+  return { create, armPreviewSVG, replacementArmSVG, boosterPreviewSVG, replaceBooster };
 })();

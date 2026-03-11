@@ -1069,6 +1069,18 @@ html, body {
   overflow: visible;
   animation: exit-jetpack 1.6s cubic-bezier(0.3, 0, 0.7, 1) forwards;
 }
+.car--exit-rocket-boost {
+  overflow: visible;
+  animation: exit-rocket-boost 1.2s cubic-bezier(0.2, 0, 1, 1) forwards;
+}
+.car--exit-propeller {
+  overflow: visible;
+  animation: exit-propeller 2.2s ease-in-out forwards;
+}
+.car--exit-balloon {
+  overflow: visible;
+  animation: exit-balloon 2.8s cubic-bezier(0.1, 0.4, 0.3, 1) forwards;
+}
 
 /* ===== Keyframes ===== */
 @keyframes pulse {
@@ -1132,6 +1144,31 @@ html, body {
   10%  { transform: translateY(4px) scale(1); }
   25%  { transform: translateY(0) scale(1.02); }
   100% { transform: translateY(-120vh) scale(0.8); }
+}
+
+@keyframes exit-rocket-boost {
+  0%   { transform: translateX(0) scale(1); }
+  8%   { transform: translateX(6px) scale(1.04); }
+  15%  { transform: translateX(3px) scale(1.04); }
+  100% { transform: translateX(-140vw) scale(1.04); }
+}
+
+@keyframes exit-propeller {
+  0%   { transform: translateY(0) rotate(0); }
+  15%  { transform: translateY(-2px) rotate(1deg); }
+  30%  { transform: translateY(-15px) rotate(-1.5deg); }
+  50%  { transform: translateY(-40px) rotate(1deg); }
+  70%  { transform: translateY(-80px) rotate(-1deg); }
+  100% { transform: translateY(-120vh) rotate(0.5deg); }
+}
+
+@keyframes exit-balloon {
+  0%   { transform: translateY(0) scale(1); }
+  20%  { transform: translateY(-8px) scale(1); }
+  40%  { transform: translateY(-30px) translateX(8px) scale(0.98); }
+  60%  { transform: translateY(-70px) translateX(-5px) scale(0.95); }
+  80%  { transform: translateY(-130px) translateX(6px) scale(0.9); }
+  100% { transform: translateY(-120vh) translateX(0) scale(0.8); }
 }
 
 /* ===== Robot SVG paint — fill via CSS variable ===== */
