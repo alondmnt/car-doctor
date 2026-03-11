@@ -680,11 +680,14 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   z-index: 30;
   padding: 12px 16px;
+  max-width: 90vw;
   background: rgba(0,0,0,0.6);
-  border-radius: 30px;
+  border-radius: 20px;
   animation: picker-slide-up 0.3s ease-out;
 }
 
