@@ -16,4 +16,19 @@ const CONFIG = {
     wash: 2,
   },
   multiFaultChance: 0.3,    // chance of 2 faults per car
+  wheelStyles: ['standard'],  // unlockable: 'racing', 'offroad'
 };
+
+/** Progression tiers — earn coins to unlock new content */
+const UNLOCK_TIERS = [
+  { coins: 5,  key: 'stickers',  icon: '⭐', label: 'New stickers!',
+    items: ['🎸', '🦄', '🪐', '🍕', '🎯', '🐙', '🦊', '🌊'] },
+  { coins: 10, key: 'carPalette', icon: '🎨', label: 'New colours!',
+    items: ['#c0c0c0', '#ffd700', '#ff00ff', '#00ffcc', '#ff4500', '#7b68ee'] },
+  { coins: 15, key: 'wheelStyles', icon: '🛞', label: 'New wheels!',
+    items: ['racing', 'offroad'] },
+  { coins: 20, key: 'robotDoctor', icon: '🤖', label: 'Robot Doctor!',
+    items: [] },   // stub — needs #7
+  { coins: 30, key: 'newFaults',   icon: '🔧', label: 'New faults!',
+    items: [] },   // stub — needs new fault types
+];
