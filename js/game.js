@@ -417,7 +417,7 @@ const Game = (() => {
     part.className = `warehouse__part warehouse__part--${partType}`;
 
     // Visual label
-    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🔩', chip: '💾', jetpack: '🎒' };
+    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒' };
     part.textContent = icons[partType] || '📦';
 
     function grab(e) {

@@ -222,7 +222,7 @@ const RobotRepair = (() => {
 
   /* ─── Upgrade faults (robot-only) ─── */
 
-  /** Arm joint — grab new joint, bolt it on, test arm movement */
+  /** Arm joint — grab new joint, bolt it on with wrench, test arm movement */
   function armJoint(_car) {
     return [
       {
@@ -237,9 +237,9 @@ const RobotRepair = (() => {
       },
       {
         id: 'bolt-joint',
-        description: 'Bolt the joint on with the drill',
+        description: 'Bolt the joint on with a wrench',
         target: '.robot__arm--left',
-        tool: 'drill',
+        tool: 'wrench',
         sound: 'ratchet',
         action: (el, carEl) => {
           const dmg = carEl.querySelector('.robot__arm-damage');
