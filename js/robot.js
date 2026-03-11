@@ -89,8 +89,8 @@ const Robot = (() => {
         <line class="robot__spark robot__spark--4" x1="${sparkX-4}" y1="${sparkY+6}" x2="${sparkX-12}" y2="${sparkY+16}" style="stroke:#ffaa00;stroke-width:1.5"/>
       </g>
 
-      <!-- Chest panel (bonnet equivalent — opens to reveal power core) -->
-      <g class="robot__chest-panel ${hasEngine ? '' : 'robot__chest-panel--hidden'}">
+      <!-- Chest panel (bonnet equivalent — opens to reveal power core or voice slot) -->
+      <g class="robot__chest-panel ${(hasEngine || hasVoiceModule) ? '' : 'robot__chest-panel--hidden'}">
         <rect class="robot__chest-panel-lid svg-robot-paint" x="168" y="68" width="64" height="30" rx="2" opacity="0.9"/>
         <rect x="168" y="68" width="64" height="50" fill="transparent"/>
       </g>
