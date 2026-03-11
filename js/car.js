@@ -14,9 +14,18 @@ const Car = (() => {
 
   /** Wheel style definitions — shared by renderer and picker */
   const WHEEL_STYLES = {
-    standard: { rim: 0.67, hub: 0.24, spokeCount: 5, spokeColour: '#aaa', spokeWidth: 2.5, tyrePad: 2 },
-    racing:   { rim: 0.72, hub: 0.24, spokeCount: 10, spokeColour: '#ccc', spokeWidth: 2, tyrePad: 2 },
-    offroad:  { rim: 0.67, hub: 0.30, spokeCount: 3, spokeColour: '#888', spokeWidth: 5, tyrePad: 4, roundCap: true },
+    standard: {
+      rim: 0.67, hub: 0.24, spokeCount: 5, spokeColour: '#aaa', spokeWidth: 2.5, tyrePad: 2,
+      rubberFill: '#1a1a1a', rimFill: '#d0d0d0', hubFill: '#e0e0e0',
+    },
+    racing: {
+      rim: 0.75, hub: 0.20, spokeCount: 10, spokeColour: '#e0e0e0', spokeWidth: 1.5, tyrePad: 1,
+      rubberFill: '#111', rimFill: '#ffcc00', hubFill: '#ff4444',
+    },
+    offroad: {
+      rim: 0.58, hub: 0.30, spokeCount: 3, spokeColour: '#665544', spokeWidth: 6, tyrePad: 5, roundCap: true,
+      rubberFill: '#2a2216', rimFill: '#8b7355', hubFill: '#aa8866',
+    },
   };
 
   /** Wheel with rim spokes, hub, and 3 tappable lug-nut screws.
@@ -56,11 +65,11 @@ const Car = (() => {
     }).join('');
 
     return `<g class="car__tyre car__tyre--${position}" data-position="${position}">
-      <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}"/>
-      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${tyreInner}"/>
-      <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}"/>
+      <circle class="car__tyre-rubber" cx="${cx}" cy="${cy}" r="${r}" fill="${s.rubberFill}"/>
+      <circle class="car__tyre-inner" cx="${cx}" cy="${cy}" r="${tyreInner}" fill="${s.rubberFill}"/>
+      <circle class="car__tyre-rim" cx="${cx}" cy="${cy}" r="${rim}" fill="${s.rimFill}" stroke="${s.rimFill}" stroke-opacity="0.5"/>
       ${spokes}
-      <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}"/>
+      <circle class="car__tyre-hub" cx="${cx}" cy="${cy}" r="${hub}" fill="${s.hubFill}" stroke="${s.hubFill}" stroke-opacity="0.5"/>
       ${nuts}
     </g>`;
   }

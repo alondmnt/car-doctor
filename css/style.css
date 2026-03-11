@@ -570,11 +570,10 @@ html, body {
   transition: transform 0.3s ease-out;
 }
 
-/* ===== Tyre colours (protected from paint inheritance) ===== */
-.car__tyre-rubber { fill: #1a1a1a !important; stroke: #333; stroke-width: 2; }
-.car__tyre-inner  { fill: #222 !important; }
-.car__tyre-rim    { fill: #d0d0d0 !important; stroke: #bbb; stroke-width: 1; }
-.car__tyre-hub    { fill: #e0e0e0 !important; stroke: #ccc; stroke-width: 1; }
+/* ===== Tyre colours (fallbacks — inline fills from WHEEL_STYLES take precedence) ===== */
+.car__tyre-rubber { stroke: #333; stroke-width: 2; }
+.car__tyre-rim    { stroke-width: 1; }
+.car__tyre-hub    { stroke-width: 1; }
 
 /* ===== Tyre states ===== */
 .car__tyre {
