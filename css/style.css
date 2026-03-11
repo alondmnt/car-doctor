@@ -1262,6 +1262,18 @@ html, body {
   0%, 100% { transform: rotate(8deg); }
   50%      { transform: rotate(12deg); }
 }
+.robot__arm--test {
+  animation: arm-test-wave 0.6s ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+@keyframes arm-test-wave {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-15deg); }
+  50%  { transform: rotate(10deg); }
+  75%  { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
 
 /* Leg states */
 .robot__leg--bent {
@@ -1269,10 +1281,20 @@ html, body {
   transform-origin: center top;
   transform: rotate(10deg) translateX(-4px);
 }
+.robot__leg--fixed {
+  animation: svg-bounce 0.4s ease-out;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
 .robot__leg-damage--hidden { display: none; }
 
 /* Voice module */
 .robot__voice-slot--hidden { display: none; }
+.robot__voice-slot--installed {
+  animation: svg-bounce 0.3s ease-out;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
 .robot__speech-bubble--hidden { display: none; }
 .robot__speech-bubble--visible {
   animation: speech-appear 0.5s ease-out;
