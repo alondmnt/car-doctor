@@ -60,15 +60,16 @@ const Repair = (() => {
         id: 'add-new-tyre',
         description: 'Grab the new tyre from the shelf',
         warehouse: 'tyre',
+        picker: 'wheel',
         target: tyreSelector,
         sound: 'pop',
-        action: (el) => {
-          // Replace SVG content with a fresh wheel (may have an unlocked style)
+        action: (el, _carEl, picked) => {
+          // Replace SVG content with chosen (or default) wheel style
           const cx = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cx'));
           const cy = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cy'));
           const r = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('r'));
           const position = el.dataset.position;
-          const fresh = Car.replacementWheelSVG(cx, cy, r, position);
+          const fresh = Car.replacementWheelSVG(cx, cy, r, position, picked);
           el.outerHTML = fresh;
           // Re-query the new element and animate
           const parent = document.querySelector(tyreSelector);

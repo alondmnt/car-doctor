@@ -12,6 +12,11 @@ const Game = (() => {
   let generation = 0;  // incremented on reset/new car to cancel stale callbacks
   const seenFaults = new Set();  // auto-disable hints once all fault types seen
 
+  /** Part picker registry — each entry provides available styles and a preview renderer */
+  const PARTS = {
+    wheel: { styles: () => CONFIG.wheelStyles, preview: (s) => Car.wheelPreviewSVG(s) },
+  };
+
   function init() {
     garage = document.getElementById('garage');
     garage.style.setProperty('--garage-colour', CONFIG.garageColour);
@@ -267,7 +272,14 @@ const Game = (() => {
 
     if (step.warehouse) {
       showWarehousePart(step.warehouse, () => {
-        onStepComplete(step, target);
+        // If step also has a part picker, show it after the warehouse grab
+        if (step.picker && PARTS[step.picker]) {
+          showPartPicker(step.picker, (picked) => {
+            onStepComplete(step, target, picked);
+          });
+        } else {
+          onStepComplete(step, target);
+        }
       });
     } else if (step.picker === 'colour') {
       showColourPicker((chosenColour) => {
@@ -485,15 +497,45 @@ const Game = (() => {
     garage.appendChild(picker);
   }
 
+  /** Generic part style picker — looks up the PARTS registry for previews.
+   *  Auto-selects if only one style is available. */
+  function showPartPicker(partType, onPick) {
+    const reg = PARTS[partType];
+    if (!reg) return;
+    const styles = reg.styles();
+    if (styles.length <= 1) { onPick(styles[0]); return; }
+
+    const picker = document.createElement('div');
+    picker.className = 'part-picker';
+    let picked = false;
+    styles.forEach(style => {
+      const btn = document.createElement('div');
+      btn.className = 'part-picker__option';
+      btn.innerHTML = reg.preview(style);
+      function pick(e) {
+        e.preventDefault();
+        if (picked) return;
+        picked = true;
+        Audio.play('pop');
+        btn.classList.add('part-picker__option--selected');
+        setTimeout(() => { picker.remove(); onPick(style); }, 200);
+      }
+      btn.addEventListener('click', pick);
+      btn.addEventListener('touchend', pick);
+      picker.appendChild(btn);
+    });
+    garage.appendChild(picker);
+  }
+
   /** Handle step completion */
-  function onStepComplete(step, targetEl) {
+  function onStepComplete(step, targetEl, picked) {
     busy = true;
     const gen = generation;
     clearHighlights();
 
-    // Execute step action
+    // Execute step action (pass picked value from part picker if present)
     Audio.play(step.sound);
-    step.action(targetEl, currentCar.el);
+    step.action(targetEl, currentCar.el, picked);
 
     stepIndex++;
 

@@ -12,73 +12,34 @@ const Car = (() => {
 
   /* ─── SVG helpers (shared across shapes) ─── */
 
-  /** Wheel with rim spokes, hub, and 3 tappable lug-nut screws.
-   *  @param {string} style - 'standard' | 'racing' | 'offroad' */
-  function _wheelSVG(cx, cy, r, position, style = 'standard') {
-    let rim, hub, spokeColour, spokeWidth, tyreInner;
+  /** Wheel style definitions — shared by renderer and picker */
+  const WHEEL_STYLES = {
+    standard: { rim: 0.67, hub: 0.24, spokeCount: 5, spokeColour: '#aaa', spokeWidth: 2.5, tyrePad: 2 },
+    racing:   { rim: 0.72, hub: 0.24, spokeCount: 10, spokeColour: '#ccc', spokeWidth: 2, tyrePad: 2 },
+    offroad:  { rim: 0.67, hub: 0.30, spokeCount: 3, spokeColour: '#888', spokeWidth: 5, tyrePad: 4, roundCap: true },
+  };
 
-    switch (style) {
-      case 'racing':
-        rim = r * 0.72;        // thinner rim band
-        hub = r * 0.24;
-        spokeColour = '#ccc';
-        spokeWidth = 2;
-        tyreInner = r - 2;
-        break;
-      case 'offroad':
-        rim = r * 0.67;
-        hub = r * 0.30;        // larger hub
-        spokeColour = '#888';
-        spokeWidth = 5;         // thick spokes
-        tyreInner = r - 4;     // chunkier tyre
-        break;
-      default: // standard
-        rim = r * 0.67;
-        hub = r * 0.24;
-        spokeColour = '#aaa';
-        spokeWidth = 2.5;
-        tyreInner = r - 2;
-    }
+  /** Wheel with rim spokes, hub, and 3 tappable lug-nut screws.
+   *  @param {string} style - key in WHEEL_STYLES */
+  function _wheelSVG(cx, cy, r, position, style = 'standard') {
+    const s = WHEEL_STYLES[style] || WHEEL_STYLES.standard;
+    const rim = r * s.rim;
+    const hub = r * s.hub;
+    const tyreInner = r - s.tyrePad;
 
     const sr = r * 0.17;              // screw visible radius
     const sd = rim * 0.72;            // screw distance from centre
     const touch = sr * 2.8;           // invisible touch-target radius
 
-    // Spoke geometry varies by style
-    let spokes;
-    switch (style) {
-      case 'racing': {
-        // 10 thin spokes at 36° intervals
-        const angles = Array.from({ length: 10 }, (_, k) => k * 36);
-        spokes = angles.map(deg => {
-          const a = deg * Math.PI / 180;
-          const i = hub + 1, o = rim - 2;
-          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
-                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}"/>`;
-        }).join('');
-        break;
-      }
-      case 'offroad': {
-        // 3 thick spokes at 120° intervals
-        const angles = [0, 120, 240];
-        spokes = angles.map(deg => {
-          const a = deg * Math.PI / 180;
-          const i = hub + 1, o = rim - 2;
-          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
-                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}" stroke-linecap="round"/>`;
-        }).join('');
-        break;
-      }
-      default: {
-        // 5 standard spokes at 72° intervals
-        spokes = [0, 72, 144, 216, 288].map(deg => {
-          const a = deg * Math.PI / 180;
-          const i = hub + 1, o = rim - 2;
-          return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
-                 `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" style="stroke:${spokeColour};stroke-width:${spokeWidth}"/>`;
-        }).join('');
-      }
-    }
+    // Generate spokes from style data
+    const angles = Array.from({ length: s.spokeCount }, (_, k) => k * (360 / s.spokeCount));
+    const spokes = angles.map(deg => {
+      const a = deg * Math.PI / 180;
+      const i = hub + 1, o = rim - 2;
+      return `<line x1="${cx + Math.cos(a)*i}" y1="${cy + Math.sin(a)*i}" ` +
+             `x2="${cx + Math.cos(a)*o}" y2="${cy + Math.sin(a)*o}" ` +
+             `style="stroke:${s.spokeColour};stroke-width:${s.spokeWidth}"${s.roundCap ? ' stroke-linecap="round"' : ''}/>`;
+    }).join('');
 
     // 3 lug nuts (120° apart, starting top)
     const nuts = [0, 120, 240].map((deg, i) => {
@@ -593,11 +554,16 @@ const Car = (() => {
     };
   }
 
-  /** Build replacement tyre SVG for flat-tyre repair (picks a random unlocked style) */
-  function replacementWheelSVG(cx, cy, r, position) {
-    const style = _pick(CONFIG.wheelStyles);
+  /** Build replacement tyre SVG for flat-tyre repair */
+  function replacementWheelSVG(cx, cy, r, position, style) {
+    style = style || _pick(CONFIG.wheelStyles);
     return _wheelSVG(cx, cy, r, position, style);
   }
 
-  return { create, replacementWheelSVG };
+  /** Small standalone wheel SVG for picker thumbnails */
+  function wheelPreviewSVG(style) {
+    return `<svg viewBox="0 0 60 60" width="48" height="48">${_wheelSVG(30, 30, 26, 'preview', style)}</svg>`;
+  }
+
+  return { create, replacementWheelSVG, wheelPreviewSVG };
 })();

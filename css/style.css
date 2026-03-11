@@ -852,6 +852,42 @@ html, body {
   100% { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
+/* ===== Part picker (generic — wheels, arms, boosters, etc.) ===== */
+.part-picker {
+  position: fixed;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 30;
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 20px;
+  animation: picker-slide-up 0.3s ease-out;
+}
+.part-picker__option {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 3px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.part-picker__option:active {
+  transform: scale(0.85);
+}
+.part-picker__option--selected {
+  border-color: #2a9d8f;
+  background: rgba(42,157,143,0.25);
+  transform: scale(1.1);
+}
+
 /* ===== Jack states ===== */
 .car__jack {
   cursor: pointer;
