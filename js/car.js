@@ -121,10 +121,11 @@ const Car = (() => {
         <rect x="40" y="28" width="330" height="130" fill="transparent"/>
         ${mud.map(m => {
           // Main splat + 2-3 small drip circles for a splash look
+          // Small satellite droplets just outside the main splat edge
           const drips = [
-            `<circle cx="${m.cx - m.rx * 0.8}" cy="${m.cy - m.ry * 0.6}" r="${m.rx * 0.22}" fill="rgba(139,90,43,${m.o * 0.9})"/>`,
-            `<circle cx="${m.cx + m.rx * 0.9}" cy="${m.cy + m.ry * 0.5}" r="${m.rx * 0.26}" fill="rgba(139,90,43,${m.o * 0.85})"/>`,
-            `<circle cx="${m.cx + m.rx * 0.3}" cy="${m.cy - m.ry * 0.9}" r="${m.rx * 0.18}" fill="rgba(139,90,43,${m.o * 0.75})"/>`,
+            `<circle cx="${m.cx - m.rx - 3}" cy="${m.cy - 2}" r="${Math.max(2, m.rx * 0.12)}" fill="rgba(139,90,43,${m.o * 0.9})"/>`,
+            `<circle cx="${m.cx + m.rx + 4}" cy="${m.cy + 1}" r="${Math.max(2.5, m.rx * 0.14)}" fill="rgba(139,90,43,${m.o * 0.85})"/>`,
+            `<circle cx="${m.cx + 2}" cy="${m.cy - m.ry - 3}" r="${Math.max(1.5, m.rx * 0.1)}" fill="rgba(139,90,43,${m.o * 0.75})"/>`,
           ].join('');
           return `<ellipse cx="${m.cx}" cy="${m.cy}" rx="${m.rx}" ry="${m.ry}" fill="rgba(139,90,43,${m.o})"/>${drips}`;
         }).join('')}
@@ -156,7 +157,7 @@ const Car = (() => {
         { cx: 320, cy: 135, rx: 32, ry: 13, o: 0.7 },
         { cx: 110, cy: 98, rx: 20, ry: 10, o: 0.5 },
         { cx: 270, cy: 90, rx: 22, ry: 9, o: 0.45 },
-        { cx: 185, cy: 60, rx: 14, ry: 8, o: 0.35 },
+        { cx: 300, cy: 60, rx: 14, ry: 8, o: 0.35 },
       ],
     });
 
@@ -255,7 +256,7 @@ const Car = (() => {
         { cx: 320, cy: 132, rx: 30, ry: 13, o: 0.7 },
         { cx: 120, cy: 85, rx: 22, ry: 10, o: 0.5 },
         { cx: 280, cy: 80, rx: 20, ry: 9, o: 0.45 },
-        { cx: 200, cy: 40, rx: 16, ry: 8, o: 0.35 },
+        { cx: 300, cy: 45, rx: 16, ry: 8, o: 0.35 },
       ],
     });
 
