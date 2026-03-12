@@ -1528,3 +1528,317 @@ html, body {
 .robot__head-box.robot__head--sparkle {
   animation: wash-sparkle 0.8s ease-out;
 }
+
+/* ===== Space hangar theme ===== */
+.garage--hangar {
+  background: #1a1a2e;
+}
+
+/* Metallic floor with blue accent */
+.garage--hangar::after {
+  background: #252540;
+  border-top: 4px solid #4a4a8a;
+}
+
+/* Star chart replaces pegboard */
+.garage--hangar .garage-decor--pegboard {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 100'%3E%3Crect x='0' y='0' width='140' height='100' rx='3' fill='%231a1a30' stroke='%23444480' stroke-width='2'/%3E%3Crect x='4' y='4' width='132' height='92' rx='2' fill='%230d0d20'/%3E%3Ccircle cx='30' cy='25' r='1.5' fill='%23ffe066' opacity='0.8'/%3E%3Ccircle cx='65' cy='18' r='1' fill='%23fff' opacity='0.6'/%3E%3Ccircle cx='95' cy='30' r='1.5' fill='%234ae' opacity='0.7'/%3E%3Ccircle cx='110' cy='15' r='1' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='45' cy='50' r='1.5' fill='%23fff' opacity='0.7'/%3E%3Ccircle cx='80' cy='55' r='1' fill='%23ffe066' opacity='0.6'/%3E%3Ccircle cx='120' cy='60' r='1.5' fill='%234ae' opacity='0.5'/%3E%3Ccircle cx='25' cy='75' r='1' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='70' cy='80' r='1.5' fill='%23ffe066' opacity='0.6'/%3E%3Ccircle cx='105' cy='78' r='1' fill='%23fff' opacity='0.4'/%3E%3Cline x1='30' y1='25' x2='65' y2='18' stroke='%23446' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='65' y1='18' x2='95' y2='30' stroke='%23446' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='45' y1='50' x2='80' y2='55' stroke='%23446' stroke-width='0.5' opacity='0.3'/%3E%3Ccircle cx='55' cy='42' r='12' fill='none' stroke='%23446' stroke-width='0.5' opacity='0.3'/%3E%3C/svg%3E") no-repeat bottom / contain;
+}
+
+/* Landing pad markings replace floor chevrons */
+.garage--hangar .garage-decor--floor-marks {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(100,100,180,0.2) 0px, rgba(100,100,180,0.2) 2px,
+      transparent 2px, transparent 40px
+    ) left top / 100% 100%,
+    radial-gradient(ellipse at 50% 50%, rgba(100,120,200,0.12) 0%, transparent 60%);
+}
+
+/* Blue/purple overhead glow */
+.garage--hangar .garage-decor--lamp {
+  background: #444;
+}
+.garage--hangar .garage-decor--lamp::before {
+  background: #555;
+}
+.garage--hangar .garage-decor--lamp::after {
+  background: radial-gradient(ellipse at top center, rgba(100,120,220,0.18) 0%, transparent 65%);
+}
+
+/* Airlock-style door frame */
+.garage--hangar .garage-decor--door-frame {
+  background: linear-gradient(to right, #333, #556, #445, #333);
+}
+.garage--hangar .garage-decor--door-frame::before {
+  background: linear-gradient(to bottom, #445, #334, #223);
+}
+.garage--hangar .garage-decor--door-frame::after {
+  background: linear-gradient(to bottom, #223, #445, #334);
+}
+
+/* Space parts shelf (spare wings, fuel cells, antenna) */
+.garage--hangar .garage-decor--parts-shelf {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 140'%3E%3Crect x='2' y='2' width='96' height='136' rx='2' fill='%231a1a30' stroke='%23444480' stroke-width='1.5'/%3E%3C!-- Top shelf --%3E%3Crect x='6' y='28' width='88' height='4' rx='1' fill='%23556'/%3E%3Crect x='8' y='24' width='3' height='8' fill='%23445'/%3E%3Crect x='89' y='24' width='3' height='8' fill='%23445'/%3E%3C!-- Wing on top shelf --%3E%3Cpath d='M20,26 L50,12 L20,8 Z' fill='%236a7fdb' stroke='%235a6fbb' stroke-width='1' opacity='0.6'/%3E%3C!-- Antenna on top shelf --%3E%3Cline x1='75' y1='27' x2='75' y2='12' stroke='%23aaa' stroke-width='1.5' opacity='0.6'/%3E%3Ccircle cx='75' cy='10' r='3' fill='%234ae' stroke='%233ad' stroke-width='1' opacity='0.6'/%3E%3C!-- Middle shelf --%3E%3Crect x='6' y='68' width='88' height='4' rx='1' fill='%23556'/%3E%3Crect x='8' y='64' width='3' height='8' fill='%23445'/%3E%3Crect x='89' y='64' width='3' height='8' fill='%23445'/%3E%3C!-- Fuel cell on middle shelf --%3E%3Crect x='20' y='48' width='24' height='18' rx='3' fill='%2366ccff' stroke='%2344aadd' stroke-width='1' opacity='0.5'/%3E%3Ccircle cx='32' cy='57' r='3' fill='%2344aadd' opacity='0.5'/%3E%3C!-- Bolt on middle shelf --%3E%3Ccircle cx='70' cy='58' r='5' fill='%23999' stroke='%23777' stroke-width='1' opacity='0.5'/%3E%3Cline x1='67' y1='58' x2='73' y2='58' stroke='%23555' stroke-width='1.5' opacity='0.5'/%3E%3Cline x1='70' y1='55' x2='70' y2='61' stroke='%23555' stroke-width='1.5' opacity='0.5'/%3E%3C!-- Bottom shelf --%3E%3Crect x='6' y='108' width='88' height='4' rx='1' fill='%23556'/%3E%3Crect x='8' y='104' width='3' height='8' fill='%23445'/%3E%3Crect x='89' y='104' width='3' height='8' fill='%23445'/%3E%3C!-- Nozzle on bottom shelf --%3E%3Crect x='20' y='88' width='14' height='18' rx='2' fill='%23666' stroke='%23555' stroke-width='1' opacity='0.6'/%3E%3Crect x='23' y='92' width='8' height='4' rx='1' fill='%23888' opacity='0.5'/%3E%3C!-- Spray can on bottom shelf --%3E%3Crect x='60' y='88' width='14' height='18' rx='3' fill='%236a7fdb' stroke='%235a6fbb' stroke-width='1' opacity='0.5'/%3E%3Crect x='63' y='84' width='8' height='6' rx='1' fill='%23ccc' opacity='0.5'/%3E%3C/svg%3E") no-repeat bottom / contain;
+}
+
+/* ===== Spaceship container ===== */
+.car--spaceship {
+  aspect-ratio: 400 / 222;
+}
+
+/* ===== Spaceship SVG paint — fill via CSS variable ===== */
+.svg-ship-paint {
+  fill: var(--ship-colour, #6a7fdb);
+}
+
+/* ===== Spaceship entry animation — wobbly spiral descent ===== */
+.car--spaceship.car--entering {
+  transform: translate(60vw, -80vh) rotate(-20deg);
+}
+.car--spaceship.car--parked {
+  animation: ship-land 1.2s ease-out forwards;
+}
+
+@keyframes ship-land {
+  0%   { transform: translate(60vw, -80vh) rotate(-20deg); }
+  15%  { transform: translate(40vw, -50vh) rotate(12deg); }
+  30%  { transform: translate(20vw, -30vh) rotate(-10deg); }
+  50%  { transform: translate(8vw, -12vh) rotate(6deg); }
+  70%  { transform: translate(2vw, -4vh) rotate(-3deg); }
+  85%  { transform: translate(-1vw, 0) rotate(1.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ===== Spaceship exit animation — rise then arc left ===== */
+.car--exit-ship-launch {
+  overflow: visible;
+  animation: exit-ship-launch 1.5s cubic-bezier(0.3, 0, 0.8, 1) forwards;
+}
+
+@keyframes exit-ship-launch {
+  0%   { transform: translateY(0) translateX(0) scale(1); }
+  10%  { transform: translateY(4px) translateX(0) scale(1.02); }
+  40%  { transform: translateY(-50vh) translateX(0) scale(0.95); }
+  100% { transform: translateY(-60vh) translateX(-100vw) scale(0.7); }
+}
+
+/* ===== Spaceship wing states ===== */
+.ship__wing {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s, opacity 0.3s;
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+.ship__wing--right {
+  transform-origin: left center;
+}
+.ship__wing--broken {
+  transform: rotate(15deg) scaleX(0.85);
+}
+.ship__wing--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+.ship__wing--new {
+  animation: svg-bounce 0.3s ease-out;
+}
+.ship__wing--fixing {
+  animation: svg-bounce 0.4s ease-out;
+}
+
+/* ===== Ship bolt states (reuse robot bolt keyframes) ===== */
+.ship__bolt {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.ship__bolt--loose {
+  animation: bolt-untwist 0.35s ease-out forwards;
+}
+.ship__bolt--tight {
+  animation: bolt-twist 0.35s ease-out;
+}
+.ship__bolt--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.ship__bolt.hint-glow .ship__bolt-halo {
+  fill: rgba(255, 255, 50, 0.55) !important;
+}
+
+/* ===== Ship lift pad (crane) ===== */
+.ship__lift-pad {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship__lift-pad-arm {
+  transition: transform 0.3s ease-out;
+  transform-origin: center top;
+  transform-box: fill-box;
+}
+.ship__lift-pad--raised .ship__lift-pad-arm {
+  transform: scaleY(0.3);
+}
+.ship__lift-pad-arrow text {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.ship__lift-pad-arrow--visible .ship__lift-pad-arrow-up,
+.ship__lift-pad-arrow--visible .ship__lift-pad-arrow-down {
+  opacity: 0;
+}
+.ship__lift-pad-arrow--visible[data-direction="up"] .ship__lift-pad-arrow-up {
+  opacity: 1;
+  animation: arrow-bounce 0.8s ease-in-out infinite;
+}
+.ship__lift-pad-arrow--visible[data-direction="down"] .ship__lift-pad-arrow-down {
+  opacity: 1;
+  animation: arrow-bounce-down 0.8s ease-in-out infinite;
+}
+
+/* Jacked up — lift upper group */
+.car--spaceship.car--jacked .ship__upper {
+  transform: translateY(-12px);
+  transition: transform 0.3s ease-out;
+}
+.ship__upper {
+  transition: transform 0.3s ease-out;
+}
+
+/* ===== Sparks (engine/booster fault indicator) ===== */
+.ship__sparks--hidden { display: none; }
+.ship__spark {
+  animation: spark-flash 0.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+.ship__spark--2 { animation-delay: 0.15s; }
+.ship__spark--3 { animation-delay: 0.3s; }
+.ship__spark--4 { animation-delay: 0.45s; }
+.ship__sparks--clearing .ship__spark {
+  animation: spark-clear 0.3s ease-out forwards;
+}
+
+/* ===== Hatch (bonnet equivalent) ===== */
+.ship__hatch {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship__hatch--hidden { display: none; }
+.ship__hatch-lid {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  transition: transform 0.4s ease-out;
+}
+.ship__hatch--open .ship__hatch-lid {
+  transform: rotate(-45deg);
+}
+.ship__hatch--open {
+  pointer-events: none;
+}
+.ship__hatch--open .ship__hatch-lid {
+  pointer-events: auto;
+}
+
+/* ===== Booster bay (engine bay equivalent) ===== */
+.ship__booster-bay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.ship__booster-bay--hidden { display: none; }
+.ship__booster-bay--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Booster core */
+.ship__booster {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.ship__booster--broken {
+  animation: core-pulse 1s ease-in-out infinite;
+}
+.ship__booster--removed {
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+.ship__booster--new {
+  animation: svg-bounce 0.3s ease-out;
+}
+
+/* ===== Exhaust flames ===== */
+.ship__exhaust--hidden { display: none; }
+.ship__exhaust--active ellipse {
+  animation: jetpack-flame 0.15s ease-in-out infinite alternate;
+}
+
+/* ===== Hull damage (paint equivalent) ===== */
+.ship__hull-damage {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.3s;
+}
+.ship__hull-damage--hidden { display: none; }
+.ship__hull-damage.hint-glow line {
+  stroke: rgba(255, 255, 50, 0.8) !important;
+}
+
+/* Fresh hull (paint shine) */
+.ship__hull-body.ship__hull--fresh {
+  animation: paint-shine 0.6s ease-out;
+}
+.ship__cockpit.ship__cockpit--fresh {
+  animation: paint-shine 0.6s ease-out;
+}
+
+/* ===== Emblem zone (sticker equivalent) ===== */
+.ship__emblem-zone {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship__emblem-zone--hidden { display: none; }
+.ship__emblem-zone--applied .ship__emblem-text {
+  font-size: 34px;
+}
+.ship__emblem-zone--applied rect[stroke] {
+  stroke: transparent;
+}
+.ship__emblem-zone--applied {
+  animation: sticker-slap 0.4s ease-out;
+}
+
+/* ===== Space dust (wash equivalent) ===== */
+.ship__dust {
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.8s;
+}
+.ship__dust--hidden { display: none; }
+.ship__dust--washing {
+  opacity: 0;
+  filter: blur(4px);
+}
+.ship__dust.hint-glow ellipse,
+.ship__dust.hint-glow circle {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+}
+
+/* Sparkle after dust wash */
+.ship__hull-body.ship__hull--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
+.ship__cockpit.ship__cockpit--sparkle {
+  animation: wash-sparkle 0.8s ease-out;
+}
