@@ -17,6 +17,7 @@ const Game = (() => {
     wheel:   { styles: () => CONFIG.wheelStyles,   preview: (s) => Car.wheelPreviewSVG(s) },
     arm:     { styles: () => CONFIG.armStyles,      preview: (s) => Robot.armPreviewSVG(s) },
     booster: { styles: () => CONFIG.boosterStyles,  preview: (s) => Robot.boosterPreviewSVG(s) },
+    voice:   { styles: () => RobotRepair.voiceFlags(), preview: (f) => `<span style="font-size:28px">${f}</span>` },
   };
 
   function init() {

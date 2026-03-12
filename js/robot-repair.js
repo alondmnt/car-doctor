@@ -5,6 +5,25 @@
  */
 const RobotRepair = (() => {
 
+  /* ─── Voice module languages ─── */
+
+  const VOICE_LANGUAGES = {
+    '🇦🇺': { sentences: ["G'day!", "No worries!", "How ya going?"] },
+    '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
+    '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
+    '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
+    '🇮🇱': { sentences: ["!שלום", "!יאללה", "?מה קורה"], rtl: true },
+    '🇮🇳': { sentences: ["नमस्ते!", "चलो!", "बहुत अच्छा!"] },
+  };
+  const VOICE_FLAGS = Object.keys(VOICE_LANGUAGES);
+
+  /** Pick a random sentence for a flag */
+  function _randomSentence(flag) {
+    const lang = VOICE_LANGUAGES[flag];
+    if (!lang) return '🗣️';
+    return lang.sentences[Math.floor(Math.random() * lang.sentences.length)];
+  }
+
   /* ─── Helpers ─── */
 
   /** Generate bolt screw steps for a boot (tyre equivalent) */
@@ -329,18 +348,31 @@ const RobotRepair = (() => {
       },
       {
         id: 'insert-voice-chip',
-        description: 'Grab the voice chip from the warehouse',
+        description: 'Grab the voice chip and pick a language',
         warehouse: 'chip',
+        picker: 'voice',
         target: '.robot__voice-slot',
         sound: 'pop',
-        action: (el, carEl) => {
+        action: (el, carEl, picked) => {
           el.classList.add('robot__voice-slot--installed');
           // Hide voice fault indicator
           const vf = carEl.querySelector('.robot__voice-fault');
           if (vf) vf.classList.add('robot__voice-fault--hidden');
-          // Show speech bubble
+          // Show speech bubble with chosen language
+          const flag = picked || VOICE_FLAGS[0];
+          const sentence = _randomSentence(flag);
+          const lang = VOICE_LANGUAGES[flag];
           const bubble = carEl.querySelector('.robot__speech-bubble');
           if (bubble) {
+            const text = bubble.querySelector('text');
+            if (text) {
+              text.textContent = `${flag} ${sentence}`;
+              text.setAttribute('font-size', '11');
+              if (lang?.rtl) {
+                text.setAttribute('direction', 'rtl');
+                text.setAttribute('unicode-bidi', 'bidi-override');
+              }
+            }
             bubble.classList.remove('robot__speech-bubble--hidden');
             bubble.classList.add('robot__speech-bubble--visible');
           }
@@ -402,5 +434,6 @@ const RobotRepair = (() => {
   }
 
   return { brokenBoot, powerCore, plating, badge, oilGrime,
-           armJoint, legsRepair, voiceModule, jetpack };
+           armJoint, legsRepair, voiceModule, jetpack,
+           voiceFlags: () => VOICE_FLAGS };
 })();

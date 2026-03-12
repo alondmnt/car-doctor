@@ -344,9 +344,9 @@ const Robot = (() => {
 
       <!-- Speech bubble (shown after voice module installed) -->
       <g class="robot__speech-bubble robot__speech-bubble--hidden">
-        <rect x="260" y="10" width="50" height="30" rx="8" fill="#fff" stroke="#ccc" stroke-width="1"/>
-        <polygon points="265,40 272,40 260,48" fill="#fff" stroke="#ccc" stroke-width="1"/>
-        <text x="285" y="28" text-anchor="middle" font-size="16">🗣️</text>
+        <rect x="250" y="10" width="90" height="30" rx="8" fill="#fff" stroke="#ccc" stroke-width="1"/>
+        <polygon points="255,40 262,40 250,48" fill="#fff" stroke="#ccc" stroke-width="1"/>
+        <text x="295" y="28" text-anchor="middle" font-size="16">🗣️</text>
       </g>
 
       <!-- Chest strap (rendered on top of torso, after interactive layer) -->
