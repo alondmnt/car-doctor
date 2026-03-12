@@ -62,7 +62,7 @@ const Game = (() => {
     nextCar();
   }
 
-  /** Bring in a new car or robot with 1–2 random faults */
+  /** Bring in a new car, robot, or spaceship with 1–2 random faults */
   function nextCar() {
     generation++;
     const gen = generation;
@@ -71,15 +71,23 @@ const Game = (() => {
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
-    const spawnRobot = GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
+    // 3-way spawn: spaceship (30%) → robot (of remaining, ~70%) → car
+    const roll = Math.random();
+    const spawnShip = GameState.get('spaceshipEnabled') && roll < CONFIG.spaceshipChance;
+    const spawnRobot = !spawnShip && GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
 
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
-    const weights = spawnRobot ? GameState.get('robotFaultWeights') : CONFIG.faultWeights;
+    const weights = spawnShip
+      ? GameState.get('spaceshipFaultWeights')
+      : spawnRobot ? GameState.get('robotFaultWeights') : CONFIG.faultWeights;
     const faults = FaultRegistry.pickWeightedFaults(faultCount, weights);
 
     garage.classList.toggle('garage--lab', spawnRobot);
+    garage.classList.toggle('garage--hangar', spawnShip);
 
-    if (spawnRobot) {
+    if (spawnShip) {
+      currentCar = Spaceship.create(garage, { colour, faults, flatTyre });
+    } else if (spawnRobot) {
       currentCar = Robot.create(garage, { colour, faults, flatTyre });
     } else {
       currentCar = Car.create(garage, { colour, faults, flatTyre });

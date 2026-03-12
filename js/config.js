@@ -32,6 +32,14 @@ const CONFIG = {
   // Tier 30 adds: legsRepair: 2
   // Tier 35 adds: voiceModule: 2
   // Tier 40 adds: jetpack: 2
+
+  /* Spaceship settings — activated by tier 50 unlock */
+  spaceshipEnabled: false,
+  spaceshipChance: 0.3,                // probability of spaceship once unlocked
+  spaceshipShapes: ['standard'],
+  spaceshipFaultWeights: {
+    flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
+  },
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -56,6 +64,8 @@ const UNLOCK_TIERS = [
     items: [] },
   { coins: 45, key: 'boosterStyles',  icon: '🎈', label: 'New boosters!',
     items: ['rocket', 'propeller', 'balloon'] },
+  { coins: 50, key: 'spaceshipDoctor', icon: '🛸', label: 'Spaceship Doctor!',
+    items: [] },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

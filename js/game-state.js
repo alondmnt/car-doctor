@@ -10,7 +10,8 @@ const GameState = (() => {
 
   /** Maps robot tier keys to state mutations */
   const TIER_ACTIONS = {
-    robotDoctor:   () => { _booleans.robotEnabled = true; },
+    robotDoctor:    () => { _booleans.robotEnabled = true; },
+    spaceshipDoctor: () => { _booleans.spaceshipEnabled = true; },
     robotArmJoint: () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), armJoint: 3 }; },
     robotLegs:     () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), legsRepair: 2 }; },
     robotVoice:    () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), voiceModule: 3 }; },
