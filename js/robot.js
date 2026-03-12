@@ -366,7 +366,7 @@ const Robot = (() => {
 
     const interactive = _robotInteractiveSVG(opts);
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -70 400 252" class="robot__svg">
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -100 400 282" class="robot__svg">
       <!-- Shadow -->
       <ellipse class="car__shadow" cx="200" cy="176" rx="120" ry="6" fill="rgba(0,0,0,0.12)"/>
 
