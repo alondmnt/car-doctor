@@ -33,6 +33,19 @@ const Spaceship = (() => {
       </g>`;
     }).join('');
 
+    // Crack lines at wing root — visible via CSS only when wing is broken
+    const crackX = x + mirror * 4;
+    const crack = `<g class="ship__wing-crack">
+      <line x1="${crackX}" y1="${rootTop + 2}" x2="${crackX + mirror * 12}" y2="${y + 4}"
+            style="stroke:rgba(255,255,255,0.4);stroke-width:2.5;stroke-linecap:round"/>
+      <line x1="${crackX}" y1="${rootTop + 2}" x2="${crackX + mirror * 12}" y2="${y + 4}"
+            style="stroke:rgba(40,30,20,0.5);stroke-width:1.5;stroke-linecap:round"/>
+      <line x1="${crackX + mirror * 6}" y1="${y}" x2="${crackX + mirror * 16}" y2="${y + 10}"
+            style="stroke:rgba(255,255,255,0.3);stroke-width:2;stroke-linecap:round"/>
+      <line x1="${crackX + mirror * 6}" y1="${y}" x2="${crackX + mirror * 16}" y2="${y + 10}"
+            style="stroke:rgba(40,30,20,0.4);stroke-width:1;stroke-linecap:round"/>
+    </g>`;
+
     return `<g class="ship__wing ship__wing--${side}" data-position="${side}">
       <!-- Wing body — darker tint than hull for silhouette -->
       <path class="ship__wing-surface svg-ship-paint"
@@ -47,6 +60,7 @@ const Spaceship = (() => {
       <!-- Wing stripe -->
       <line x1="${x}" y1="${y+5}" x2="${tipX * 0.7 + x * 0.3}" y2="${tipY - 2}"
             style="stroke:rgba(255,255,255,0.2);stroke-width:2"/>
+      ${crack}
       ${bolts}
     </g>`;
   }
@@ -219,20 +233,20 @@ const Spaceship = (() => {
         <rect x="355" y="62" width="12" height="16" rx="2" fill="#666" stroke="#555" stroke-width="1"/>
         <rect x="355" y="82" width="12" height="16" rx="2" fill="#666" stroke="#555" stroke-width="1"/>
 
-        <!-- Wings -->
-        ${_wingSVG(160, 48, 'left')}
-        ${_wingSVG(160, 100, 'right')}
-
         ${interactive}
+
+        <!-- Landing struts (inside ship__upper — rise with hull) -->
+        <g class="ship__struts">
+          <rect x="140" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
+          <rect x="134" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+          <rect x="250" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
+          <rect x="244" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        </g>
       </g>
 
-      <!-- Landing struts (legs extend from hull to platform pad at y=172) -->
-      <g class="ship__struts">
-        <rect x="140" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
-        <rect x="134" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
-        <rect x="250" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
-        <rect x="244" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
-      </g>
+      <!-- Wings outside ship__upper — stay in place when hull lifts -->
+      ${_wingSVG(160, 48, 'left')}
+      ${_wingSVG(160, 100, 'right')}
     </svg>`;
   }
 

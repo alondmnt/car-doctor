@@ -1636,8 +1636,17 @@ html, body {
   transform-origin: left center;
 }
 .ship__wing--broken {
-  transform: rotate(15deg) scaleX(0.85);
+  transform: rotate(25deg) scaleX(0.8);
+  animation: wing-wobble 2s ease-in-out infinite;
 }
+@keyframes wing-wobble {
+  0%, 100% { transform: rotate(25deg) scaleX(0.8); }
+  50%      { transform: rotate(20deg) scaleX(0.8); }
+}
+/* Crack lines — only visible when broken */
+.ship__wing-crack { display: none; }
+.ship__wing--broken .ship__wing-crack { display: block; }
+
 .ship__wing--removed {
   opacity: 0.15;
   transform: scale(0.6);
@@ -1711,12 +1720,19 @@ html, body {
   animation: arrow-bounce-down 0.8s ease-in-out infinite;
 }
 
-/* Jacked up — lift upper group */
+/* Jacked up — hull + struts + pad rise together, wings + pistons stay */
 .car--spaceship.car--jacked .ship__upper {
   transform: translateY(-12px);
   transition: transform 0.3s ease-out;
 }
+.car--spaceship.car--jacked .ship__platform-pad {
+  transform: translateY(-12px);
+  transition: transform 0.3s ease-out;
+}
 .ship__upper {
+  transition: transform 0.3s ease-out;
+}
+.ship__platform-pad {
   transition: transform 0.3s ease-out;
 }
 
