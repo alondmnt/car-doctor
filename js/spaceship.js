@@ -82,10 +82,10 @@ const Spaceship = (() => {
     return `
       <!-- Exhaust smoke (visible only with booster fault — billowing from rear nozzles) -->
       <g class="ship__smoke ${hasEngine ? '' : 'ship__smoke--hidden'}">
-        <circle class="ship__smoke-puff ship__smoke-puff--1" cx="372" cy="70" r="5"/>
-        <circle class="ship__smoke-puff ship__smoke-puff--2" cx="380" cy="78" r="6"/>
-        <circle class="ship__smoke-puff ship__smoke-puff--3" cx="375" cy="88" r="4"/>
-        <circle class="ship__smoke-puff ship__smoke-puff--4" cx="382" cy="82" r="5"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--1" cx="372" cy="70" r="8"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--2" cx="380" cy="78" r="10"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--3" cx="375" cy="88" r="7"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--4" cx="382" cy="82" r="8"/>
       </g>
 
       <!-- Booster hatch (bonnet equivalent — opens to reveal booster bay) -->

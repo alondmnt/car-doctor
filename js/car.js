@@ -100,10 +100,10 @@ const Car = (() => {
     return `
       <!-- Smoke puffs (visible only with engine fault) -->
       <g class="car__smoke ${hasEngine ? '' : 'car__smoke--hidden'}">
-        <circle class="car__smoke-puff car__smoke-puff--1" cx="${smokeX - 10}" cy="${smokeY}" r="5"/>
-        <circle class="car__smoke-puff car__smoke-puff--2" cx="${smokeX + 5}" cy="${smokeY - 3}" r="6"/>
-        <circle class="car__smoke-puff car__smoke-puff--3" cx="${smokeX + 18}" cy="${smokeY + 2}" r="4"/>
-        <circle class="car__smoke-puff car__smoke-puff--4" cx="${smokeX - 2}" cy="${smokeY - 6}" r="5"/>
+        <circle class="car__smoke-puff car__smoke-puff--1" cx="${smokeX - 10}" cy="${smokeY}" r="8"/>
+        <circle class="car__smoke-puff car__smoke-puff--2" cx="${smokeX + 5}" cy="${smokeY - 3}" r="10"/>
+        <circle class="car__smoke-puff car__smoke-puff--3" cx="${smokeX + 18}" cy="${smokeY + 2}" r="7"/>
+        <circle class="car__smoke-puff car__smoke-puff--4" cx="${smokeX - 2}" cy="${smokeY - 6}" r="8"/>
       </g>
 
       <!-- Bonnet -->
