@@ -1052,6 +1052,9 @@ html, body {
   100% { transform: scaleX(1) scaleY(1); opacity: 1; }
 }
 
+/* Hide shadow during exit so it doesn't fly away with the vehicle */
+[class*="car--exit-"] .car__shadow { display: none; }
+
 /* ===== Exit animations ===== */
 .car--exit-wheelie {
   animation: exit-wheelie 1.2s ease-in forwards;

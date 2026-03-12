@@ -364,7 +364,7 @@ const Robot = (() => {
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="robot__svg">
       <!-- Shadow -->
-      <ellipse cx="200" cy="176" rx="120" ry="6" fill="rgba(0,0,0,0.12)"/>
+      <ellipse class="car__shadow" cx="200" cy="176" rx="120" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <!-- Crane (behind robot so jetpack/balloons render in front) -->
       ${_craneSVG()}

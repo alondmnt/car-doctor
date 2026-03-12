@@ -196,7 +196,7 @@ const Car = (() => {
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
-      <ellipse cx="200" cy="176" rx="170" ry="6" fill="rgba(0,0,0,0.12)"/>
+      <ellipse class="car__shadow" cx="200" cy="176" rx="170" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__upper">
         <g class="car__body">
@@ -295,7 +295,7 @@ const Car = (() => {
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
-      <ellipse cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
+      <ellipse class="car__shadow" cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__upper">
         <g class="car__body">
@@ -394,7 +394,7 @@ const Car = (() => {
     });
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="car__svg">
-      <ellipse cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
+      <ellipse class="car__shadow" cx="200" cy="176" rx="175" ry="6" fill="rgba(0,0,0,0.12)"/>
 
       <g class="car__upper">
         <g class="car__body">
