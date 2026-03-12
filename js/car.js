@@ -503,9 +503,9 @@ const Car = (() => {
       <div class="car__dashboard">
         <div class="car__indicator car__indicator--tyre ${hasFlatTyre ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--engine ${hasEngine ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
+        <div class="car__indicator car__indicator--wash ${hasWash ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--paint ${hasPaint ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
         <div class="car__indicator car__indicator--sticker ${hasSticker ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
-        <div class="car__indicator car__indicator--wash ${hasWash ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
       </div>
       ${templateFn({ skinColour, hairColour, hasFlatTyre, flatTyre, hasEngine, hasPaint, hasSticker, hasWash, wheelStyle })}
     `;

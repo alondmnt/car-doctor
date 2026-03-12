@@ -496,19 +496,22 @@ const Robot = (() => {
 
     const templateFn = TEMPLATES[shape] || TEMPLATES.standard;
 
-    // Dashboard indicators — same 5 base + 4 upgrades
+    // Dashboard indicators — ordered to match FAULT_ORDER (structural → clean → cosmetic)
     const indicators = [
       { cls: 'tyre', fault: hasFlatTyre },
       { cls: 'engine', fault: hasEngine },
-      { cls: 'paint', fault: hasPaint },
-      { cls: 'sticker', fault: hasSticker },
-      { cls: 'wash', fault: hasWash },
     ];
-    // Add upgrade indicators only if that fault is present
+    // Upgrade indicators only shown when that fault is present
     if (hasArmJoint) indicators.push({ cls: 'armJoint', fault: true });
     if (hasLegsRepair) indicators.push({ cls: 'legsRepair', fault: true });
     if (hasVoiceModule) indicators.push({ cls: 'voiceModule', fault: true });
     if (hasJetpack) indicators.push({ cls: 'jetpack', fault: true });
+    // Cosmetic faults last: wash → paint → sticker
+    indicators.push(
+      { cls: 'wash', fault: hasWash },
+      { cls: 'paint', fault: hasPaint },
+      { cls: 'sticker', fault: hasSticker },
+    );
 
     const dashboardHTML = indicators.map(ind =>
       `<div class="car__indicator car__indicator--${ind.cls} ${ind.fault ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>`

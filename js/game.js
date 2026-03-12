@@ -88,6 +88,12 @@ const Game = (() => {
   let faultQueue = [];  // remaining faults to repair
   let currentFault = null;
 
+  /** Canonical repair order — structural first, then clean, paint, badge */
+  const FAULT_ORDER = [
+    'flatTyre', 'engine', 'armJoint', 'legsRepair', 'voiceModule', 'jetpack',
+    'wash', 'paint', 'sticker',
+  ];
+
   /** Bring in a new car or robot with 1–2 random faults */
   function nextCar() {
     generation++;
@@ -113,7 +119,7 @@ const Game = (() => {
     } else {
       currentCar = Car.create(garage, { colour, faults, flatTyre });
     }
-    faultQueue = [...faults];
+    faultQueue = [...faults].sort((a, b) => FAULT_ORDER.indexOf(a) - FAULT_ORDER.indexOf(b));
 
     // Re-enable hints if the vehicle has any fault type not yet seen
     if (faults.some(f => !seenFaults.has(f))) {
@@ -136,8 +142,21 @@ const Game = (() => {
     });
   }
 
-  /** Load the next fault's repair steps */
+  /** Fault → dashboard indicator selector */
+  const INDICATOR_MAP = {
+    engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre',
+    paint: '.car__indicator--paint', sticker: '.car__indicator--sticker',
+    wash: '.car__indicator--wash', armJoint: '.car__indicator--armJoint',
+    legsRepair: '.car__indicator--legsRepair', voiceModule: '.car__indicator--voiceModule',
+    jetpack: '.car__indicator--jetpack',
+  };
+
+  /** Load the next fault's repair steps and highlight its indicator */
   function startNextFault() {
+    // Remove previous active indicator
+    const prev = currentCar?.el.querySelector('.car__indicator--active');
+    if (prev) prev.classList.remove('car__indicator--active');
+
     currentFault = faultQueue.shift();
     if (currentCar.type === 'robot') {
       steps = _robotSteps(currentFault, currentCar);
@@ -145,6 +164,11 @@ const Game = (() => {
       steps = _carSteps(currentFault, currentCar);
     }
     stepIndex = 0;
+
+    // Highlight active fault indicator
+    const sel = INDICATOR_MAP[currentFault];
+    const ind = sel && currentCar.el.querySelector(sel);
+    if (ind) ind.classList.add('car__indicator--active');
   }
 
   /** Resolve car fault → step sequence */
@@ -546,17 +570,10 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorMap = {
-        engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre',
-        paint: '.car__indicator--paint', sticker: '.car__indicator--sticker',
-        wash: '.car__indicator--wash', armJoint: '.car__indicator--armJoint',
-        legsRepair: '.car__indicator--legsRepair', voiceModule: '.car__indicator--voiceModule',
-        jetpack: '.car__indicator--jetpack',
-      };
-      const indicatorClass = indicatorMap[currentFault] || '.car__indicator--tyre';
-      const indicator = currentCar.el.querySelector(indicatorClass);
+      const indicatorSel = INDICATOR_MAP[currentFault] || '.car__indicator--tyre';
+      const indicator = currentCar.el.querySelector(indicatorSel);
       if (indicator) {
-        indicator.classList.remove('car__indicator--fault');
+        indicator.classList.remove('car__indicator--fault', 'car__indicator--active');
         indicator.classList.add('car__indicator--ok');
       }
 
