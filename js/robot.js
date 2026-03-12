@@ -266,12 +266,16 @@ const Robot = (() => {
     const sparkX = 200, sparkY = 63;
 
     return `
-      <!-- Sparks (visible only with engine/power-core fault) -->
+      <!-- Sparks (visible only with engine/power-core fault) — double-layered for visibility -->
       <g class="robot__sparks ${hasEngine ? '' : 'robot__sparks--hidden'}">
-        <line class="robot__spark robot__spark--1" x1="${sparkX-8}" y1="${sparkY}" x2="${sparkX-14}" y2="${sparkY-10}" style="stroke:#ffe066;stroke-width:2"/>
-        <line class="robot__spark robot__spark--2" x1="${sparkX+12}" y1="${sparkY+4}" x2="${sparkX+20}" y2="${sparkY-6}" style="stroke:#ffaa00;stroke-width:2"/>
-        <line class="robot__spark robot__spark--3" x1="${sparkX}" y1="${sparkY-2}" x2="${sparkX+6}" y2="${sparkY-14}" style="stroke:#ffe066;stroke-width:1.5"/>
-        <line class="robot__spark robot__spark--4" x1="${sparkX-4}" y1="${sparkY+6}" x2="${sparkX-12}" y2="${sparkY+16}" style="stroke:#ffaa00;stroke-width:1.5"/>
+        <line class="robot__spark robot__spark--1" x1="${sparkX-8}" y1="${sparkY}" x2="${sparkX-14}" y2="${sparkY-10}" style="stroke:#e63946;stroke-width:4;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--1" x1="${sparkX-8}" y1="${sparkY}" x2="${sparkX-14}" y2="${sparkY-10}" style="stroke:#ffe066;stroke-width:2;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--2" x1="${sparkX+12}" y1="${sparkY+4}" x2="${sparkX+20}" y2="${sparkY-6}" style="stroke:#e63946;stroke-width:4;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--2" x1="${sparkX+12}" y1="${sparkY+4}" x2="${sparkX+20}" y2="${sparkY-6}" style="stroke:#ff8800;stroke-width:2;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--3" x1="${sparkX}" y1="${sparkY-2}" x2="${sparkX+6}" y2="${sparkY-14}" style="stroke:#ff8800;stroke-width:3.5;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--3" x1="${sparkX}" y1="${sparkY-2}" x2="${sparkX+6}" y2="${sparkY-14}" style="stroke:#ffe066;stroke-width:1.5;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--4" x1="${sparkX-4}" y1="${sparkY+6}" x2="${sparkX-12}" y2="${sparkY+16}" style="stroke:#e63946;stroke-width:3.5;stroke-linecap:round"/>
+        <line class="robot__spark robot__spark--4" x1="${sparkX-4}" y1="${sparkY+6}" x2="${sparkX-12}" y2="${sparkY+16}" style="stroke:#ff8800;stroke-width:1.5;stroke-linecap:round"/>
       </g>
 
       <!-- Chest panel (bonnet equivalent — opens to reveal power core or voice slot) -->

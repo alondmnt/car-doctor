@@ -44,38 +44,34 @@ const Spaceship = (() => {
     </g>`;
   }
 
-  /** Crane lift — vertical pole with horizontal arm, cable, and hook (reused from robot pattern) */
-  function _craneSVG() {
-    const poleX = 370, poleW = 10;
-    const poleTop = -30, poleBot = 178;
-    const armY = -30, armH = 7;
-    const armLeft = 185, armRight = poleX + poleW / 2;
-    const cableX = 200;
-    const cableTop = armY + armH;
-    const cableH = 12;
-    const hookY = cableTop + cableH;
+  /** Platform lift — hydraulic pad that rises from the floor */
+  function _platformLiftSVG() {
+    const padY = 168, padW = 160, padH = 8;
+    const padX = 120;                         // centred under ship body
+    const pistonW = 8, pistonH = 20;
+    const arrowY = padY - 14;
 
-    return `<g class="ship__lift-pad">
-      <!-- Vertical pole -->
-      <rect class="ship__lift-pad-base" x="${poleX}" y="${poleTop}" width="${poleW}" height="${poleBot - poleTop}" rx="2"
-            style="fill:#e07020;stroke:#c45e18;stroke-width:1"/>
-      <!-- Diagonal brace -->
-      <line x1="${poleX}" y1="${armY + armH + 20}" x2="${armRight - 20}" y2="${armY}" style="stroke:#c45e18;stroke-width:2"/>
-      <!-- Horizontal arm -->
-      <rect x="${armLeft}" y="${armY}" width="${armRight - armLeft}" height="${armH}" rx="2"
-            style="fill:#e8822a;stroke:#c45e18;stroke-width:1"/>
-      <!-- Cable -->
-      <rect class="ship__lift-pad-arm" x="${cableX - 1.5}" y="${cableTop}" width="3" height="${cableH}" rx="1" style="fill:#888"/>
-      <!-- Hook -->
-      <path d="M${cableX - 5},${hookY} Q${cableX - 5},${hookY + 7} ${cableX},${hookY + 9} Q${cableX + 5},${hookY + 7} ${cableX + 5},${hookY}"
-            fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+    return `<g class="ship__lift-pad ship__lift-pad--hidden">
+      <!-- Hydraulic pistons -->
+      <rect class="ship__lift-pad-arm ship__piston ship__piston--left"
+            x="${padX + 20}" y="${padY}" width="${pistonW}" height="${pistonH}" rx="2"
+            style="fill:#888;stroke:#666;stroke-width:1"/>
+      <rect class="ship__lift-pad-arm ship__piston ship__piston--right"
+            x="${padX + padW - 28}" y="${padY}" width="${pistonW}" height="${pistonH}" rx="2"
+            style="fill:#888;stroke:#666;stroke-width:1"/>
+      <!-- Platform pad -->
+      <rect class="ship__platform-pad" x="${padX}" y="${padY}" width="${padW}" height="${padH}" rx="3"
+            style="fill:#e07020;stroke:#c45e18;stroke-width:1.5"/>
+      <!-- Safety stripes on pad -->
+      <line x1="${padX + 10}" y1="${padY + 2}" x2="${padX + 10}" y2="${padY + padH - 2}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
+      <line x1="${padX + padW - 10}" y1="${padY + 2}" x2="${padX + padW - 10}" y2="${padY + padH - 2}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
       <!-- Arrows -->
       <g class="ship__lift-pad-arrow">
-        <text class="ship__lift-pad-arrow-up" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
-        <text class="ship__lift-pad-arrow-down" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
+        <text class="ship__lift-pad-arrow-up" x="${padX + padW/2}" y="${arrowY}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
+        <text class="ship__lift-pad-arrow-down" x="${padX + padW/2}" y="${arrowY}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
       </g>
       <!-- Touch target -->
-      <rect x="${cableX - 25}" y="${armY}" width="50" height="${cableH + 30}" fill="transparent"/>
+      <rect x="${padX - 10}" y="${arrowY - 16}" width="${padW + 20}" height="${padH + pistonH + 30}" fill="transparent"/>
     </g>`;
   }
 
@@ -83,16 +79,13 @@ const Spaceship = (() => {
   function _shipInteractiveSVG(opts) {
     const { hasEngine, hasPaint, hasSticker, hasWash } = opts;
 
-    // Spark positions — from booster area
-    const sparkX = 330, sparkY = 80;
-
     return `
-      <!-- Exhaust sparks (visible only with booster/engine fault) -->
-      <g class="ship__sparks ${hasEngine ? '' : 'ship__sparks--hidden'}">
-        <line class="ship__spark ship__spark--1" x1="${sparkX-6}" y1="${sparkY}" x2="${sparkX-12}" y2="${sparkY-8}" style="stroke:#ffe066;stroke-width:2"/>
-        <line class="ship__spark ship__spark--2" x1="${sparkX+8}" y1="${sparkY+4}" x2="${sparkX+16}" y2="${sparkY-4}" style="stroke:#ffaa00;stroke-width:2"/>
-        <line class="ship__spark ship__spark--3" x1="${sparkX}" y1="${sparkY-2}" x2="${sparkX+4}" y2="${sparkY-12}" style="stroke:#ffe066;stroke-width:1.5"/>
-        <line class="ship__spark ship__spark--4" x1="${sparkX-2}" y1="${sparkY+6}" x2="${sparkX-8}" y2="${sparkY+14}" style="stroke:#ffaa00;stroke-width:1.5"/>
+      <!-- Exhaust smoke (visible only with booster fault — billowing from rear nozzles) -->
+      <g class="ship__smoke ${hasEngine ? '' : 'ship__smoke--hidden'}">
+        <circle class="ship__smoke-puff ship__smoke-puff--1" cx="372" cy="70" r="5"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--2" cx="380" cy="78" r="6"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--3" cx="375" cy="88" r="4"/>
+        <circle class="ship__smoke-puff ship__smoke-puff--4" cx="382" cy="82" r="5"/>
       </g>
 
       <!-- Booster hatch (bonnet equivalent — opens to reveal booster bay) -->
@@ -166,8 +159,8 @@ const Spaceship = (() => {
       <!-- Shadow -->
       <ellipse class="car__shadow" cx="200" cy="176" rx="130" ry="6" fill="rgba(0,0,0,0.12)"/>
 
-      <!-- Crane (behind ship so hull renders in front) -->
-      ${_craneSVG()}
+      <!-- Platform lift (hidden during entry, revealed after landing) -->
+      ${_platformLiftSVG()}
 
       <g class="ship__upper">
         <!-- Antenna / sensor fin -->
@@ -302,6 +295,13 @@ const Spaceship = (() => {
       fixingClass: 'ship__wing--fixing',
       liftSelector: '.ship__lift-pad',
       pickExitAnim: () => 'ship-launch',
+      afterEntry: (el) => {
+        const lift = el.querySelector('.ship__lift-pad');
+        if (lift) {
+          lift.classList.remove('ship__lift-pad--hidden');
+          lift.classList.add('ship__lift-pad--appearing');
+        }
+      },
       beforeExit: (el) => {
         const exhaust = el.querySelector('.ship__exhaust');
         if (exhaust) {

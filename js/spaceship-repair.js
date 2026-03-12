@@ -69,9 +69,9 @@ const SpaceshipRepair = (() => {
       removedClass: 'ship__booster--removed',
       newClass: 'ship__booster--new',
       panelLidSelector: '.ship__hatch-lid',
-      effectSelector: '.ship__sparks',
-      effectClearClass: 'ship__sparks--clearing',
-      effectHiddenClass: 'ship__sparks--hidden',
+      effectSelector: '.ship__smoke',
+      effectClearClass: 'ship__smoke--clearing',
+      effectHiddenClass: 'ship__smoke--hidden',
       effectDelay: 400,
       warehousePart: 'engine',
     });

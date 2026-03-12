@@ -1669,18 +1669,29 @@ html, body {
   fill: rgba(255, 255, 50, 0.55) !important;
 }
 
-/* ===== Ship lift pad (crane) ===== */
+/* ===== Ship platform lift ===== */
 .ship__lift-pad {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.ship__lift-pad--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.ship__lift-pad--appearing {
+  animation: platform-appear 0.4s ease-out forwards;
+}
+@keyframes platform-appear {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 .ship__lift-pad-arm {
   transition: transform 0.3s ease-out;
-  transform-origin: center top;
+  transform-origin: center bottom;
   transform-box: fill-box;
 }
 .ship__lift-pad--raised .ship__lift-pad-arm {
-  transform: scaleY(0.3);
+  transform: scaleY(1.8);
 }
 .ship__lift-pad-arrow text {
   opacity: 0;
@@ -1709,18 +1720,17 @@ html, body {
   transition: transform 0.3s ease-out;
 }
 
-/* ===== Sparks (engine/booster fault indicator) ===== */
-.ship__sparks--hidden { display: none; }
-.ship__spark {
-  animation: spark-flash 0.6s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center center;
+/* ===== Smoke (booster fault indicator — reuses car smoke keyframes) ===== */
+.ship__smoke--hidden { display: none; }
+.ship__smoke-puff {
+  fill: rgba(160, 160, 160, 0.7);
+  animation: smoke-rise 1.8s ease-out infinite;
 }
-.ship__spark--2 { animation-delay: 0.15s; }
-.ship__spark--3 { animation-delay: 0.3s; }
-.ship__spark--4 { animation-delay: 0.45s; }
-.ship__sparks--clearing .ship__spark {
-  animation: spark-clear 0.3s ease-out forwards;
+.ship__smoke-puff--2 { animation-delay: 0.4s; }
+.ship__smoke-puff--3 { animation-delay: 0.9s; }
+.ship__smoke-puff--4 { animation-delay: 1.3s; }
+.ship__smoke--clearing .ship__smoke-puff {
+  animation: smoke-clear 0.5s ease-out forwards;
 }
 
 /* ===== Hatch (bonnet equivalent) ===== */
