@@ -1515,6 +1515,8 @@ html, body {
 .robot__jetpack-mount--hidden { display: none; }
 .robot__jetpack--hidden { display: none; }
 .robot__jetpack--visible {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   animation: svg-bounce 0.3s ease-out;
 }
 .robot__jetpack-flames--hidden { display: none; }
