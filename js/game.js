@@ -88,11 +88,22 @@ const Game = (() => {
   let faultQueue = [];  // remaining faults to repair
   let currentFault = null;
 
-  /** Canonical repair order — structural first, then clean, paint, badge */
-  const FAULT_ORDER = [
-    'flatTyre', 'engine', 'armJoint', 'legsRepair', 'voiceModule', 'jetpack',
-    'wash', 'paint', 'sticker',
+  /** Single source of truth for fault metadata — order, indicator, repair functions.
+   *  Array index determines repair order. */
+  const FAULT_REGISTRY = [
+    { key: 'flatTyre',    indicator: '.car__indicator--tyre',        car: (c) => Repair.flatTyre(c),          robot: (c) => RobotRepair.brokenBoot(c) },
+    { key: 'engine',      indicator: '.car__indicator--engine',      car: (c) => Repair.engine(c),            robot: (c) => RobotRepair.powerCore(c) },
+    { key: 'armJoint',    indicator: '.car__indicator--armJoint',    car: null,                                robot: (c) => RobotRepair.armJoint(c) },
+    { key: 'legsRepair',  indicator: '.car__indicator--legsRepair',  car: null,                                robot: (c) => RobotRepair.legsRepair(c) },
+    { key: 'voiceModule', indicator: '.car__indicator--voiceModule', car: null,                                robot: (c) => RobotRepair.voiceModule(c) },
+    { key: 'jetpack',     indicator: '.car__indicator--jetpack',     car: null,                                robot: (c) => RobotRepair.jetpack(c) },
+    { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c) },
+    { key: 'paint',       indicator: '.car__indicator--paint',       car: (c) => Repair.paint(c),             robot: (c) => RobotRepair.plating(c) },
+    { key: 'sticker',     indicator: '.car__indicator--sticker',     car: (c) => Repair.sticker(c),           robot: (c) => RobotRepair.badge(c) },
   ];
+  /** Lookup helpers derived from registry */
+  const FAULT_ORDER = FAULT_REGISTRY.map(f => f.key);
+  const FAULT_META = Object.fromEntries(FAULT_REGISTRY.map(f => [f.key, f]));
 
   /** Bring in a new car or robot with 1–2 random faults */
   function nextCar() {
@@ -142,15 +153,6 @@ const Game = (() => {
     });
   }
 
-  /** Fault → dashboard indicator selector */
-  const INDICATOR_MAP = {
-    engine: '.car__indicator--engine', flatTyre: '.car__indicator--tyre',
-    paint: '.car__indicator--paint', sticker: '.car__indicator--sticker',
-    wash: '.car__indicator--wash', armJoint: '.car__indicator--armJoint',
-    legsRepair: '.car__indicator--legsRepair', voiceModule: '.car__indicator--voiceModule',
-    jetpack: '.car__indicator--jetpack',
-  };
-
   /** Load the next fault's repair steps and highlight its indicator */
   function startNextFault() {
     // Remove previous active indicator
@@ -158,42 +160,30 @@ const Game = (() => {
     if (prev) prev.classList.remove('car__indicator--active');
 
     currentFault = faultQueue.shift();
-    if (currentCar.type === 'robot') {
-      steps = _robotSteps(currentFault, currentCar);
-    } else {
-      steps = _carSteps(currentFault, currentCar);
-    }
+    const meta = FAULT_META[currentFault];
+    const stepFn = currentCar.type === 'robot' ? meta?.robot : meta?.car;
+    steps = stepFn ? stepFn(currentCar) : [];
     stepIndex = 0;
 
     // Highlight active fault indicator
-    const sel = INDICATOR_MAP[currentFault];
-    const ind = sel && currentCar.el.querySelector(sel);
+    const ind = meta && currentCar.el.querySelector(meta.indicator);
     if (ind) ind.classList.add('car__indicator--active');
   }
 
-  /** Resolve car fault → step sequence */
-  function _carSteps(fault, car) {
-    switch (fault) {
-      case 'engine':  return Repair.engine(car);
-      case 'paint':   return Repair.paint(car);
-      case 'sticker': return Repair.sticker(car);
-      case 'wash':    return Repair.wash(car);
-      default:        return Repair.flatTyre(car);
-    }
-  }
-
-  /** Resolve robot fault → step sequence */
-  function _robotSteps(fault, car) {
-    switch (fault) {
-      case 'engine':      return RobotRepair.powerCore(car);
-      case 'paint':       return RobotRepair.plating(car);
-      case 'sticker':     return RobotRepair.badge(car);
-      case 'wash':        return RobotRepair.oilGrime(car);
-      case 'armJoint':    return RobotRepair.armJoint(car);
-      case 'legsRepair':  return RobotRepair.legsRepair(car);
-      case 'voiceModule': return RobotRepair.voiceModule(car);
-      case 'jetpack':     return RobotRepair.jetpack(car);
-      default:            return RobotRepair.brokenBoot(car);
+  /** Apply a sticker/badge emoji to the zone and clear the dashed border */
+  function _applyStickerOrBadge(emoji) {
+    const zone = currentCar.el.querySelector('.car__sticker-zone') ||
+                 currentCar.el.querySelector('.robot__badge-zone');
+    if (!zone) return;
+    const textEl = zone.querySelector('text') || zone;
+    textEl.textContent = emoji;
+    const appliedClass = zone.classList.contains('robot__badge-zone')
+      ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
+    zone.classList.add(appliedClass);
+    const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
+    if (borderRect) {
+      borderRect.setAttribute('stroke', 'transparent');
+      borderRect.setAttribute('stroke-dasharray', '0');
     }
   }
 
@@ -320,20 +310,7 @@ const Game = (() => {
       });
     } else if (step.picker === 'sticker') {
       showStickerPicker((emoji) => {
-        const zone = currentCar.el.querySelector('.car__sticker-zone') ||
-                     currentCar.el.querySelector('.robot__badge-zone');
-        if (zone) {
-          const textEl = zone.querySelector('text') || zone;
-          textEl.textContent = emoji;
-          const appliedClass = zone.classList.contains('robot__badge-zone')
-            ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
-          zone.classList.add(appliedClass);
-          const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
-          if (borderRect) {
-            borderRect.setAttribute('stroke', 'transparent');
-            borderRect.setAttribute('stroke-dasharray', '0');
-          }
-        }
+        _applyStickerOrBadge(emoji);
         onStepComplete(step, target);
       });
     } else if (step.drag) {
@@ -424,20 +401,7 @@ const Game = (() => {
           });
         } else if (step.picker === 'sticker') {
           showStickerPicker((emoji) => {
-            const zone = currentCar.el.querySelector('.car__sticker-zone') ||
-                         currentCar.el.querySelector('.robot__badge-zone');
-            if (zone) {
-              const textEl = zone.querySelector('text') || zone;
-              textEl.textContent = emoji;
-              const appliedClass = zone.classList.contains('robot__badge-zone')
-                ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
-              zone.classList.add(appliedClass);
-              const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
-              if (borderRect) {
-                borderRect.setAttribute('stroke', 'transparent');
-                borderRect.setAttribute('stroke-dasharray', '0');
-              }
-            }
+            _applyStickerOrBadge(emoji);
             onStepComplete(step, target);
           });
         } else {
@@ -570,8 +534,8 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Current fault repaired — update dashboard indicator
-      const indicatorSel = INDICATOR_MAP[currentFault] || '.car__indicator--tyre';
-      const indicator = currentCar.el.querySelector(indicatorSel);
+      const meta = FAULT_META[currentFault];
+      const indicator = meta && currentCar.el.querySelector(meta.indicator);
       if (indicator) {
         indicator.classList.remove('car__indicator--fault', 'car__indicator--active');
         indicator.classList.add('car__indicator--ok');

@@ -585,37 +585,30 @@ html, body {
   transition: background 0.3s, box-shadow 0.3s;
 }
 
-/* Category colours — structural red, wash blue, paint orange, sticker green */
+/* Category colours — structural red, wash blue, paint orange, sticker green.
+   --ind-colour is used by the shared pulse animation. */
 .car__indicator--fault {
+  --ind-colour: 230, 57, 70;
   background: #e63946;
-  box-shadow: 0 0 4px rgba(230, 57, 70, 0.4);
+  box-shadow: 0 0 4px rgba(var(--ind-colour), 0.4);
 }
 .car__indicator--wash.car__indicator--fault {
+  --ind-colour: 69, 123, 157;
   background: #457b9d;
-  box-shadow: 0 0 4px rgba(69, 123, 157, 0.4);
 }
 .car__indicator--paint.car__indicator--fault {
+  --ind-colour: 244, 162, 97;
   background: #f4a261;
-  box-shadow: 0 0 4px rgba(244, 162, 97, 0.4);
 }
 .car__indicator--sticker.car__indicator--fault {
+  --ind-colour: 42, 157, 143;
   background: #2a9d8f;
-  box-shadow: 0 0 4px rgba(42, 157, 143, 0.4);
 }
 
 /* Active fault — pulsing the category colour */
 .car__indicator--active {
-  animation: indicator-pulse-active 0.8s ease-in-out infinite;
+  animation: indicator-pulse 0.8s ease-in-out infinite;
   transform: scale(1.15);
-}
-.car__indicator--wash.car__indicator--active {
-  animation: indicator-pulse-blue 0.8s ease-in-out infinite;
-}
-.car__indicator--paint.car__indicator--active {
-  animation: indicator-pulse-orange 0.8s ease-in-out infinite;
-}
-.car__indicator--sticker.car__indicator--active {
-  animation: indicator-pulse-green 0.8s ease-in-out infinite;
 }
 
 /* Fixed — dimmed grey */
@@ -625,21 +618,9 @@ html, body {
   opacity: 0.5;
 }
 
-@keyframes indicator-pulse-active {
-  0%, 100% { box-shadow: 0 0 6px rgba(230, 57, 70, 0.6); transform: scale(1.15); }
-  50%      { box-shadow: 0 0 14px rgba(230, 57, 70, 0.9); transform: scale(1.3); }
-}
-@keyframes indicator-pulse-blue {
-  0%, 100% { box-shadow: 0 0 6px rgba(69, 123, 157, 0.6); transform: scale(1.15); }
-  50%      { box-shadow: 0 0 14px rgba(69, 123, 157, 0.9); transform: scale(1.3); }
-}
-@keyframes indicator-pulse-orange {
-  0%, 100% { box-shadow: 0 0 6px rgba(244, 162, 97, 0.6); transform: scale(1.15); }
-  50%      { box-shadow: 0 0 14px rgba(244, 162, 97, 0.9); transform: scale(1.3); }
-}
-@keyframes indicator-pulse-green {
-  0%, 100% { box-shadow: 0 0 6px rgba(42, 157, 143, 0.6); transform: scale(1.15); }
-  50%      { box-shadow: 0 0 14px rgba(42, 157, 143, 0.9); transform: scale(1.3); }
+@keyframes indicator-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(var(--ind-colour), 0.6); transform: scale(1.15); }
+  50%      { box-shadow: 0 0 14px rgba(var(--ind-colour), 0.9); transform: scale(1.3); }
 }
 
 /* ===== SVG car paint — fill via CSS variable ===== */
