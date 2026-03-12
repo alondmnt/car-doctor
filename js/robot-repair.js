@@ -26,9 +26,10 @@ const RobotRepair = (() => {
         if (mode === 'loosen') {
           el.classList.add('robot__bolt--loose');
         } else {
+          el.style.transform = '';  // clear inline scale so animation takes over
           el.classList.remove('robot__bolt--loose');
           el.classList.add('robot__bolt--tight');
-          setTimeout(() => el.classList.remove('robot__bolt--tight'), 300);
+          setTimeout(() => el.classList.remove('robot__bolt--tight'), 350);
         }
       },
     }));
@@ -77,7 +78,9 @@ const RobotRepair = (() => {
           el.classList.remove('robot__boot--removed', 'robot__boot--flat');
           el.classList.add('robot__boot--new');
           el.querySelectorAll('.robot__bolt').forEach(b => {
-            b.classList.remove('robot__bolt--hidden', 'robot__bolt--loose');
+            b.classList.remove('robot__bolt--hidden');
+            // Keep bolts visually enlarged (loose) until tightened
+            b.style.transform = 'scale(1.7)';
           });
         },
       },
