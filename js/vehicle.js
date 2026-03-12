@@ -18,6 +18,7 @@ const Vehicle = (() => {
    * @param {string} opts.liftSelector      - jack/crane selector (hidden on exit)
    * @param {function} opts.pickExitAnim    - (el) => animation name string
    * @param {function} [opts.beforeExit]    - called before exit animation starts
+   * @param {function} [opts.afterEntry]    - called after entry animation/transition ends
    */
   function createController(el, opts) {
     return {
@@ -43,6 +44,12 @@ const Vehicle = (() => {
         el.offsetHeight;  // force reflow for transition
         el.classList.remove('car--entering');
         el.classList.add('car--parked');
+        if (opts.afterEntry) {
+          el.addEventListener('animationend', (e) => {
+            if (e.target !== el) return;
+            opts.afterEntry(el);
+          }, { once: true });
+        }
       },
 
       driveAway() {
