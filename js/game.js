@@ -232,8 +232,8 @@ const Game = (() => {
     }
   }
 
-  /** Remove highlight and arrows from all elements */
-  function clearHighlights() {
+  /** Remove visual hint glows and arrows (no pointer-events reset) */
+  function _clearVisualHints() {
     if (!currentCar) return;
     currentCar.el.querySelectorAll('.hint-glow').forEach(
       el => el.classList.remove('hint-glow')
@@ -244,6 +244,12 @@ const Game = (() => {
     currentCar.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible').forEach(
       el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible')
     );
+  }
+
+  /** Remove all highlights and reset pointer-events */
+  function clearHighlights() {
+    _clearVisualHints();
+    if (!currentCar) return;
     // Reset pointer-events on overlay groups
     currentCar.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime').forEach(
       el => el.style.pointerEvents = ''
@@ -292,28 +298,10 @@ const Game = (() => {
 
     if (step.warehouse) {
       showWarehousePart(step.warehouse, () => {
-        // If step also has a part picker, show it after the warehouse grab
-        if (step.picker && PARTS[step.picker]) {
-          showPartPicker(step.picker, (picked) => {
-            onStepComplete(step, target, picked);
-          });
-        } else {
-          onStepComplete(step, target);
-        }
+        _dispatchPicker(step, (picked) => onStepComplete(step, target, picked));
       });
-    } else if (step.picker === 'colour') {
-      showColourPicker((chosenColour) => {
-        currentCar.el.style.setProperty('--car-colour', chosenColour);
-        if (currentCar.type === 'robot') {
-          currentCar.el.style.setProperty('--robot-colour', chosenColour);
-        }
-        onStepComplete(step, target);
-      });
-    } else if (step.picker === 'sticker') {
-      showStickerPicker((emoji) => {
-        _applyStickerOrBadge(emoji);
-        onStepComplete(step, target);
-      });
+    } else if (step.picker) {
+      _dispatchPicker(step, (picked) => onStepComplete(step, target, picked));
     } else if (step.drag) {
       // Drag interaction with tap fallback
       activeCleanup = Drag.attach(target, step.drag, () => {
@@ -391,23 +379,7 @@ const Game = (() => {
         target.removeEventListener('click', handler);
         target.removeEventListener('touchend', handler);
         hideToolbox();
-        // If step also has a picker, show it before completing
-        if (step.picker === 'colour') {
-          showColourPicker((chosenColour) => {
-            currentCar.el.style.setProperty('--car-colour', chosenColour);
-            if (currentCar.type === 'robot') {
-              currentCar.el.style.setProperty('--robot-colour', chosenColour);
-            }
-            onStepComplete(step, target);
-          });
-        } else if (step.picker === 'sticker') {
-          showStickerPicker((emoji) => {
-            _applyStickerOrBadge(emoji);
-            onStepComplete(step, target);
-          });
-        } else {
-          onStepComplete(step, target);
-        }
+        _dispatchPicker(step, (picked) => onStepComplete(step, target, picked));
       }
       target.addEventListener('click', handler);
       target.addEventListener('touchend', handler);
@@ -473,7 +445,7 @@ const Game = (() => {
 
   function showColourPicker(onPick) {
     _showPicker({
-      containerClass: 'colour-picker',
+      containerClass: 'picker-row',
       items: CONFIG.carPalette,
       renderItem: (btn, c) => { btn.className = 'colour-picker__swatch'; btn.style.background = c; },
       onPick,
@@ -482,7 +454,7 @@ const Game = (() => {
 
   function showStickerPicker(onPick) {
     _showPicker({
-      containerClass: 'colour-picker',
+      containerClass: 'picker-row',
       items: CONFIG.stickers,
       renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
       onPick,
@@ -496,12 +468,36 @@ const Game = (() => {
     const styles = reg.styles();
     if (styles.length <= 1) { onPick(styles[0]); return; }
     _showPicker({
-      containerClass: 'part-picker',
+      containerClass: 'picker-row',
       items: styles,
       renderItem: (btn, s) => { btn.className = 'part-picker__option'; btn.innerHTML = reg.preview(s); },
       onPick,
       delay: 200,
     });
+  }
+
+  /** Dispatch the appropriate picker for a step, then callback with picked value.
+   *  Calls back immediately (with undefined) if step has no picker. */
+  function _dispatchPicker(step, onPick) {
+    if (!step.picker) { onPick(); return; }
+    if (PARTS[step.picker]) {
+      showPartPicker(step.picker, onPick);
+    } else if (step.picker === 'colour') {
+      showColourPicker((colour) => {
+        currentCar.el.style.setProperty('--car-colour', colour);
+        if (currentCar.type === 'robot') {
+          currentCar.el.style.setProperty('--robot-colour', colour);
+        }
+        onPick(colour);
+      });
+    } else if (step.picker === 'sticker') {
+      showStickerPicker((emoji) => {
+        _applyStickerOrBadge(emoji);
+        onPick(emoji);
+      });
+    } else {
+      onPick();
+    }
   }
 
   /** Handle step completion */
@@ -603,7 +599,7 @@ const Game = (() => {
     wh.innerHTML = '';
     wh.classList.remove('warehouse--active');
     // Remove any open pickers
-    garage.querySelectorAll('.colour-picker, .part-picker').forEach(el => el.remove());
+    garage.querySelectorAll('.picker-row').forEach(el => el.remove());
     currentCar.remove();
     currentCar = null;
     stepIndex = 0;
@@ -621,16 +617,7 @@ const Game = (() => {
       // Re-show hints for current step
       if (currentCar && !busy) highlightStep();
     } else {
-      // Clear visual hints only — don't reset pointer-events (would break active targets)
-      if (currentCar) {
-        currentCar.el.querySelectorAll('.hint-glow').forEach(el => el.classList.remove('hint-glow'));
-        currentCar.el.querySelectorAll('[data-was-hinted]').forEach(
-          el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
-        );
-        currentCar.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible').forEach(
-          el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible')
-        );
-      }
+      _clearVisualHints();
       // Remove tool hint glow but keep toolbox open if it's active
       const toolbox = document.getElementById('toolbox');
       toolbox.querySelectorAll('.toolbox__tool--hint').forEach(
