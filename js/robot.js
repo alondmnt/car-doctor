@@ -332,10 +332,12 @@ const Robot = (() => {
         <rect x="186" y="78" width="28" height="10" rx="2" fill="#444" stroke="#555" stroke-width="1"/>
       </g>
 
-      <!-- Voice module fault indicator (muted X over mouth area) -->
+      <!-- Voice module fault indicator (bandaid over mouth) -->
       <g class="robot__voice-fault ${hasVoiceModule ? '' : 'robot__voice-fault--hidden'}">
-        <line x1="218" y1="43" x2="226" y2="51" stroke="#e63946" stroke-width="2" stroke-linecap="round"/>
-        <line x1="226" y1="43" x2="218" y2="51" stroke="#e63946" stroke-width="2" stroke-linecap="round"/>
+        <rect x="183" y="43" width="34" height="10" rx="4" style="fill:#e8c99b;stroke:#d4a44c;stroke-width:1"/>
+        <rect x="195" y="43" width="10" height="10" rx="1" style="fill:#d4a44c;opacity:0.5"/>
+        <line x1="197" y1="45" x2="203" y2="51" style="stroke:#c49030;stroke-width:1;stroke-linecap:round"/>
+        <line x1="203" y1="45" x2="197" y2="51" style="stroke:#c49030;stroke-width:1;stroke-linecap:round"/>
       </g>
 
       <!-- Speech bubble (shown after voice module installed) -->
