@@ -12,7 +12,7 @@ const RobotRepair = (() => {
     '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
     '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
     '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
-    '🇮🇱': { sentences: ["!שלום", "!יאללה", "?מה קורה"], rtl: true },
+    '🇮🇱': { sentences: ["שלום!", "יאללה!", "מה קורה?"], rtl: true },
     '🇮🇳': { sentences: ["नमस्ते!", "चलो!", "बहुत अच्छा!"] },
   };
   const VOICE_FLAGS = Object.keys(VOICE_LANGUAGES);
@@ -370,7 +370,6 @@ const RobotRepair = (() => {
               text.setAttribute('font-size', '11');
               if (lang?.rtl) {
                 text.setAttribute('direction', 'rtl');
-                text.setAttribute('unicode-bidi', 'bidi-override');
               }
             }
             bubble.classList.remove('robot__speech-bubble--hidden');
