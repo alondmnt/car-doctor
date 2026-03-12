@@ -1239,7 +1239,7 @@ html, body {
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.3s, opacity 0.3s;
   transform-box: fill-box;
-  transform-origin: center bottom;
+  transform-origin: center top;
 }
 .robot__boot--flat {
   transform: scaleY(0.82) scaleX(1.1);
