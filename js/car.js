@@ -518,52 +518,16 @@ const Car = (() => {
 
     garage.appendChild(el);
 
-    return {
-      el,
+    return Vehicle.createController(el, {
+      type: 'car',
       faults,
       flatTyre,
-      type: 'car',
-      getFlatTyreEl() {
-        return el.querySelector(`.car__tyre--${flatTyre}`);
-      },
-      fixTyre() {
-        const tyre = this.getFlatTyreEl();
-        if (tyre) {
-          tyre.classList.remove('car__tyre--flat');
-          tyre.classList.add('car__tyre--fixing');
-          setTimeout(() => tyre.classList.remove('car__tyre--fixing'), 400);
-        }
-      },
-      slideIn() {
-        el.classList.add('car--entering');
-        el.offsetHeight;
-        el.classList.remove('car--entering');
-        el.classList.add('car--parked');
-      },
-      driveAway() {
-        return new Promise(resolve => {
-          el.classList.remove('car--parked');
-          // Hide the jack so it doesn't fly away with the car
-          const jack = el.querySelector('.car__jack');
-          if (jack) jack.style.display = 'none';
-          const anims = CONFIG.exitAnimations;
-          const anim = _pick(anims);
-          if (anim === 'rocket') {
-            const flame = document.createElement('div');
-            flame.className = 'car__flame';
-            el.appendChild(flame);
-          }
-          el.classList.add(`car--exit-${anim}`);
-          el.addEventListener('animationend', (e) => {
-            if (e.target !== el) return;
-            el.remove();
-            resolve();
-          }, { once: true });
-          setTimeout(() => { el.remove(); resolve(); }, 2000 / CONFIG.gameSpeed);
-        });
-      },
-      remove() { el.remove(); },
-    };
+      flatPartSelector: `.car__tyre--${flatTyre}`,
+      flatPartClass: 'car__tyre--flat',
+      fixingClass: 'car__tyre--fixing',
+      liftSelector: '.car__jack',
+      pickExitAnim: () => _pick(CONFIG.exitAnimations),
+    });
   }
 
   /** Build replacement tyre SVG for flat-tyre repair */

@@ -543,57 +543,31 @@ const Robot = (() => {
 
     garage.appendChild(el);
 
-    return {
-      el,
+    const controller = Vehicle.createController(el, {
+      type: 'robot',
       faults,
       flatTyre,
-      flatBoot,
-      type: 'robot',
-      getFlatTyreEl() {
-        return el.querySelector(`.robot__boot--${flatBoot}`);
+      flatPartSelector: `.robot__boot--${flatBoot}`,
+      flatPartClass: 'robot__boot--flat',
+      fixingClass: 'robot__boot--fixing',
+      liftSelector: '.robot__lift-pad',
+      pickExitAnim: (el) => {
+        const boosterExit = el.dataset.boosterExit;
+        if (boosterExit) return boosterExit;
+        return _pick(CONFIG.exitAnimations.filter(a => a !== 'rocket'));
       },
-      fixTyre() {
-        const boot = this.getFlatTyreEl();
-        if (boot) {
-          boot.classList.remove('robot__boot--flat');
-          boot.classList.add('robot__boot--fixing');
-          setTimeout(() => boot.classList.remove('robot__boot--fixing'), 400);
+      beforeExit: (el) => {
+        if (el.dataset.boosterExit) {
+          const flames = el.querySelector('.robot__jetpack-flames');
+          if (flames) {
+            flames.classList.remove('robot__jetpack-flames--hidden');
+            flames.classList.add('robot__jetpack-flames--active');
+          }
         }
       },
-      slideIn() {
-        el.classList.add('car--entering');
-        el.offsetHeight;
-        el.classList.remove('car--entering');
-        el.classList.add('car--parked');
-      },
-      driveAway() {
-        return new Promise(resolve => {
-          el.classList.remove('car--parked');
-          // Hide the crane so it doesn't fly away with the robot
-          const crane = el.querySelector('.robot__lift-pad');
-          if (crane) crane.style.display = 'none';
-          // Booster installed → use its exit animation; otherwise random (no rocket)
-          const boosterExit = el.dataset.boosterExit;
-          const robotAnims = CONFIG.exitAnimations.filter(a => a !== 'rocket');
-          const anim = boosterExit || _pick(robotAnims);
-          if (boosterExit) {
-            const flames = el.querySelector('.robot__jetpack-flames');
-            if (flames) {
-              flames.classList.remove('robot__jetpack-flames--hidden');
-              flames.classList.add('robot__jetpack-flames--active');
-            }
-          }
-          el.classList.add(`car--exit-${anim}`);
-          el.addEventListener('animationend', (e) => {
-            if (e.target !== el) return;
-            el.remove();
-            resolve();
-          }, { once: true });
-          setTimeout(() => { el.remove(); resolve(); }, 2000 / CONFIG.gameSpeed);
-        });
-      },
-      remove() { el.remove(); },
-    };
+    });
+    controller.flatBoot = flatBoot;
+    return controller;
   }
 
   /** Replace booster SVG groups with chosen style and show them */
