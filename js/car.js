@@ -498,7 +498,7 @@ const Car = (() => {
     const hairColour = _pick(HAIR_COLOURS);
     const templateFn = TEMPLATES[shape] || TEMPLATES.sedan;
 
-    const wheelStyle = _pick(CONFIG.wheelStyles);
+    const wheelStyle = _pick(GameState.get('wheelStyles'));
     el.innerHTML = `
       <div class="car__dashboard">
         <div class="car__indicator car__indicator--tyre ${hasFlatTyre ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>
@@ -568,7 +568,7 @@ const Car = (() => {
 
   /** Build replacement tyre SVG for flat-tyre repair */
   function replacementWheelSVG(cx, cy, r, position, style) {
-    style = style || _pick(CONFIG.wheelStyles);
+    style = style || _pick(GameState.get('wheelStyles'));
     return _wheelSVG(cx, cy, r, position, style);
   }
 

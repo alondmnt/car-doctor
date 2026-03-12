@@ -57,3 +57,14 @@ const UNLOCK_TIERS = [
   { coins: 45, key: 'boosterStyles',  icon: '🎈', label: 'New boosters!',
     items: ['rocket', 'propeller', 'balloon'] },
 ];
+
+/** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */
+function _deepFreeze(obj) {
+  Object.freeze(obj);
+  for (const v of Object.values(obj)) {
+    if (v && typeof v === 'object' && !Object.isFrozen(v)) _deepFreeze(v);
+  }
+  return obj;
+}
+_deepFreeze(CONFIG);
+_deepFreeze(UNLOCK_TIERS);

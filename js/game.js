@@ -14,9 +14,9 @@ const Game = (() => {
 
   /** Part picker registry — each entry provides available styles and a preview renderer */
   const PARTS = {
-    wheel:   { styles: () => CONFIG.wheelStyles,   preview: (s) => Car.wheelPreviewSVG(s) },
-    arm:     { styles: () => CONFIG.armStyles,      preview: (s) => Robot.armPreviewSVG(s) },
-    booster: { styles: () => CONFIG.boosterStyles,  preview: (s) => Robot.boosterPreviewSVG(s) },
+    wheel:   { styles: () => GameState.get('wheelStyles'),   preview: (s) => Car.wheelPreviewSVG(s) },
+    arm:     { styles: () => GameState.get('armStyles'),      preview: (s) => Robot.armPreviewSVG(s) },
+    booster: { styles: () => GameState.get('boosterStyles'),  preview: (s) => Robot.boosterPreviewSVG(s) },
     voice:   { styles: () => RobotRepair.voiceFlags(), preview: (f) => `<span style="font-size:28px">${f}</span>` },
   };
 
@@ -111,16 +111,16 @@ const Game = (() => {
     generation++;
     const gen = generation;
     busy = true;
-    const palette = CONFIG.carPalette;
+    const palette = GameState.get('carPalette');
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
     // Decide whether to spawn a robot
-    const spawnRobot = CONFIG.robotEnabled && Math.random() < CONFIG.robotChance;
+    const spawnRobot = GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
 
     // Pick 1–2 faults using weighted random selection
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
-    const weights = spawnRobot ? CONFIG.robotFaultWeights : CONFIG.faultWeights;
+    const weights = spawnRobot ? GameState.get('robotFaultWeights') : CONFIG.faultWeights;
     const faults = _pickWeightedFaults(faultCount, weights);
 
     // Swap garage theme for robots
@@ -135,7 +135,7 @@ const Game = (() => {
 
     // Re-enable hints if the vehicle has any fault type not yet seen
     if (faults.some(f => !seenFaults.has(f))) {
-      CONFIG.hintsOn = true;
+      GameState.setHintsOn(true);
       document.getElementById('hint-btn').classList.remove('hint-btn--off');
     }
 
@@ -197,13 +197,13 @@ const Game = (() => {
       showToolbox(step.tool);
       // If tool already selected, skip straight to car target highlight
       if (activeTool === step.tool) {
-        if (CONFIG.hintsOn) highlightCarTarget(step);
+        if (GameState.hintsOn()) highlightCarTarget(step);
       }
       return;
     }
     // No tool needed — hide toolbox if it was open from a previous step
     if (activeTool) hideToolbox();
-    if (CONFIG.hintsOn) highlightCarTarget(step);
+    if (GameState.hintsOn()) highlightCarTarget(step);
   }
 
   /** Highlight the target element on the car/robot */
@@ -275,7 +275,7 @@ const Game = (() => {
       if (t.dataset.tool === neededTool) {
         if (activeTool === neededTool) {
           t.classList.add('toolbox__tool--selected');
-        } else if (CONFIG.hintsOn) {
+        } else if (GameState.hintsOn()) {
           t.classList.add('toolbox__tool--hint');
         }
       }
@@ -358,7 +358,7 @@ const Game = (() => {
         activeTool = step.tool;
         toolEl.classList.add('toolbox__tool--selected');
         // Now highlight the car target (if hints on) and listen for action
-        if (CONFIG.hintsOn) highlightCarTarget(step);
+        if (GameState.hintsOn()) highlightCarTarget(step);
         attachCarAction(step, target);
       } else {
         // Wrong tool — shake feedback
@@ -461,7 +461,7 @@ const Game = (() => {
   function showColourPicker(onPick) {
     _showPicker({
       containerClass: 'picker-row',
-      items: CONFIG.carPalette,
+      items: GameState.get('carPalette'),
       renderItem: (btn, c) => { btn.className = 'colour-picker__swatch'; btn.style.background = c; },
       onPick,
     });
@@ -470,7 +470,7 @@ const Game = (() => {
   function showStickerPicker(onPick) {
     _showPicker({
       containerClass: 'picker-row',
-      items: CONFIG.stickers,
+      items: GameState.get('stickers'),
       renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
       onPick,
     });
@@ -552,10 +552,10 @@ const Game = (() => {
         // All faults fixed — track seen types and auto-disable hints
         currentCar.faults.forEach(f => seenFaults.add(f));
         const allCarFaults = Object.keys(CONFIG.faultWeights);
-        const allRobotFaults = CONFIG.robotEnabled ? Object.keys(CONFIG.robotFaultWeights) : [];
+        const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
         const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults])];
-        if (CONFIG.hintsOn && allFaultTypes.every(f => seenFaults.has(f))) {
-          CONFIG.hintsOn = false;
+        if (GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
+          GameState.setHintsOn(false);
           document.getElementById('hint-btn').classList.add('hint-btn--off');
         }
 
@@ -628,9 +628,9 @@ const Game = (() => {
 
   /** Toggle hints on/off */
   function toggleHints() {
-    CONFIG.hintsOn = !CONFIG.hintsOn;
-    document.getElementById('hint-btn').classList.toggle('hint-btn--off', !CONFIG.hintsOn);
-    if (CONFIG.hintsOn) {
+    GameState.setHintsOn(!GameState.hintsOn());
+    document.getElementById('hint-btn').classList.toggle('hint-btn--off', !GameState.hintsOn());
+    if (GameState.hintsOn()) {
       // Re-show hints for current step
       if (currentCar && !busy) highlightStep();
     } else {

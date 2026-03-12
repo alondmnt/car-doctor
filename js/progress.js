@@ -1,6 +1,6 @@
 /**
  * Progression system — localStorage persistence, tier unlocks, preview widget.
- * Reads UNLOCK_TIERS from config.js. Extends CONFIG arrays when tiers are met.
+ * Reads UNLOCK_TIERS from config.js. Delegates unlock effects to GameState.
  */
 const Progress = (() => {
   const STORAGE_KEY = 'carDoctor_progress';
@@ -37,33 +37,11 @@ const Progress = (() => {
     } catch { /* storage full — silent fail */ }
   }
 
-  /** Robot tier keys and their CONFIG effects */
-  const ROBOT_TIER_ACTIONS = {
-    robotDoctor:    () => { CONFIG.robotEnabled = true; },
-    robotArmJoint:  () => { CONFIG.robotFaultWeights.armJoint = 3; },
-    robotLegs:      () => { CONFIG.robotFaultWeights.legsRepair = 2; },
-    robotVoice:     () => { CONFIG.robotFaultWeights.voiceModule = 3; },
-    robotJetpack:   () => { CONFIG.robotFaultWeights.jetpack = 3; },
-  };
-
-  /** Extend CONFIG arrays with items from all unlocked tiers */
+  /** Apply all unlocked tiers to GameState */
   function applyUnlocks() {
     for (const tier of UNLOCK_TIERS) {
       if (!unlocked.includes(tier.coins)) continue;
-
-      // Handle robot tiers via action map
-      const robotAction = ROBOT_TIER_ACTIONS[tier.key];
-      if (robotAction) { robotAction(); continue; }
-
-      if (!tier.items.length) continue;
-
-      const target = CONFIG[tier.key];
-      if (!Array.isArray(target)) continue;
-
-      // Only add items not already present
-      for (const item of tier.items) {
-        if (!target.includes(item)) target.push(item);
-      }
+      GameState.applyTier(tier);
     }
   }
 
@@ -94,14 +72,7 @@ const Progress = (() => {
     coins = 0;
     unlocked = [];
     try { localStorage.removeItem(STORAGE_KEY); } catch { /* silent */ }
-    // Reset CONFIG to defaults (undo tier unlocks)
-    CONFIG.robotEnabled = false;
-    CONFIG.robotFaultWeights = { flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2 };
-    CONFIG.stickers = ['⭐', '🔥', '⚡', '🏁', '🦈', '🐉', '💀', '🌈'];
-    CONFIG.carPalette = ['#e63946', '#457b9d', '#f4a261', '#2a9d8f', '#e9c46a', '#264653'];
-    CONFIG.wheelStyles = ['standard'];
-    CONFIG.armStyles = ['standard'];
-    CONFIG.boosterStyles = ['jetpack'];
+    GameState.reset();
     renderPreview();
   }
 
