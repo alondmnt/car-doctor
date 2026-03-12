@@ -602,7 +602,7 @@ const Game = (() => {
     wh.innerHTML = '';
     wh.classList.remove('warehouse--active');
     // Remove any open pickers
-    garage.querySelectorAll('.colour-picker').forEach(el => el.remove());
+    garage.querySelectorAll('.colour-picker, .part-picker').forEach(el => el.remove());
     currentCar.remove();
     currentCar = null;
     stepIndex = 0;
