@@ -1154,11 +1154,11 @@ html, body {
 /* Robot bolt keyframes — more exaggerated scale for visibility */
 @keyframes bolt-untwist {
   0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(180deg) scale(1.6); }
-  100% { transform: rotate(360deg) scale(1.4); }
+  50%  { transform: rotate(180deg) scale(2); }
+  100% { transform: rotate(360deg) scale(1.7); }
 }
 @keyframes bolt-twist {
-  0%   { transform: rotate(0deg) scale(1.4); }
+  0%   { transform: rotate(0deg) scale(1.7); }
   50%  { transform: rotate(-180deg) scale(0.7); }
   100% { transform: rotate(-360deg) scale(1); }
 }
@@ -1242,7 +1242,7 @@ html, body {
   transform-origin: center top;
 }
 .robot__boot--flat {
-  transform: scaleY(0.82) scaleX(1.1);
+  transform: scaleY(0.82) scaleX(1.1) rotate(8deg);
 }
 .robot__boot--removed {
   opacity: 0.15;
