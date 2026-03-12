@@ -7,15 +7,15 @@ const FaultRegistry = (() => {
   /** Fault metadata — array index determines repair order.
    *  Each entry maps a fault key to its dashboard indicator and per-vehicle repair function. */
   const REGISTRY = [
-    { key: 'flatTyre',    indicator: '.car__indicator--tyre',        car: (c) => Repair.flatTyre(c),          robot: (c) => RobotRepair.brokenBoot(c) },
-    { key: 'engine',      indicator: '.car__indicator--engine',      car: (c) => Repair.engine(c),            robot: (c) => RobotRepair.powerCore(c) },
+    { key: 'flatTyre',    indicator: '.car__indicator--tyre',        car: (c) => Repair.flatTyre(c),          robot: (c) => RobotRepair.brokenBoot(c),   spaceship: (c) => SpaceshipRepair.brokenWing(c) },
+    { key: 'engine',      indicator: '.car__indicator--engine',      car: (c) => Repair.engine(c),            robot: (c) => RobotRepair.powerCore(c),    spaceship: (c) => SpaceshipRepair.booster(c) },
     { key: 'armJoint',    indicator: '.car__indicator--armJoint',    car: null,                                robot: (c) => RobotRepair.armJoint(c) },
     { key: 'legsRepair',  indicator: '.car__indicator--legsRepair',  car: null,                                robot: (c) => RobotRepair.legsRepair(c) },
     { key: 'voiceModule', indicator: '.car__indicator--voiceModule', car: null,                                robot: (c) => RobotRepair.voiceModule(c) },
     { key: 'jetpack',     indicator: '.car__indicator--jetpack',     car: null,                                robot: (c) => RobotRepair.jetpack(c) },
-    { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c) },
-    { key: 'paint',       indicator: '.car__indicator--paint',       car: (c) => Repair.paint(c),             robot: (c) => RobotRepair.plating(c) },
-    { key: 'sticker',     indicator: '.car__indicator--sticker',     car: (c) => Repair.sticker(c),           robot: (c) => RobotRepair.badge(c) },
+    { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c),     spaceship: (c) => SpaceshipRepair.spaceDust(c) },
+    { key: 'paint',       indicator: '.car__indicator--paint',       car: (c) => Repair.paint(c),             robot: (c) => RobotRepair.plating(c),      spaceship: (c) => SpaceshipRepair.hullDamage(c) },
+    { key: 'sticker',     indicator: '.car__indicator--sticker',     car: (c) => Repair.sticker(c),           robot: (c) => RobotRepair.badge(c),        spaceship: (c) => SpaceshipRepair.emblem(c) },
   ];
 
   /** Ordered fault keys (for sorting repair sequence) */
@@ -27,6 +27,7 @@ const FaultRegistry = (() => {
   /** Part picker definitions — each provides available styles and a preview renderer */
   const PARTS = {
     wheel:   { styles: () => GameState.get('wheelStyles'),   preview: (s) => Car.wheelPreviewSVG(s) },
+    wing:    { styles: () => ['standard'],                  preview: () => '<span style="font-size:28px">🪽</span>' },
     arm:     { styles: () => GameState.get('armStyles'),      preview: (s) => Robot.armPreviewSVG(s) },
     booster: { styles: () => GameState.get('boosterStyles'),  preview: (s) => Robot.boosterPreviewSVG(s) },
     voice:   { styles: () => RobotRepair.voiceFlags(), preview: (f) => `<span style="font-size:28px">${f}</span>` },

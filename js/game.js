@@ -115,7 +115,7 @@ const Game = (() => {
 
     currentFault = faultQueue.shift();
     const meta = FaultRegistry.META[currentFault];
-    const stepFn = currentCar.type === 'robot' ? meta?.robot : meta?.car;
+    const stepFn = meta?.[currentCar.type] || meta?.car;
     steps = stepFn ? stepFn(currentCar) : [];
     stepIndex = 0;
 
@@ -158,7 +158,8 @@ const Game = (() => {
         currentCar.faults.forEach(f => seenFaults.add(f));
         const allCarFaults = Object.keys(CONFIG.faultWeights);
         const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
-        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults])];
+        const allShipFaults = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
+        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults])];
         if (GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
           GameState.setHintsOn(false);
           document.getElementById('hint-btn').classList.add('hint-btn--off');

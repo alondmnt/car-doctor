@@ -16,15 +16,15 @@ const Picker = (() => {
   function highlightCarTarget(car, step) {
     const target = car.el.querySelector(step.target);
     if (!target) return;
-    if (target.classList.contains('car__sticker-zone') || target.classList.contains('robot__badge-zone')) {
+    if (target.classList.contains('car__sticker-zone') || target.classList.contains('robot__badge-zone') || target.classList.contains('ship__emblem-zone')) {
       const rect = target.querySelector('rect');
       if (rect) {
         rect.setAttribute('fill', 'rgba(255, 255, 50, 0.3)');
         rect.dataset.wasHinted = '1';
       }
-    } else if (target.classList.contains('car__paint-damage') || target.classList.contains('robot__plating-damage')) {
+    } else if (target.classList.contains('car__paint-damage') || target.classList.contains('robot__plating-damage') || target.classList.contains('ship__hull-damage')) {
       target.querySelectorAll('line').forEach(el => el.classList.add('hint-glow'));
-    } else if (target.classList.contains('car__mud')) {
+    } else if (target.classList.contains('car__mud') || target.classList.contains('ship__dust')) {
       target.querySelectorAll('ellipse').forEach(el => el.classList.add('hint-glow'));
     } else if (target.classList.contains('robot__grime')) {
       target.querySelectorAll('ellipse, circle').forEach(el => el.classList.add('hint-glow'));
@@ -32,10 +32,13 @@ const Picker = (() => {
       target.classList.add('hint-glow');
     }
     if (step.hintArrow) {
-      const arrow = target.querySelector('.car__jack-arrow') || target.querySelector('.robot__lift-pad-arrow');
+      const arrow = target.querySelector('.car__jack-arrow') || target.querySelector('.robot__lift-pad-arrow') || target.querySelector('.ship__lift-pad-arrow');
       if (arrow) {
         const visibleClass = arrow.classList.contains('robot__lift-pad-arrow')
-          ? 'robot__lift-pad-arrow--visible' : 'car__jack-arrow--visible';
+          ? 'robot__lift-pad-arrow--visible'
+          : arrow.classList.contains('ship__lift-pad-arrow')
+          ? 'ship__lift-pad-arrow--visible'
+          : 'car__jack-arrow--visible';
         arrow.classList.add(visibleClass);
         arrow.dataset.direction = step.hintArrow;
       }
@@ -51,8 +54,8 @@ const Picker = (() => {
     car.el.querySelectorAll('[data-was-hinted]').forEach(
       el => { el.setAttribute('fill', 'transparent'); delete el.dataset.wasHinted; }
     );
-    car.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible').forEach(
-      el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible')
+    car.el.querySelectorAll('.car__jack-arrow--visible, .robot__lift-pad-arrow--visible, .ship__lift-pad-arrow--visible').forEach(
+      el => el.classList.remove('car__jack-arrow--visible', 'robot__lift-pad-arrow--visible', 'ship__lift-pad-arrow--visible')
     );
   }
 
@@ -60,7 +63,7 @@ const Picker = (() => {
   function clearHighlights(car) {
     clearVisualHints(car);
     if (!car) return;
-    car.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime').forEach(
+    car.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime, .ship__hull-damage, .ship__emblem-zone, .ship__dust').forEach(
       el => el.style.pointerEvents = ''
     );
   }
@@ -115,12 +118,16 @@ const Picker = (() => {
   /** Apply a sticker/badge emoji to the zone and clear the dashed border */
   function applyStickerOrBadge(car, emoji) {
     const zone = car.el.querySelector('.car__sticker-zone') ||
-                 car.el.querySelector('.robot__badge-zone');
+                 car.el.querySelector('.robot__badge-zone') ||
+                 car.el.querySelector('.ship__emblem-zone');
     if (!zone) return;
     const textEl = zone.querySelector('text') || zone;
     textEl.textContent = emoji;
     const appliedClass = zone.classList.contains('robot__badge-zone')
-      ? 'robot__badge-zone--applied' : 'car__sticker-zone--applied';
+      ? 'robot__badge-zone--applied'
+      : zone.classList.contains('ship__emblem-zone')
+      ? 'ship__emblem-zone--applied'
+      : 'car__sticker-zone--applied';
     zone.classList.add(appliedClass);
     const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
     if (borderRect) {
@@ -139,7 +146,7 @@ const Picker = (() => {
     const part = document.createElement('div');
     part.className = `warehouse__part warehouse__part--${partType}`;
 
-    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒' };
+    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒', wing: '🪽' };
     part.textContent = icons[partType] || '📦';
 
     function grab(e) {
@@ -231,6 +238,8 @@ const Picker = (() => {
         car.el.style.setProperty('--car-colour', colour);
         if (car.type === 'robot') {
           car.el.style.setProperty('--robot-colour', colour);
+        } else if (car.type === 'spaceship') {
+          car.el.style.setProperty('--ship-colour', colour);
         }
         onPick(colour);
       });
