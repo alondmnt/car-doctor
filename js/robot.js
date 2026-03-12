@@ -160,7 +160,8 @@ const Robot = (() => {
       exitAnim: 'propeller',
       behind: () => `
         <rect x="192" y="-12" width="16" height="16" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
-        <circle cx="200" cy="-4" r="3" fill="#555"/>`,
+        <circle cx="200" cy="-4" r="3" fill="#555"/>
+        <rect x="175" y="-16" width="50" height="80" fill="transparent"/>`,
       flames: () => `
         <line x1="172" y1="-4" x2="228" y2="-4" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
         <ellipse cx="172" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>
@@ -170,11 +171,12 @@ const Robot = (() => {
     balloon: {
       exitAnim: 'balloon',
       behind: () => `
-        <line x1="200" y1="-5" x2="200" y2="10" stroke="#888" stroke-width="1.5"/>`,
+        <line x1="200" y1="-10" x2="200" y2="10" stroke="#888" stroke-width="1.5"/>
+        <rect x="175" y="-10" width="50" height="80" fill="transparent"/>`,
       flames: () => `
-        <ellipse cx="200" cy="-30" rx="22" ry="28" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
-        <ellipse cx="196" cy="-35" rx="7" ry="14" fill="rgba(255,255,255,0.15)"/>
-        <path d="M196,-3 L200,-5 L204,-3" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
+        <ellipse cx="200" cy="-38" rx="22" ry="28" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
+        <ellipse cx="196" cy="-43" rx="7" ry="14" fill="rgba(255,255,255,0.15)"/>
+        <path d="M196,-11 L200,-13 L204,-11" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
       strap: () => '',
     },
   };
