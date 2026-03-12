@@ -121,10 +121,15 @@ const Spaceship = (() => {
       <!-- Hull damage (paint equivalent — scratch lines on hull) -->
       <g class="ship__hull-damage ${hasPaint ? '' : 'ship__hull-damage--hidden'}">
         <rect x="60" y="30" width="280" height="120" fill="transparent"/>
-        <line x1="120" y1="65" x2="160" y2="72" stroke="rgba(40,50,60,0.5)" stroke-width="3" stroke-linecap="round"/>
-        <line x1="200" y1="58" x2="240" y2="66" stroke="rgba(40,50,60,0.45)" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="140" y1="95" x2="175" y2="105" stroke="rgba(40,50,60,0.4)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="250" y1="90" x2="275" y2="85" stroke="rgba(40,50,60,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Two-layer scratches: light edge + dark centre for contrast on any colour -->
+        <line x1="120" y1="65" x2="160" y2="72" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="120" y1="65" x2="160" y2="72" stroke="rgba(40,30,20,0.4)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="200" y1="58" x2="240" y2="66" stroke="rgba(255,255,255,0.25)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="200" y1="58" x2="240" y2="66" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="140" y1="95" x2="175" y2="105" stroke="rgba(255,255,255,0.22)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="140" y1="95" x2="175" y2="105" stroke="rgba(40,30,20,0.3)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="250" y1="90" x2="275" y2="85" stroke="rgba(255,255,255,0.25)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="250" y1="90" x2="275" y2="85" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
       <!-- Emblem zone (sticker equivalent) -->

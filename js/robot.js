@@ -292,10 +292,15 @@ const Robot = (() => {
       <!-- Plating damage (paint equivalent — dent/scratch lines on torso/head) -->
       <g class="robot__plating-damage ${hasPaint ? '' : 'robot__plating-damage--hidden'}">
         <rect x="140" y="8" width="120" height="118" fill="transparent"/>
-        <line x1="165" y1="75" x2="190" y2="82" stroke="rgba(40,50,60,0.5)" stroke-width="3" stroke-linecap="round"/>
-        <line x1="210" y1="70" x2="240" y2="78" stroke="rgba(40,50,60,0.45)" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="175" y1="95" x2="195" y2="105" stroke="rgba(40,50,60,0.4)" stroke-width="2" stroke-linecap="round"/>
-        <line x1="220" y1="100" x2="238" y2="95" stroke="rgba(40,50,60,0.45)" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Two-layer scratches: light edge + dark centre for contrast on any colour -->
+        <line x1="165" y1="75" x2="190" y2="82" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="165" y1="75" x2="190" y2="82" stroke="rgba(40,30,20,0.4)" stroke-width="3" stroke-linecap="round"/>
+        <line x1="210" y1="70" x2="240" y2="78" stroke="rgba(255,255,255,0.25)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="210" y1="70" x2="240" y2="78" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="175" y1="95" x2="195" y2="105" stroke="rgba(255,255,255,0.22)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="175" y1="95" x2="195" y2="105" stroke="rgba(40,30,20,0.3)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="220" y1="100" x2="238" y2="95" stroke="rgba(255,255,255,0.25)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="220" y1="100" x2="238" y2="95" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
       <!-- Badge zone (sticker equivalent) -->

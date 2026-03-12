@@ -127,7 +127,7 @@ const Car = (() => {
       <g class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}">
         <rect x="40" y="28" width="330" height="130" fill="transparent"/>
         ${paint.map(p => {
-          // Render as scratch lines — angled, with rounded caps
+          // Two-layer scratch: light edge + dark centre for contrast on any colour
           const len = p.rx * 1.2;
           const ang = (p.ang || -20) * Math.PI / 180;
           const dx = Math.cos(ang) * len;
@@ -136,7 +136,10 @@ const Car = (() => {
           const x2 = p.cx + dx, y2 = p.cy + dy;
           const sw = Math.max(2, p.ry * 0.35);
           return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
-                        stroke="rgba(180,160,130,${p.o})" stroke-width="${sw}"
+                        stroke="rgba(255,255,255,${p.o * 0.5})" stroke-width="${sw + 2}"
+                        stroke-linecap="round"/>` +
+                 `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+                        stroke="rgba(40,30,20,${p.o * 0.7})" stroke-width="${sw}"
                         stroke-linecap="round"/>`;
         }).join('')}
       </g>
