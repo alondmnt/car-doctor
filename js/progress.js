@@ -40,10 +40,10 @@ const Progress = (() => {
   /** Robot tier keys and their CONFIG effects */
   const ROBOT_TIER_ACTIONS = {
     robotDoctor:    () => { CONFIG.robotEnabled = true; },
-    robotArmJoint:  () => { CONFIG.robotFaultWeights.armJoint = 2; },
+    robotArmJoint:  () => { CONFIG.robotFaultWeights.armJoint = 3; },
     robotLegs:      () => { CONFIG.robotFaultWeights.legsRepair = 2; },
-    robotVoice:     () => { CONFIG.robotFaultWeights.voiceModule = 2; },
-    robotJetpack:   () => { CONFIG.robotFaultWeights.jetpack = 2; },
+    robotVoice:     () => { CONFIG.robotFaultWeights.voiceModule = 3; },
+    robotJetpack:   () => { CONFIG.robotFaultWeights.jetpack = 3; },
   };
 
   /** Extend CONFIG arrays with items from all unlocked tiers */
