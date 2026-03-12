@@ -195,8 +195,14 @@ const Game = (() => {
     // Always show toolbox when step requires a tool (functional, not just a hint)
     if (step.tool) {
       showToolbox(step.tool);
-      return;  // don't highlight car target yet — wait for tool selection
+      // If tool already selected, skip straight to car target highlight
+      if (activeTool === step.tool) {
+        if (CONFIG.hintsOn) highlightCarTarget(step);
+      }
+      return;
     }
+    // No tool needed — hide toolbox if it was open from a previous step
+    if (activeTool) hideToolbox();
     if (CONFIG.hintsOn) highlightCarTarget(step);
   }
 
@@ -257,6 +263,7 @@ const Game = (() => {
   }
 
   let activeCleanup = null;
+  let activeTool = null;  // currently selected tool — persists across consecutive same-tool steps
 
   /** Show the toolbox and highlight the needed tool */
   function showToolbox(neededTool) {
@@ -265,14 +272,19 @@ const Game = (() => {
     // Highlight the correct tool
     toolbox.querySelectorAll('.toolbox__tool').forEach(t => {
       t.classList.remove('toolbox__tool--hint', 'toolbox__tool--selected');
-      if (t.dataset.tool === neededTool && CONFIG.hintsOn) {
-        t.classList.add('toolbox__tool--hint');
+      if (t.dataset.tool === neededTool) {
+        if (activeTool === neededTool) {
+          t.classList.add('toolbox__tool--selected');
+        } else if (CONFIG.hintsOn) {
+          t.classList.add('toolbox__tool--hint');
+        }
       }
     });
   }
 
-  /** Hide the toolbox */
+  /** Hide the toolbox and clear active tool */
   function hideToolbox() {
+    activeTool = null;
     const toolbox = document.getElementById('toolbox');
     toolbox.classList.remove('toolbox--active');
     toolbox.querySelectorAll('.toolbox__tool').forEach(t => {
@@ -290,9 +302,13 @@ const Game = (() => {
     // Enable pointer-events on target (paint-damage/sticker-zone are off by default)
     target.style.pointerEvents = 'auto';
 
-    // If step needs a tool, wait for tool selection first
+    // If step needs a tool, wait for selection (or skip if already holding it)
     if (step.tool) {
-      waitForToolSelection(step, target);
+      if (activeTool === step.tool) {
+        attachCarAction(step, target);
+      } else {
+        waitForToolSelection(step, target);
+      }
       return;
     }
 
@@ -339,6 +355,7 @@ const Game = (() => {
         Audio.play('tap');
         toolbox.removeEventListener('click', onToolClick);
         toolbox.removeEventListener('touchend', onToolClick);
+        activeTool = step.tool;
         toolEl.classList.add('toolbox__tool--selected');
         // Now highlight the car target (if hints on) and listen for action
         if (CONFIG.hintsOn) highlightCarTarget(step);
@@ -368,7 +385,6 @@ const Game = (() => {
       activeCleanup = Drag.attach(target, step.drag, () => {
         if (busy) return;
         activeCleanup = null;
-        hideToolbox();
         onStepComplete(step, target);
       });
     } else {
@@ -378,7 +394,6 @@ const Game = (() => {
         if (busy) return;
         target.removeEventListener('click', handler);
         target.removeEventListener('touchend', handler);
-        hideToolbox();
         _dispatchPicker(step, (picked) => onStepComplete(step, target, picked));
       }
       target.addEventListener('click', handler);
@@ -513,7 +528,9 @@ const Game = (() => {
     stepIndex++;
 
     if (stepIndex >= steps.length) {
-      // Current fault repaired — update dashboard indicator
+      // Fault complete — clear tool state
+      hideToolbox();
+      // Update dashboard indicator
       const meta = FAULT_META[currentFault];
       const indicator = meta && currentCar.el.querySelector(meta.indicator);
       if (indicator) {
