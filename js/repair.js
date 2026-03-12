@@ -1,19 +1,18 @@
 /**
- * Repair step logic — defines multi-step repair sequences.
- * Each step: id, target, action, sound, and optional drag / hintArrow / tool / warehouse.
- * `tool` — which toolbox tool must be selected first (drill, wrench, jack, hand, spray).
+ * Car repair step logic — thin wrappers around RepairTemplates with car-specific selectors.
+ * Each function returns a step array: { id, target, action, sound, tool?, drag?, warehouse?, picker?, hintArrow? }
  */
 const Repair = (() => {
 
-  /** Helper to generate screw steps for a tyre */
-  function _screwSteps(tyreSelector, mode) {
-    return [1, 2, 3].map(n => ({
-      id: `${mode}-screw-${n}`,
-      description: `Tap screw ${n} to ${mode} it`,
-      target: `${tyreSelector} .car__screw--${n}`,
-      tool: 'drill',
-      sound: 'ratchet',
-      action: (el) => {
+  /** Flat tyre repair — 10 steps: 3 unscrew, jack, remove, add, 3 screw, lower */
+  function flatTyre(car) {
+    const tyreSelector = `.car__tyre--${car.flatTyre}`;
+
+    return RepairTemplates.boltSwap({
+      partSelector: tyreSelector,
+      fastenerName: 'screw',
+      fastenerClass: 'car__screw',
+      fastenerAction: (mode) => (el) => {
         if (mode === 'loosen') {
           el.classList.add('car__screw--loose');
         } else {
@@ -22,203 +21,87 @@ const Repair = (() => {
           setTimeout(() => el.classList.remove('car__screw--tight'), 300);
         }
       },
-    }));
-  }
-
-  /** Flat tyre repair — 10 steps: 3 unscrew, jack, remove, add, 3 screw, lower */
-  function flatTyre(car) {
-    const tyreSelector = `.car__tyre--${car.flatTyre}`;
-
-    return [
-      ..._screwSteps(tyreSelector, 'loosen'),
-      {
-        id: 'jack-up',
-        description: 'Drag the jack up to lift the car',
-        target: '.car__jack',
-        tool: 'jack',
-        hintArrow: 'up',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (_el, carEl) => {
-          carEl.classList.add('car--jacked');
-          _el.classList.add('car__jack--raised');
-        },
+      liftId: 'jack-up',
+      liftDesc: 'Drag the jack up to lift the car',
+      liftSelector: '.car__jack',
+      liftRaisedClass: 'car__jack--raised',
+      removeId: 'remove-tyre',
+      removeDesc: 'Pull the tyre off',
+      removeAction: (el) => {
+        el.classList.add('car__tyre--removed');
+        el.querySelectorAll('.car__screw').forEach(s => s.classList.add('car__screw--hidden'));
       },
-      {
-        id: 'remove-tyre',
-        description: 'Pull the tyre off',
-        target: tyreSelector,
-        tool: 'hand',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'pop',
-        action: (el) => {
-          el.classList.add('car__tyre--removed');
-          el.querySelectorAll('.car__screw').forEach(s => s.classList.add('car__screw--hidden'));
-        },
+      addId: 'add-new-tyre',
+      addDesc: 'Grab the new tyre from the shelf',
+      warehousePart: 'tyre',
+      picker: 'wheel',
+      addAction: (el, _carEl, picked) => {
+        // Replace SVG content with chosen (or default) wheel style
+        const cx = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cx'));
+        const cy = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cy'));
+        const r = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('r'));
+        const position = el.dataset.position;
+        const fresh = Car.replacementWheelSVG(cx, cy, r, position, picked);
+        el.outerHTML = fresh;
+        // Re-query the new element and animate
+        const parent = document.querySelector(tyreSelector);
+        if (parent) parent.classList.add('car__tyre--new');
       },
-      {
-        id: 'add-new-tyre',
-        description: 'Grab the new tyre from the shelf',
-        warehouse: 'tyre',
-        picker: 'wheel',
-        target: tyreSelector,
-        sound: 'pop',
-        action: (el, _carEl, picked) => {
-          // Replace SVG content with chosen (or default) wheel style
-          const cx = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cx'));
-          const cy = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('cy'));
-          const r = parseFloat(el.querySelector('.car__tyre-rubber').getAttribute('r'));
-          const position = el.dataset.position;
-          const fresh = Car.replacementWheelSVG(cx, cy, r, position, picked);
-          el.outerHTML = fresh;
-          // Re-query the new element and animate
-          const parent = document.querySelector(tyreSelector);
-          if (parent) parent.classList.add('car__tyre--new');
-        },
-      },
-      ..._screwSteps(tyreSelector, 'tighten'),
-      {
-        id: 'lower-jack',
-        description: 'Lower the jack',
-        target: '.car__jack',
-        tool: 'jack',
-        hintArrow: 'down',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'clank',
-        action: (_el, carEl) => {
-          carEl.classList.remove('car--jacked');
-          _el.classList.remove('car__jack--raised');
-        },
-      },
-    ];
+      lowerId: 'lower-jack',
+      lowerDesc: 'Lower the jack',
+    });
   }
 
   /** Broken engine repair — 4 steps */
   function engine(_car) {
-    return [
-      {
-        id: 'open-bonnet',
-        description: 'Open the bonnet',
-        target: '.car__bonnet',
-        tool: 'hand',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          el.classList.add('car__bonnet--open');
-          carEl.querySelector('.car__engine-bay').classList.add('car__engine-bay--visible');
-        },
-      },
-      {
-        id: 'remove-engine',
-        description: 'Pull the broken engine out',
-        target: '.car__engine',
-        tool: 'wrench',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          el.classList.remove('car__engine--broken');
-          el.classList.add('car__engine--removed');
-          // Clear smoke when broken engine is removed
-          const smoke = carEl.querySelector('.car__smoke');
-          if (smoke) {
-            smoke.classList.add('car__smoke--clearing');
-            setTimeout(() => smoke.classList.add('car__smoke--hidden'), 500);
-          }
-        },
-      },
-      {
-        id: 'add-engine',
-        description: 'Grab the new engine from the shelf',
-        warehouse: 'engine',
-        target: '.car__engine',
-        sound: 'pop',
-        action: (el) => {
-          el.classList.remove('car__engine--removed');
-          el.classList.add('car__engine--new');
-        },
-      },
-      {
-        id: 'close-bonnet',
-        description: 'Close the bonnet',
-        target: '.car__bonnet-lid',
-        tool: 'hand',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          const bonnet = carEl.querySelector('.car__bonnet');
-          bonnet.classList.remove('car__bonnet--open');
-          carEl.querySelector('.car__engine-bay').classList.remove('car__engine-bay--visible');
-          carEl.querySelector('.car__engine').classList.remove('car__engine--new');
-        },
-      },
-    ];
+    return RepairTemplates.panelSwap({
+      panelSelector: '.car__bonnet',
+      panelOpenClass: 'car__bonnet--open',
+      baySelector: '.car__engine-bay',
+      bayVisibleClass: 'car__engine-bay--visible',
+      partSelector: '.car__engine',
+      brokenClass: 'car__engine--broken',
+      removedClass: 'car__engine--removed',
+      newClass: 'car__engine--new',
+      panelLidSelector: '.car__bonnet-lid',
+      effectSelector: '.car__smoke',
+      effectClearClass: 'car__smoke--clearing',
+      effectHiddenClass: 'car__smoke--hidden',
+      effectDelay: 500,
+      warehousePart: 'engine',
+    });
   }
 
-  /** Paint job — 1 step: select spray tool, tap stains, pick colour → car repainted */
+  /** Paint job — 1 step */
   function paint(_car) {
-    return [
-      {
-        id: 'spray-paint',
-        description: 'Select the spray tool and tap the damage',
-        target: '.car__paint-damage',
-        tool: 'spray',
-        sound: 'tap',
-        picker: 'colour',
-        action: (_el, carEl) => {
-          const damage = carEl.querySelector('.car__paint-damage');
-          if (damage) {
-            damage.classList.add('car__paint-damage--hidden');
-          }
-          carEl.querySelector('.car__body').classList.add('car__body--fresh-paint');
-          carEl.querySelector('.car__roof').classList.add('car__roof--fresh-paint');
-          setTimeout(() => {
-            carEl.querySelector('.car__body').classList.remove('car__body--fresh-paint');
-            carEl.querySelector('.car__roof').classList.remove('car__roof--fresh-paint');
-          }, 600);
-        },
-      },
-    ];
+    return RepairTemplates.spray({
+      damageSelector: '.car__paint-damage',
+      damageHiddenClass: 'car__paint-damage--hidden',
+      bodyParts: [
+        { selector: '.car__body', freshClass: 'car__body--fresh-paint' },
+        { selector: '.car__roof', freshClass: 'car__roof--fresh-paint' },
+      ],
+    });
   }
 
   /** Sticker — 1 step */
   function sticker(_car) {
-    return [
-      {
-        id: 'pick-sticker',
-        description: 'Select hand tool and tap sticker zone',
-        target: '.car__sticker-zone',
-        tool: 'hand',
-        sound: 'tap',
-        picker: 'sticker',
-        action: () => {},
-      },
-    ];
+    return RepairTemplates.stickerApply({
+      zoneSelector: '.car__sticker-zone',
+    });
   }
 
-  /** Car wash — 1 step: select hose, tap mud → wash away with bubbles */
+  /** Car wash — 1 step */
   function wash(_car) {
-    return [
-      {
-        id: 'wash-car',
-        description: 'Select the hose and tap the mud',
-        target: '.car__mud',
-        tool: 'hose',
-        sound: 'splash',
-        action: (_el, carEl) => {
-          const mud = carEl.querySelector('.car__mud');
-          if (mud) {
-            mud.classList.add('car__mud--washing');
-            setTimeout(() => mud.classList.add('car__mud--hidden'), 800);
-          }
-          carEl.querySelector('.car__body').classList.add('car__body--sparkle');
-          carEl.querySelector('.car__roof').classList.add('car__roof--sparkle');
-          setTimeout(() => {
-            carEl.querySelector('.car__body').classList.remove('car__body--sparkle');
-            carEl.querySelector('.car__roof').classList.remove('car__roof--sparkle');
-          }, 800);
-        },
-      },
-    ];
+    return RepairTemplates.hoseWash({
+      grimeSelector: '.car__mud',
+      grimeWashClass: 'car__mud--washing',
+      grimeHiddenClass: 'car__mud--hidden',
+      bodyParts: [
+        { selector: '.car__body', sparkleClass: 'car__body--sparkle' },
+        { selector: '.car__roof', sparkleClass: 'car__roof--sparkle' },
+      ],
+    });
   }
 
   return { flatTyre, engine, paint, sticker, wash };

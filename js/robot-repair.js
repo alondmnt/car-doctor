@@ -1,6 +1,6 @@
 /**
- * Robot repair step logic — defines multi-step repair sequences.
- * Mirrors Repair.* but uses .robot__* selectors and robot-flavoured actions.
+ * Robot repair step logic — base faults use RepairTemplates with robot-specific selectors.
+ * Upgrade faults (armJoint, legsRepair, voiceModule, jetpack) are robot-only.
  * Same step format: { id, target, action, sound, tool?, drag?, warehouse?, picker?, hintArrow? }
  */
 const RobotRepair = (() => {
@@ -24,18 +24,18 @@ const RobotRepair = (() => {
     return lang.sentences[Math.floor(Math.random() * lang.sentences.length)];
   }
 
-  /* ─── Helpers ─── */
+  /* ─── Base faults (via RepairTemplates) ─── */
 
-  /** Generate bolt screw steps for a boot (tyre equivalent) */
-  function _boltSteps(bootSelector, mode) {
-    return [1, 2, 3].map(n => ({
-      id: `${mode}-bolt-${n}`,
-      description: `Tap bolt ${n} to ${mode} it`,
-      target: `${bootSelector} .robot__bolt--${n}`,
-      tool: 'drill',
-      sound: 'ratchet',
-      action: (el) => {
-        // Get bolt centre for transform-origin (CSS fill-box unreliable inside transformed parent)
+  /** Broken boot — unbolt, lift on crane, swap boot, bolt, lower */
+  function brokenBoot(car) {
+    const bootSelector = `.robot__boot--${car.flatBoot}`;
+
+    return RepairTemplates.boltSwap({
+      partSelector: bootSelector,
+      fastenerName: 'bolt',
+      fastenerClass: 'robot__bolt',
+      fastenerAction: (mode) => (el) => {
+        // Set transform-origin from bolt circle centre (CSS fill-box unreliable inside transformed parent)
         const circle = el.querySelector('circle:not(.robot__bolt-halo)');
         if (circle) {
           const cx = circle.getAttribute('cx');
@@ -51,202 +51,83 @@ const RobotRepair = (() => {
           setTimeout(() => el.classList.remove('robot__bolt--tight'), 350);
         }
       },
-    }));
-  }
-
-  /* ─── Base faults (1:1 car mapping) ─── */
-
-  /** Broken boot — unbolt, lift on pad, swap boot, bolt, lower */
-  function brokenBoot(car) {
-    const bootSelector = `.robot__boot--${car.flatBoot}`;
-
-    return [
-      ..._boltSteps(bootSelector, 'loosen'),
-      {
-        id: 'lift-pad-up',
-        description: 'Drag the lift pad up to raise the robot',
-        target: '.robot__lift-pad',
-        tool: 'jack',
-        hintArrow: 'up',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (_el, carEl) => {
-          carEl.classList.add('car--jacked');
-          _el.classList.add('robot__lift-pad--raised');
-        },
+      liftId: 'lift-pad-up',
+      liftDesc: 'Drag the lift pad up to raise the robot',
+      liftSelector: '.robot__lift-pad',
+      liftRaisedClass: 'robot__lift-pad--raised',
+      removeId: 'remove-boot',
+      removeDesc: 'Pull the broken boot off',
+      removeAction: (el) => {
+        el.classList.add('robot__boot--removed');
+        el.querySelectorAll('.robot__bolt').forEach(b => b.classList.add('robot__bolt--hidden'));
       },
-      {
-        id: 'remove-boot',
-        description: 'Pull the broken boot off',
-        target: bootSelector,
-        tool: 'hand',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'pop',
-        action: (el) => {
-          el.classList.add('robot__boot--removed');
-          el.querySelectorAll('.robot__bolt').forEach(b => b.classList.add('robot__bolt--hidden'));
-        },
+      addId: 'add-new-boot',
+      addDesc: 'Grab the new boot from the warehouse',
+      warehousePart: 'boot',
+      addAction: (el) => {
+        el.classList.remove('robot__boot--removed', 'robot__boot--flat');
+        el.classList.add('robot__boot--new');
+        el.querySelectorAll('.robot__bolt').forEach(b => {
+          b.classList.remove('robot__bolt--hidden');
+          // Keep bolts visually enlarged (loose) until tightened
+          b.style.transform = 'scale(1.7)';
+        });
       },
-      {
-        id: 'add-new-boot',
-        description: 'Grab the new boot from the warehouse',
-        warehouse: 'boot',
-        target: bootSelector,
-        sound: 'pop',
-        action: (el) => {
-          el.classList.remove('robot__boot--removed', 'robot__boot--flat');
-          el.classList.add('robot__boot--new');
-          el.querySelectorAll('.robot__bolt').forEach(b => {
-            b.classList.remove('robot__bolt--hidden');
-            // Keep bolts visually enlarged (loose) until tightened
-            b.style.transform = 'scale(1.7)';
-          });
-        },
-      },
-      ..._boltSteps(bootSelector, 'tighten'),
-      {
-        id: 'lower-pad',
-        description: 'Lower the lift pad',
-        target: '.robot__lift-pad',
-        tool: 'jack',
-        hintArrow: 'down',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'clank',
-        action: (_el, carEl) => {
-          carEl.classList.remove('car--jacked');
-          _el.classList.remove('robot__lift-pad--raised');
-        },
-      },
-    ];
+      lowerId: 'lower-pad',
+      lowerDesc: 'Lower the lift pad',
+    });
   }
 
   /** Dead power core — open chest panel, remove sparking core, insert new, close */
   function powerCore(_car) {
-    return [
-      {
-        id: 'open-chest',
-        description: 'Open the chest panel',
-        target: '.robot__chest-panel',
-        tool: 'hand',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          el.classList.add('robot__chest-panel--open');
-          carEl.querySelector('.robot__power-core-bay').classList.add('robot__power-core-bay--visible');
-        },
-      },
-      {
-        id: 'remove-core',
-        description: 'Pull the sparking power core out',
-        target: '.robot__power-core',
-        tool: 'wrench',
-        drag: { direction: 'up', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          el.classList.remove('robot__power-core--broken');
-          el.classList.add('robot__power-core--removed');
-          const sparks = carEl.querySelector('.robot__sparks');
-          if (sparks) {
-            sparks.classList.add('robot__sparks--clearing');
-            setTimeout(() => sparks.classList.add('robot__sparks--hidden'), 400);
-          }
-        },
-      },
-      {
-        id: 'add-core',
-        description: 'Grab the new power core from the warehouse',
-        warehouse: 'engine',
-        target: '.robot__power-core',
-        sound: 'pop',
-        action: (el) => {
-          el.classList.remove('robot__power-core--removed');
-          el.classList.add('robot__power-core--new');
-        },
-      },
-      {
-        id: 'close-chest',
-        description: 'Close the chest panel',
-        target: '.robot__chest-panel-lid',
-        tool: 'hand',
-        drag: { direction: 'down', threshold: 30 },
-        sound: 'clank',
-        action: (el, carEl) => {
-          const panel = carEl.querySelector('.robot__chest-panel');
-          panel.classList.remove('robot__chest-panel--open');
-          carEl.querySelector('.robot__power-core-bay').classList.remove('robot__power-core-bay--visible');
-          carEl.querySelector('.robot__power-core').classList.remove('robot__power-core--new');
-        },
-      },
-    ];
+    return RepairTemplates.panelSwap({
+      panelSelector: '.robot__chest-panel',
+      panelOpenClass: 'robot__chest-panel--open',
+      baySelector: '.robot__power-core-bay',
+      bayVisibleClass: 'robot__power-core-bay--visible',
+      partSelector: '.robot__power-core',
+      brokenClass: 'robot__power-core--broken',
+      removedClass: 'robot__power-core--removed',
+      newClass: 'robot__power-core--new',
+      panelLidSelector: '.robot__chest-panel-lid',
+      effectSelector: '.robot__sparks',
+      effectClearClass: 'robot__sparks--clearing',
+      effectHiddenClass: 'robot__sparks--hidden',
+      effectDelay: 400,
+      warehousePart: 'engine',
+    });
   }
 
-  /** Dented plating — spray tool, colour picker → plating repaired */
+  /** Dented plating — spray tool, colour picker */
   function plating(_car) {
-    return [
-      {
-        id: 'spray-plating',
-        description: 'Select the spray tool and tap the dents',
-        target: '.robot__plating-damage',
-        tool: 'spray',
-        sound: 'tap',
-        picker: 'colour',
-        action: (_el, carEl) => {
-          const damage = carEl.querySelector('.robot__plating-damage');
-          if (damage) damage.classList.add('robot__plating-damage--hidden');
-          const torso = carEl.querySelector('.robot__torso-box');
-          const head = carEl.querySelector('.robot__head-box');
-          if (torso) torso.classList.add('robot__torso--fresh');
-          if (head) head.classList.add('robot__head--fresh');
-          setTimeout(() => {
-            if (torso) torso.classList.remove('robot__torso--fresh');
-            if (head) head.classList.remove('robot__head--fresh');
-          }, 600);
-        },
-      },
-    ];
+    return RepairTemplates.spray({
+      damageSelector: '.robot__plating-damage',
+      damageHiddenClass: 'robot__plating-damage--hidden',
+      bodyParts: [
+        { selector: '.robot__torso-box', freshClass: 'robot__torso--fresh' },
+        { selector: '.robot__head-box', freshClass: 'robot__head--fresh' },
+      ],
+    });
   }
 
   /** Badge/emblem — hand tool, emoji picker */
   function badge(_car) {
-    return [
-      {
-        id: 'pick-badge',
-        description: 'Select hand tool and tap badge zone',
-        target: '.robot__badge-zone',
-        tool: 'hand',
-        sound: 'tap',
-        picker: 'sticker',
-        action: () => {},
-      },
-    ];
+    return RepairTemplates.stickerApply({
+      zoneSelector: '.robot__badge-zone',
+    });
   }
 
   /** Oil grime — hose wash */
   function oilGrime(_car) {
-    return [
-      {
-        id: 'wash-robot',
-        description: 'Select the hose and tap the oil grime',
-        target: '.robot__grime',
-        tool: 'hose',
-        sound: 'splash',
-        action: (_el, carEl) => {
-          const grime = carEl.querySelector('.robot__grime');
-          if (grime) {
-            grime.classList.add('robot__grime--washing');
-            setTimeout(() => grime.classList.add('robot__grime--hidden'), 800);
-          }
-          const torso = carEl.querySelector('.robot__torso-box');
-          const head = carEl.querySelector('.robot__head-box');
-          if (torso) torso.classList.add('robot__torso--sparkle');
-          if (head) head.classList.add('robot__head--sparkle');
-          setTimeout(() => {
-            if (torso) torso.classList.remove('robot__torso--sparkle');
-            if (head) head.classList.remove('robot__head--sparkle');
-          }, 800);
-        },
-      },
-    ];
+    return RepairTemplates.hoseWash({
+      grimeSelector: '.robot__grime',
+      grimeWashClass: 'robot__grime--washing',
+      grimeHiddenClass: 'robot__grime--hidden',
+      bodyParts: [
+        { selector: '.robot__torso-box', sparkleClass: 'robot__torso--sparkle' },
+        { selector: '.robot__head-box', sparkleClass: 'robot__head--sparkle' },
+      ],
+    });
   }
 
   /* ─── Upgrade faults (robot-only) ─── */
@@ -262,7 +143,6 @@ const RobotRepair = (() => {
         target: '.robot__arm--left',
         sound: 'pop',
         action: (el, _carEl, picked) => {
-          // Replace left arm with chosen style
           const style = picked || 'standard';
           el.outerHTML = Robot.replacementArmSVG(style);
         },
@@ -355,10 +235,8 @@ const RobotRepair = (() => {
         sound: 'pop',
         action: (el, carEl, picked) => {
           el.classList.add('robot__voice-slot--installed');
-          // Hide voice fault indicator
           const vf = carEl.querySelector('.robot__voice-fault');
           if (vf) vf.classList.add('robot__voice-fault--hidden');
-          // Show speech bubble with chosen language
           const flag = picked || VOICE_FLAGS[0];
           const sentence = _randomSentence(flag);
           const lang = VOICE_LANGUAGES[flag];
@@ -394,7 +272,7 @@ const RobotRepair = (() => {
     ];
   }
 
-  /** Booster install — grab from warehouse (pick style), wrench to attach. Exit animation on success. */
+  /** Booster install — grab from warehouse (pick style), wrench to attach */
   function jetpack(_car) {
     return [
       {
@@ -406,9 +284,7 @@ const RobotRepair = (() => {
         sound: 'pop',
         action: (_el, carEl, picked) => {
           const style = picked || 'jetpack';
-          // Replace booster SVG groups with chosen style
           Robot.replaceBooster(carEl, style);
-          // Hide mounting brackets
           const mount = carEl.querySelector('.robot__jetpack-mount');
           if (mount) mount.classList.add('robot__jetpack-mount--hidden');
         },
@@ -424,7 +300,6 @@ const RobotRepair = (() => {
           if (flames) {
             flames.classList.remove('robot__jetpack-flames--hidden');
             flames.classList.add('robot__jetpack-flames--active');
-            // Turn off flames after celebration
             setTimeout(() => flames.classList.remove('robot__jetpack-flames--active'), 1500);
           }
         },
