@@ -551,7 +551,7 @@ html, body {
   transition: transform 0.5s ease-out;
 }
 .car--robot {
-  aspect-ratio: 400 / 242;
+  aspect-ratio: 400 / 252;
 }
 
 /* Entry / parked states */
