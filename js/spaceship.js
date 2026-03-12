@@ -51,27 +51,28 @@ const Spaceship = (() => {
     </g>`;
   }
 
-  /** Platform lift — hydraulic pad that rises from the floor */
+  /** Platform lift — flat pad under strut feet, hydraulic pistons extend down into floor */
   function _platformLiftSVG() {
-    const padY = 168, padW = 160, padH = 8;
-    const padX = 120;                         // centred under ship body
-    const pistonW = 8, pistonH = 20;
-    const arrowY = padY - 14;
+    const padX = 100, padW = 200, padH = 6;
+    const padY = 172;                         // just below strut feet (y=170, h=5)
+    const pistonW = 10, pistonH = 16;
+    const pistonTop = padY + padH;            // pistons hang below the pad
+    const arrowY = padY - 10;
 
     return `<g class="ship__lift-pad ship__lift-pad--hidden">
-      <!-- Hydraulic pistons -->
+      <!-- Hydraulic pistons (extend downward into floor) -->
       <rect class="ship__lift-pad-arm ship__piston ship__piston--left"
-            x="${padX + 20}" y="${padY}" width="${pistonW}" height="${pistonH}" rx="2"
+            x="${padX + 30}" y="${pistonTop}" width="${pistonW}" height="${pistonH}" rx="2"
             style="fill:#888;stroke:#666;stroke-width:1"/>
       <rect class="ship__lift-pad-arm ship__piston ship__piston--right"
-            x="${padX + padW - 28}" y="${padY}" width="${pistonW}" height="${pistonH}" rx="2"
+            x="${padX + padW - 40}" y="${pistonTop}" width="${pistonW}" height="${pistonH}" rx="2"
             style="fill:#888;stroke:#666;stroke-width:1"/>
-      <!-- Platform pad -->
+      <!-- Platform pad (ship struts rest on this) -->
       <rect class="ship__platform-pad" x="${padX}" y="${padY}" width="${padW}" height="${padH}" rx="3"
             style="fill:#e07020;stroke:#c45e18;stroke-width:1.5"/>
       <!-- Safety stripes on pad -->
-      <line x1="${padX + 10}" y1="${padY + 2}" x2="${padX + 10}" y2="${padY + padH - 2}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
-      <line x1="${padX + padW - 10}" y1="${padY + 2}" x2="${padX + padW - 10}" y2="${padY + padH - 2}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
+      <line x1="${padX + 12}" y1="${padY + 1}" x2="${padX + 12}" y2="${padY + padH - 1}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
+      <line x1="${padX + padW - 12}" y1="${padY + 1}" x2="${padX + padW - 12}" y2="${padY + padH - 1}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
       <!-- Arrows -->
       <g class="ship__lift-pad-arrow">
         <text class="ship__lift-pad-arrow-up" x="${padX + padW/2}" y="${arrowY}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
@@ -225,12 +226,12 @@ const Spaceship = (() => {
         ${interactive}
       </g>
 
-      <!-- Landing struts -->
+      <!-- Landing struts (legs extend from hull to platform pad at y=172) -->
       <g class="ship__struts">
-        <rect x="120" y="118" width="6" height="56" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
-        <rect x="114" y="170" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
-        <rect x="260" y="118" width="6" height="56" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
-        <rect x="254" y="170" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        <rect x="140" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
+        <rect x="134" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        <rect x="250" y="118" width="6" height="54" rx="1" style="fill:#888;stroke:#777;stroke-width:1"/>
+        <rect x="244" y="168" width="18" height="5" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
       </g>
     </svg>`;
   }

@@ -1687,11 +1687,11 @@ html, body {
 }
 .ship__lift-pad-arm {
   transition: transform 0.3s ease-out;
-  transform-origin: center bottom;
+  transform-origin: center top;
   transform-box: fill-box;
 }
 .ship__lift-pad--raised .ship__lift-pad-arm {
-  transform: scaleY(1.8);
+  transform: scaleY(2);
 }
 .ship__lift-pad-arrow text {
   opacity: 0;
