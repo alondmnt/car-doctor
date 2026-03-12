@@ -441,47 +441,27 @@ const Game = (() => {
     warehouse.appendChild(part);
   }
 
-  /** Show a row of colour swatches above the car */
-  function showColourPicker(onPick) {
+  /** Create a picker row — shared factory for colour, sticker, and part pickers.
+   *  @param {object} opts - { containerClass, items, renderItem(btn, item), onPick(item) } */
+  function _showPicker({ containerClass, items, renderItem, onPick, delay = 0 }) {
     const picker = document.createElement('div');
-    picker.className = 'colour-picker';
+    picker.className = containerClass;
     let picked = false;
-    const colours = CONFIG.carPalette;
-    colours.forEach(c => {
-      const swatch = document.createElement('div');
-      swatch.className = 'colour-picker__swatch';
-      swatch.style.background = c;
-      function pick(e) {
-        e.preventDefault();
-        if (picked) return;
-        picked = true;
-        Audio.play('pop');
-        picker.remove();
-        onPick(c);
-      }
-      swatch.addEventListener('click', pick);
-      swatch.addEventListener('touchend', pick);
-      picker.appendChild(swatch);
-    });
-    garage.appendChild(picker);
-  }
-
-  /** Show a row of sticker emojis to pick from */
-  function showStickerPicker(onPick) {
-    const picker = document.createElement('div');
-    picker.className = 'colour-picker';  // reuse same layout
-    let picked = false;
-    CONFIG.stickers.forEach(emoji => {
+    items.forEach(item => {
       const btn = document.createElement('div');
-      btn.className = 'sticker-picker__option';
-      btn.textContent = emoji;
+      renderItem(btn, item);
       function pick(e) {
         e.preventDefault();
         if (picked) return;
         picked = true;
         Audio.play('pop');
-        picker.remove();
-        onPick(emoji);
+        if (delay) {
+          btn.classList.add(btn.className + '--selected');
+          setTimeout(() => { picker.remove(); onPick(item); }, delay);
+        } else {
+          picker.remove();
+          onPick(item);
+        }
       }
       btn.addEventListener('click', pick);
       btn.addEventListener('touchend', pick);
@@ -490,34 +470,37 @@ const Game = (() => {
     garage.appendChild(picker);
   }
 
-  /** Generic part style picker — looks up the PARTS registry for previews.
-   *  Auto-selects if only one style is available. */
+  function showColourPicker(onPick) {
+    _showPicker({
+      containerClass: 'colour-picker',
+      items: CONFIG.carPalette,
+      renderItem: (btn, c) => { btn.className = 'colour-picker__swatch'; btn.style.background = c; },
+      onPick,
+    });
+  }
+
+  function showStickerPicker(onPick) {
+    _showPicker({
+      containerClass: 'colour-picker',
+      items: CONFIG.stickers,
+      renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
+      onPick,
+    });
+  }
+
+  /** Part style picker — auto-selects if only one style available */
   function showPartPicker(partType, onPick) {
     const reg = PARTS[partType];
     if (!reg) return;
     const styles = reg.styles();
     if (styles.length <= 1) { onPick(styles[0]); return; }
-
-    const picker = document.createElement('div');
-    picker.className = 'part-picker';
-    let picked = false;
-    styles.forEach(style => {
-      const btn = document.createElement('div');
-      btn.className = 'part-picker__option';
-      btn.innerHTML = reg.preview(style);
-      function pick(e) {
-        e.preventDefault();
-        if (picked) return;
-        picked = true;
-        Audio.play('pop');
-        btn.classList.add('part-picker__option--selected');
-        setTimeout(() => { picker.remove(); onPick(style); }, 200);
-      }
-      btn.addEventListener('click', pick);
-      btn.addEventListener('touchend', pick);
-      picker.appendChild(btn);
+    _showPicker({
+      containerClass: 'part-picker',
+      items: styles,
+      renderItem: (btn, s) => { btn.className = 'part-picker__option'; btn.innerHTML = reg.preview(s); },
+      onPick,
+      delay: 200,
     });
-    garage.appendChild(picker);
   }
 
   /** Handle step completion */
