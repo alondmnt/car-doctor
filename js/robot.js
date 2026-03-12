@@ -606,9 +606,14 @@ const Robot = (() => {
       behind.classList.add('robot__jetpack--visible');
     }
 
-    // Replace flames
+    // Replace flames — show immediately for styles where the body is in the flames group
+    // (balloon, propeller), keep hidden for jetpack/rocket (only shown during exit)
     const flames = carEl.querySelector('.robot__jetpack-flames');
-    if (flames) flames.innerHTML = s.flames();
+    if (flames) {
+      flames.innerHTML = s.flames();
+      const showImmediately = !['jetpack', 'rocket'].includes(style);
+      flames.classList.toggle('robot__jetpack-flames--hidden', !showImmediately);
+    }
 
     // Replace/show chest strap (second .robot__jetpack group)
     const allJetpack = carEl.querySelectorAll('.robot__jetpack');
