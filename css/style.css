@@ -17,7 +17,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  clip-path: inset(-100% 0);
+  overflow: hidden;
 }
 
 /* Floor */

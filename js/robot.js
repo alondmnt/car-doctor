@@ -170,11 +170,11 @@ const Robot = (() => {
     balloon: {
       exitAnim: 'balloon',
       behind: () => `
-        <line x1="200" y1="8" x2="200" y2="20" stroke="#888" stroke-width="1.5"/>`,
+        <line x1="200" y1="4" x2="200" y2="14" stroke="#888" stroke-width="1.5"/>`,
       flames: () => `
-        <ellipse cx="200" cy="-10" rx="18" ry="20" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
-        <ellipse cx="196" cy="-14" rx="6" ry="10" fill="rgba(255,255,255,0.15)"/>
-        <path d="M196,9 L200,7 L204,9" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
+        <ellipse cx="200" cy="0" rx="14" ry="14" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
+        <ellipse cx="197" cy="-3" rx="4" ry="7" fill="rgba(255,255,255,0.15)"/>
+        <path d="M197,13 L200,12 L203,13" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
       strap: () => '',
     },
   };
