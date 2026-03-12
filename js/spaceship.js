@@ -34,12 +34,19 @@ const Spaceship = (() => {
     }).join('');
 
     return `<g class="ship__wing ship__wing--${side}" data-position="${side}">
+      <!-- Wing body — darker tint than hull for silhouette -->
       <path class="ship__wing-surface svg-ship-paint"
             d="M ${x} ${rootTop} L ${tipX} ${tipY} L ${x} ${rootBot} Z"
-            style="stroke:rgba(0,0,0,0.2);stroke-width:1.5"/>
+            style="stroke:rgba(0,0,0,0.4);stroke-width:2;stroke-linejoin:round"/>
+      <!-- Darkening overlay -->
+      <path d="M ${x} ${rootTop} L ${tipX} ${tipY} L ${x} ${rootBot} Z"
+            fill="rgba(0,0,0,0.15)" style="pointer-events:none"/>
+      <!-- Leading edge highlight -->
+      <line x1="${x}" y1="${rootTop}" x2="${tipX}" y2="${tipY}"
+            style="stroke:rgba(255,255,255,0.25);stroke-width:1.5;stroke-linecap:round"/>
       <!-- Wing stripe -->
       <line x1="${x}" y1="${y+5}" x2="${tipX * 0.7 + x * 0.3}" y2="${tipY - 2}"
-            style="stroke:rgba(255,255,255,0.15);stroke-width:2"/>
+            style="stroke:rgba(255,255,255,0.2);stroke-width:2"/>
       ${bolts}
     </g>`;
   }
