@@ -1151,7 +1151,17 @@ html, body {
   100% { transform: rotate(-360deg) scale(1); }
 }
 
-
+/* Robot bolt keyframes — more exaggerated scale for visibility */
+@keyframes bolt-untwist {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.6); }
+  100% { transform: rotate(360deg) scale(1.4); }
+}
+@keyframes bolt-twist {
+  0%   { transform: rotate(0deg) scale(1.4); }
+  50%  { transform: rotate(-180deg) scale(0.7); }
+  100% { transform: rotate(-360deg) scale(1); }
+}
 
 /* Toolbox hint still uses box-shadow */
 @keyframes glow-pulse {
@@ -1232,7 +1242,7 @@ html, body {
   transform-origin: center bottom;
 }
 .robot__boot--flat {
-  transform: scaleY(0.7) scaleX(1.15);
+  transform: scaleY(0.82) scaleX(1.1);
 }
 .robot__boot--removed {
   opacity: 0.15;
@@ -1254,10 +1264,10 @@ html, body {
   transition: transform 0.2s, opacity 0.2s;
 }
 .robot__bolt--loose {
-  animation: svg-screw-untwist 0.3s ease-out forwards;
+  animation: bolt-untwist 0.35s ease-out forwards;
 }
 .robot__bolt--tight {
-  animation: svg-screw-twist 0.3s ease-out;
+  animation: bolt-twist 0.35s ease-out;
 }
 .robot__bolt--hidden {
   opacity: 0;
