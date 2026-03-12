@@ -285,7 +285,7 @@ const RobotRepair = (() => {
         sound: 'tap',
         action: (el) => {
           el.classList.add('robot__arm--test');
-          setTimeout(() => el.classList.remove('robot__arm--test'), 600);
+          setTimeout(() => el.classList.remove('robot__arm--test'), 800);
         },
       },
     ];
