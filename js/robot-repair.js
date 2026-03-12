@@ -16,6 +16,13 @@ const RobotRepair = (() => {
       tool: 'drill',
       sound: 'ratchet',
       action: (el) => {
+        // Get bolt centre for transform-origin (CSS fill-box unreliable inside transformed parent)
+        const circle = el.querySelector('circle:not(.robot__bolt-halo)');
+        if (circle) {
+          const cx = circle.getAttribute('cx');
+          const cy = circle.getAttribute('cy');
+          el.style.transformOrigin = `${cx}px ${cy}px`;
+        }
         if (mode === 'loosen') {
           el.classList.add('robot__bolt--loose');
         } else {

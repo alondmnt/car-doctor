@@ -1259,8 +1259,6 @@ html, body {
 .robot__bolt {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transform-box: fill-box;
-  transform-origin: center center;
   transition: transform 0.2s, opacity 0.2s;
 }
 .robot__bolt--loose {
