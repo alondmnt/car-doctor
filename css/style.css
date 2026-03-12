@@ -550,6 +550,9 @@ html, body {
   overflow: visible;
   transition: transform 0.5s ease-out;
 }
+.car--robot {
+  aspect-ratio: 400 / 242;
+}
 
 /* Entry / parked states */
 .car--entering { transform: translateX(120vw); }

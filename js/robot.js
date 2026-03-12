@@ -159,22 +159,22 @@ const Robot = (() => {
     propeller: {
       exitAnim: 'propeller',
       behind: () => `
-        <rect x="192" y="2" width="16" height="14" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
-        <circle cx="200" cy="9" r="3" fill="#555"/>`,
+        <rect x="192" y="-12" width="16" height="16" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
+        <circle cx="200" cy="-4" r="3" fill="#555"/>`,
       flames: () => `
-        <line x1="172" y1="9" x2="228" y2="9" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="172" cy="9" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>
-        <ellipse cx="228" cy="9" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>`,
+        <line x1="172" y1="-4" x2="228" y2="-4" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="172" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>
+        <ellipse cx="228" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>`,
       strap: () => '',
     },
     balloon: {
       exitAnim: 'balloon',
       behind: () => `
-        <line x1="200" y1="4" x2="200" y2="14" stroke="#888" stroke-width="1.5"/>`,
+        <line x1="200" y1="-5" x2="200" y2="10" stroke="#888" stroke-width="1.5"/>`,
       flames: () => `
-        <ellipse cx="200" cy="0" rx="14" ry="14" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
-        <ellipse cx="197" cy="-3" rx="4" ry="7" fill="rgba(255,255,255,0.15)"/>
-        <path d="M197,13 L200,12 L203,13" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
+        <ellipse cx="200" cy="-30" rx="22" ry="28" fill="#e63946" stroke="#c33" stroke-width="1.5"/>
+        <ellipse cx="196" cy="-35" rx="7" ry="14" fill="rgba(255,255,255,0.15)"/>
+        <path d="M196,-3 L200,-5 L204,-3" fill="#e63946" stroke="#c33" stroke-width="1"/>`,
       strap: () => '',
     },
   };
@@ -364,7 +364,7 @@ const Robot = (() => {
 
     const interactive = _robotInteractiveSVG(opts);
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 182" class="robot__svg">
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -60 400 242" class="robot__svg">
       <!-- Shadow -->
       <ellipse class="car__shadow" cx="200" cy="176" rx="120" ry="6" fill="rgba(0,0,0,0.12)"/>
 
