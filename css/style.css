@@ -547,6 +547,7 @@ html, body {
   max-width: 400px;
   aspect-ratio: 400 / 182;
   z-index: 10;
+  overflow: visible;
   transition: transform 0.5s ease-out;
 }
 
@@ -1229,11 +1230,11 @@ html, body {
 }
 .robot__lift-pad-arm {
   transition: transform 0.3s ease-out;
-  transform-origin: center bottom;
+  transform-origin: center top;
   transform-box: fill-box;
 }
 .robot__lift-pad--raised .robot__lift-pad-arm {
-  transform: scaleY(1.8);
+  transform: scaleY(0.3);
 }
 
 /* Lift pad arrows — hidden by default */

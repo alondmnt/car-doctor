@@ -35,16 +35,40 @@ const Robot = (() => {
   }
 
   /** Lift pad (jack equivalent) — platform beneath robot */
-  function _liftPadSVG(cx, gy) {
-    const pw = 60, ph = 8, armW = 16, armH = 16;
+  /** Crane lift — vertical pole on the right with horizontal arm, cable and hook.
+   *  Rendered before robot__upper so it sits behind jetpack/balloons. */
+  function _craneSVG() {
+    // Pole on the right side, arm extends left over the robot
+    const poleX = 370, poleW = 10;       // vertical pole
+    const poleTop = -5, poleBot = 178;    // full height
+    const armY = -5, armH = 7;            // horizontal boom (antenna level — proven visible)
+    const armLeft = 185, armRight = poleX + poleW / 2;
+    const cableX = 200;                   // cable hangs over robot centre
+    const cableTop = armY + armH;
+    const cableH = 12;
+    const hookY = cableTop + cableH;
+
     return `<g class="robot__lift-pad">
-      <rect class="robot__lift-pad-base" x="${cx-pw/2}" y="${gy-ph}" width="${pw}" height="${ph}" rx="2" style="fill:#c44"/>
-      <rect class="robot__lift-pad-arm" x="${cx-armW/2}" y="${gy-ph-armH}" width="${armW}" height="${armH}" rx="2" style="fill:#a33"/>
+      <!-- Vertical pole -->
+      <rect class="robot__lift-pad-base" x="${poleX}" y="${poleTop}" width="${poleW}" height="${poleBot - poleTop}" rx="2"
+            style="fill:#e07020;stroke:#c45e18;stroke-width:1"/>
+      <!-- Diagonal brace -->
+      <line x1="${poleX}" y1="${armY + armH + 20}" x2="${armRight - 20}" y2="${armY}" style="stroke:#c45e18;stroke-width:2"/>
+      <!-- Horizontal arm -->
+      <rect x="${armLeft}" y="${armY}" width="${armRight - armLeft}" height="${armH}" rx="2"
+            style="fill:#e8822a;stroke:#c45e18;stroke-width:1"/>
+      <!-- Cable -->
+      <rect class="robot__lift-pad-arm" x="${cableX - 1.5}" y="${cableTop}" width="3" height="${cableH}" rx="1" style="fill:#888"/>
+      <!-- Hook -->
+      <path d="M${cableX - 5},${hookY} Q${cableX - 5},${hookY + 7} ${cableX},${hookY + 9} Q${cableX + 5},${hookY + 7} ${cableX + 5},${hookY}"
+            fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Arrows -->
       <g class="robot__lift-pad-arrow">
-        <text class="robot__lift-pad-arrow-up" x="${cx}" y="${gy-ph-armH-6}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
-        <text class="robot__lift-pad-arrow-down" x="${cx}" y="${gy-ph-armH-6}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
+        <text class="robot__lift-pad-arrow-up" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
+        <text class="robot__lift-pad-arrow-down" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
       </g>
-      <rect x="${cx-36}" y="${gy-ph-armH-14}" width="72" height="${ph+armH+18}" fill="transparent"/>
+      <!-- Touch target -->
+      <rect x="${cableX - 25}" y="${armY}" width="50" height="${cableH + 30}" fill="transparent"/>
     </g>`;
   }
 
@@ -342,6 +366,9 @@ const Robot = (() => {
       <!-- Shadow -->
       <ellipse cx="200" cy="176" rx="120" ry="6" fill="rgba(0,0,0,0.12)"/>
 
+      <!-- Crane (behind robot so jetpack/balloons render in front) -->
+      ${_craneSVG()}
+
       <g class="robot__upper">
         <!-- Antenna -->
         <line x1="200" y1="10" x2="200" y2="-2" style="stroke:#aaa;stroke-width:3"/>
@@ -425,8 +452,7 @@ const Robot = (() => {
         ${interactive}
       </g>
 
-      <!-- Lift pad, boots on top so body never covers them -->
-      ${_liftPadSVG(200, 176)}
+      <!-- Boots on top so body never covers them -->
       ${_bootSVG(156, 150, 'left')}
       ${_bootSVG(204, 150, 'right')}
     </svg>`;
@@ -536,6 +562,9 @@ const Robot = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
+          // Hide the crane so it doesn't fly away with the robot
+          const crane = el.querySelector('.robot__lift-pad');
+          if (crane) crane.style.display = 'none';
           // Booster installed → use its exit animation; otherwise random (no rocket)
           const boosterExit = el.dataset.boosterExit;
           const robotAnims = CONFIG.exitAnimations.filter(a => a !== 'rocket');

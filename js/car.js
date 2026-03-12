@@ -543,6 +543,9 @@ const Car = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
+          // Hide the jack so it doesn't fly away with the car
+          const jack = el.querySelector('.car__jack');
+          if (jack) jack.style.display = 'none';
           const anims = CONFIG.exitAnimations;
           const anim = _pick(anims);
           if (anim === 'rocket') {
