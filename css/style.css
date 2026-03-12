@@ -1205,10 +1205,10 @@ html, body {
 }
 
 @keyframes exit-rocket-boost {
-  0%   { transform: translateX(0) scale(1); }
-  8%   { transform: translateX(6px) scale(1.04); }
-  15%  { transform: translateX(3px) scale(1.04); }
-  100% { transform: translateX(-140vw) scale(1.04); }
+  0%   { transform: translateY(0) scale(1); }
+  8%   { transform: translateY(6px) scale(1.05); }
+  20%  { transform: translateY(0) scale(1.05); }
+  100% { transform: translateY(-130vh) scale(0.85); }
 }
 
 @keyframes exit-propeller {
