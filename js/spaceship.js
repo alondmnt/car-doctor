@@ -11,7 +11,7 @@ const Spaceship = (() => {
   /* ─── SVG helpers ─── */
 
   /** Wing with 3 tappable bolt screws — two rectangular S-foil panels with engine pods at tips */
-  function _wingSVG(x, y, side) {
+  function _wingSVG(x, y, side, hasLaser) {
     const boltR = 3;
     const touchR = boltR * 2.8;
 
@@ -109,6 +109,18 @@ const Spaceship = (() => {
       <circle cx="${x + wingLen + engW}" cy="${oeCy}" r="1.5" fill="#ffcc00" opacity="0.7"/>
       ${crack}
       ${bolts}
+      ${hasLaser ? `
+      <!-- Laser barrels on engine pods -->
+      <g class="ship__laser ship__laser--broken">
+        <!-- Inner engine laser -->
+        <rect x="${x + wingLen - 14}" y="${ieCy - 2}" width="14" height="4" fill="#aaa" stroke="#888" stroke-width="0.5"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 14}" cy="${ieCy}" r="2.5" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 14}" y1="${ieCy}" x2="${x - 20}" y2="${ieCy}" stroke="#ff0000" stroke-width="2" opacity="0"/>
+        <!-- Outer engine laser -->
+        <rect x="${x + wingLen - 14}" y="${oeCy - 2}" width="14" height="4" fill="#aaa" stroke="#888" stroke-width="0.5"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 14}" cy="${oeCy}" r="2.5" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 14}" y1="${oeCy}" x2="${x - 20}" y2="${oeCy}" stroke="#ff0000" stroke-width="2" opacity="0"/>
+      </g>` : ''}
     </g>`;
   }
 
@@ -213,7 +225,7 @@ const Spaceship = (() => {
 
   /** Standard spaceship — X-wing-style fighter with tapered fuselage and S-foil wings */
   function _standardSVG(opts) {
-    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash } = opts;
+    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser } = opts;
 
     const interactive = _shipInteractiveSVG(opts);
 
@@ -294,8 +306,8 @@ const Spaceship = (() => {
       </g>
 
       <!-- Wings outside ship__upper — rear-mounted, S-foils with engine pods -->
-      ${_wingSVG(220, 52, 'left')}
-      ${_wingSVG(220, 108, 'right')}
+      ${_wingSVG(220, 52, 'left', hasLaser)}
+      ${_wingSVG(220, 108, 'right', hasLaser)}
 
       <!-- Exhaust smoke (rendered above wings for visibility) -->
       <g class="ship__smoke ${hasEngine ? '' : 'ship__smoke--hidden'}">
@@ -331,6 +343,7 @@ const Spaceship = (() => {
     const hasPaint = faults.includes('paint');
     const hasSticker = faults.includes('sticker');
     const hasWash = faults.includes('wash');
+    const hasLaser = faults.includes('laser');
 
     const el = document.createElement('div');
     el.className = 'car car--spaceship';
@@ -343,6 +356,7 @@ const Spaceship = (() => {
     const indicators = [
       { cls: 'tyre', fault: hasFlatTyre },
       { cls: 'engine', fault: hasEngine },
+      ...(hasLaser ? [{ cls: 'laser', fault: true }] : []),
       { cls: 'wash', fault: hasWash },
       { cls: 'paint', fault: hasPaint },
       { cls: 'sticker', fault: hasSticker },
@@ -354,7 +368,7 @@ const Spaceship = (() => {
 
     el.innerHTML = `
       <div class="car__dashboard">${dashboardHTML}</div>
-      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash })}
+      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser })}
     `;
 
     // Apply broken wing after DOM construction; mark side so CSS can lift the good wing

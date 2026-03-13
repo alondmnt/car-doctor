@@ -109,5 +109,55 @@ const SpaceshipRepair = (() => {
     });
   }
 
-  return { brokenWing, booster, hullDamage, emblem, spaceDust };
+  /* ─── Upgrade faults (spaceship-only) ─── */
+
+  /** Laser cannons — install emitters, align beam, test fire */
+  function laser(_car) {
+    return [
+      {
+        id: 'install-emitter',
+        description: 'Grab the laser emitter from the warehouse',
+        warehouse: 'emitter',
+        tool: 'hand',
+        target: '.ship__laser',
+        sound: 'pop',
+        action: (el, carEl) => {
+          carEl.querySelectorAll('.ship__laser').forEach(l => {
+            l.classList.remove('ship__laser--broken');
+            l.classList.add('ship__laser--installed');
+          });
+        },
+      },
+      {
+        id: 'align-beam',
+        description: 'Drag to align the laser beam',
+        tool: 'hand',
+        drag: { direction: 'left', threshold: 25 },
+        target: '.ship__laser',
+        sound: 'clank',
+        action: (el, carEl) => {
+          carEl.querySelectorAll('.ship__laser').forEach(l => {
+            l.classList.add('ship__laser--aligned');
+          });
+        },
+      },
+      {
+        id: 'test-fire',
+        description: 'Tap to test fire the lasers',
+        target: '.ship__laser',
+        sound: 'tap',
+        action: (el, carEl) => {
+          carEl.querySelectorAll('.ship__laser').forEach(l => {
+            l.classList.add('ship__laser--active');
+          });
+          carEl.querySelectorAll('.ship__laser-beam').forEach(b => {
+            b.classList.add('ship__laser-beam--firing');
+            setTimeout(() => b.classList.remove('ship__laser-beam--firing'), 1200);
+          });
+        },
+      },
+    ];
+  }
+
+  return { brokenWing, booster, hullDamage, emblem, spaceDust, laser };
 })();

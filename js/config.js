@@ -40,6 +40,7 @@ const CONFIG = {
   spaceshipFaultWeights: {
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
   },
+  // Tier 55 adds: laser: 2
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -66,6 +67,7 @@ const UNLOCK_TIERS = [
     items: ['rocket', 'propeller', 'balloon'] },
   { coins: 50, key: 'spaceshipDoctor', icon: '🛸', label: 'Spaceship Doctor!',
     items: [] },
+  { coins: 55, key: 'spaceshipLaser',   icon: '🔫', label: 'Laser cannons!',   items: [] },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

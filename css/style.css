@@ -1967,3 +1967,39 @@ html, body {
 .ship__cockpit.ship__cockpit--sparkle {
   animation: wash-sparkle 0.8s ease-out;
 }
+
+/* ===== Laser cannons (tier 55 upgrade) ===== */
+.ship__laser {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship__laser--broken .ship__laser-tip {
+  opacity: 0.3;
+}
+.ship__laser--installed .ship__laser-tip {
+  opacity: 0.6;
+}
+.ship__laser--aligned .ship__laser-tip {
+  opacity: 0.8;
+}
+.ship__laser--active .ship__laser-tip {
+  opacity: 1;
+  fill: #ff0000;
+  filter: drop-shadow(0 0 3px #ff0000);
+}
+.ship__laser-beam {
+  opacity: 0;
+  pointer-events: none;
+}
+.ship__laser-beam--firing {
+  animation: laser-pulse 1.2s ease-in-out forwards;
+}
+@keyframes laser-pulse {
+  0%, 100% { opacity: 0; }
+  10%, 20% { opacity: 0.9; }
+  25%, 35% { opacity: 0; }
+  40%, 50% { opacity: 0.9; }
+  55%, 65% { opacity: 0; }
+  70%, 80% { opacity: 0.9; }
+  85%      { opacity: 0; }
+}
