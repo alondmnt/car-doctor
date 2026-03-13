@@ -1209,10 +1209,10 @@ html, body {
 
 @keyframes exit-balloon {
   0%   { transform: translateY(0) scale(1); }
-  20%  { transform: translateY(-8px) scale(1); }
-  40%  { transform: translateY(-30px) translateX(8px) scale(0.98); }
-  60%  { transform: translateY(-70px) translateX(-5px) scale(0.95); }
-  80%  { transform: translateY(-130px) translateX(6px) scale(0.9); }
+  15%  { transform: translateY(-2vh) scale(1); }
+  30%  { transform: translateY(-8vh) translateX(8px) scale(0.98); }
+  50%  { transform: translateY(-20vh) translateX(-5px) scale(0.95); }
+  70%  { transform: translateY(-45vh) translateX(6px) scale(0.9); }
   100% { transform: translateY(-120vh) translateX(0) scale(0.8); }
 }
 
