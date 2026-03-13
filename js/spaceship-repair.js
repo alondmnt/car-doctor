@@ -159,5 +159,49 @@ const SpaceshipRepair = (() => {
     ];
   }
 
-  return { brokenWing, booster, hullDamage, emblem, spaceDust, laser };
+  /** Shield generator — open panel, insert crystal, calibrate bubble */
+  function shield(_car) {
+    return [
+      {
+        id: 'open-shield-panel',
+        description: 'Tap the shield panel to open it',
+        target: '.ship__shield-panel',
+        sound: 'clank',
+        action: (el, carEl) => {
+          el.classList.add('ship__shield-panel--open');
+          const bay = carEl.querySelector('.ship__crystal-bay');
+          if (bay) bay.classList.remove('ship__crystal-bay--hidden');
+        },
+      },
+      {
+        id: 'insert-crystal',
+        description: 'Grab a shield crystal from the warehouse',
+        warehouse: 'crystal',
+        tool: 'hand',
+        target: '.ship__crystal-bay',
+        sound: 'pop',
+        action: (el, carEl) => {
+          el.classList.add('ship__crystal-bay--installed');
+          const fault = carEl.querySelector('.ship__shield-fault');
+          if (fault) fault.classList.add('ship__shield-fault--hidden');
+        },
+      },
+      {
+        id: 'calibrate-shield',
+        description: 'Drag up to calibrate the shield bubble',
+        tool: 'hand',
+        drag: { direction: 'up', threshold: 30 },
+        target: '.ship__shield-bubble',
+        sound: 'clank',
+        action: (el, carEl) => {
+          el.classList.remove('ship__shield-bubble--broken');
+          el.classList.add('ship__shield-bubble--active');
+          const panel = carEl.querySelector('.ship__shield-panel');
+          if (panel) panel.classList.remove('ship__shield-panel--open');
+        },
+      },
+    ];
+  }
+
+  return { brokenWing, booster, hullDamage, emblem, spaceDust, laser, shield };
 })();

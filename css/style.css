@@ -2003,3 +2003,38 @@ html, body {
   70%, 80% { opacity: 0.9; }
   85%      { opacity: 0; }
 }
+
+/* ===== Shield generator (tier 60 upgrade) ===== */
+.ship__shield-group--hidden { display: none; }
+.ship__shield-panel {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ship__shield-panel-lid {
+  transform-box: fill-box;
+  transform-origin: left bottom;
+  transition: transform 0.4s ease-out;
+}
+.ship__shield-panel--open .ship__shield-panel-lid {
+  transform: translateY(-10px);
+}
+.ship__shield-fault--hidden { display: none; }
+.ship__crystal-bay--hidden { display: none; }
+.ship__crystal-bay--installed .ship__crystal {
+  fill: #88ffff;
+  filter: drop-shadow(0 0 4px #66eeff);
+}
+.ship__shield-bubble--broken {
+  stroke-dasharray: 8 4;
+  opacity: 0.25;
+}
+.ship__shield-bubble--active {
+  stroke-dasharray: none;
+  opacity: 0.5;
+  stroke-width: 2;
+  animation: shield-glow 2s ease-in-out infinite;
+}
+@keyframes shield-glow {
+  0%, 100% { opacity: 0.35; stroke-width: 1.5; }
+  50%      { opacity: 0.6; stroke-width: 2.5; }
+}

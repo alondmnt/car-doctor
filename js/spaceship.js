@@ -158,7 +158,7 @@ const Spaceship = (() => {
 
   /** Interactive SVG elements — sparks, hatch, hull damage, emblem zone, space dust */
   function _shipInteractiveSVG(opts) {
-    const { hasEngine, hasPaint, hasSticker, hasWash } = opts;
+    const { hasEngine, hasPaint, hasSticker, hasWash, hasShield } = opts;
 
     return `
       <!-- Booster hatch (bonnet equivalent — on mid-rear fuselage) -->
@@ -218,6 +218,29 @@ const Spaceship = (() => {
         <ellipse cx="240" cy="88" rx="8" ry="3" fill="rgba(120,130,180,0.3)"/>
         <circle cx="105" cy="88" r="2" fill="rgba(120,130,180,0.35)"/>
         <circle cx="200" cy="94" r="3" fill="rgba(120,130,180,0.35)"/>
+      </g>
+
+      <!-- Shield generator (tier 60 upgrade) -->
+      <g class="ship__shield-group ${hasShield ? '' : 'ship__shield-group--hidden'}">
+        <!-- Fault indicator — dashed red circle -->
+        <circle class="ship__shield-fault" cx="270" cy="60" r="6"
+                fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <!-- Shield panel on rear fuselage -->
+        <g class="ship__shield-panel" style="cursor:pointer">
+          <rect class="ship__shield-panel-lid svg-ship-paint" x="280" y="72" width="16" height="12" rx="1"
+                stroke="rgba(0,0,0,0.3)" stroke-width="1" opacity="0.9"/>
+          <rect x="280" y="72" width="16" height="12" fill="transparent"/>
+        </g>
+        <!-- Crystal bay (hidden until panel opened) -->
+        <g class="ship__crystal-bay ship__crystal-bay--hidden">
+          <rect x="282" y="74" width="12" height="8" fill="#333" stroke="#444" stroke-width="0.5"/>
+          <polygon class="ship__crystal" points="288,75 291,78 288,81 285,78" fill="#66eeff" stroke="#44ccdd" stroke-width="0.8"/>
+        </g>
+        <!-- Shield bubble — large translucent ellipse around ship -->
+        <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
+                 cx="200" cy="80" rx="170" ry="55"
+                 fill="none" stroke="#44ccff" stroke-width="1.5"
+                 stroke-dasharray="8 4" opacity="0.25"/>
       </g>`;
   }
 
@@ -225,7 +248,7 @@ const Spaceship = (() => {
 
   /** Standard spaceship — X-wing-style fighter with tapered fuselage and S-foil wings */
   function _standardSVG(opts) {
-    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser } = opts;
+    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield } = opts;
 
     const interactive = _shipInteractiveSVG(opts);
 
@@ -344,6 +367,7 @@ const Spaceship = (() => {
     const hasSticker = faults.includes('sticker');
     const hasWash = faults.includes('wash');
     const hasLaser = faults.includes('laser');
+    const hasShield = faults.includes('shield');
 
     const el = document.createElement('div');
     el.className = 'car car--spaceship';
@@ -356,7 +380,8 @@ const Spaceship = (() => {
     const indicators = [
       { cls: 'tyre', fault: hasFlatTyre },
       { cls: 'engine', fault: hasEngine },
-      ...(hasLaser ? [{ cls: 'laser', fault: true }] : []),
+      ...(hasLaser   ? [{ cls: 'laser',   fault: true }] : []),
+      ...(hasShield  ? [{ cls: 'shield',  fault: true }] : []),
       { cls: 'wash', fault: hasWash },
       { cls: 'paint', fault: hasPaint },
       { cls: 'sticker', fault: hasSticker },
@@ -368,7 +393,7 @@ const Spaceship = (() => {
 
     el.innerHTML = `
       <div class="car__dashboard">${dashboardHTML}</div>
-      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser })}
+      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield })}
     `;
 
     // Apply broken wing after DOM construction; mark side so CSS can lift the good wing
