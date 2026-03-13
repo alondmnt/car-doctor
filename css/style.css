@@ -1530,8 +1530,84 @@ html, body {
 }
 
 /* ===== Space hangar theme ===== */
-.garage--hangar {
-  background: #1a1a2e;
+#garage.garage--hangar {
+  background: linear-gradient(to bottom, #08081a 0%, #111128 35%, #1a1a2e 60%, #22223a 75%);
+}
+
+/* Starfield */
+.garage--hangar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 2px; height: 2px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  box-shadow:
+    /* White stars — scattered */
+    10vw  5vh 0 0 rgba(255,255,255,0.8),
+    25vw 12vh 0 0 rgba(255,255,255,0.6),
+    40vw  3vh 0 0 rgba(255,255,255,0.7),
+    55vw 18vh 0 0 rgba(255,255,255,0.5),
+    70vw  8vh 0 0 rgba(255,255,255,0.9),
+    85vw 15vh 0 0 rgba(255,255,255,0.6),
+    15vw 22vh 0 0 rgba(255,255,255,0.7),
+    48vw 28vh 0 0 rgba(255,255,255,0.5),
+    78vw 25vh 0 0 rgba(255,255,255,0.8),
+    33vw 35vh 0 0 rgba(255,255,255,0.6),
+    62vw 40vh 0 0 rgba(255,255,255,0.7),
+    90vw 32vh 0 0 rgba(255,255,255,0.5),
+    5vw  45vh 0 0 rgba(255,255,255,0.6),
+    50vw 50vh 0 0 rgba(255,255,255,0.8),
+    3vw   1vh 0 0 rgba(255,255,255,0.4),
+    97vw 10vh 0 0 rgba(255,255,255,0.5),
+    44vw 15vh 0 0 rgba(255,255,255,0.6),
+    58vw 45vh 0 0 rgba(255,255,255,0.4),
+    20vw 55vh 0 0 rgba(255,255,255,0.5),
+    72vw 48vh 0 0 rgba(255,255,255,0.6),
+    /* Warm gold stars */
+    18vw  7vh 0 0 rgba(255,224,102,0.7),
+    42vw 20vh 0 0 rgba(255,224,102,0.6),
+    68vw 30vh 0 0 rgba(255,224,102,0.8),
+    30vw 48vh 0 0 rgba(255,224,102,0.5),
+    82vw 42vh 0 0 rgba(255,224,102,0.7),
+    56vw  2vh 0 0 rgba(255,224,102,0.5),
+    12vw 33vh 0 0 rgba(255,224,102,0.4),
+    /* Cyan blue stars */
+    8vw  14vh 0 0 rgba(68,170,238,0.7),
+    52vw 10vh 0 0 rgba(68,170,238,0.6),
+    75vw 22vh 0 0 rgba(68,170,238,0.8),
+    22vw 38vh 0 0 rgba(68,170,238,0.5),
+    60vw 52vh 0 0 rgba(68,170,238,0.7),
+    95vw  2vh 0 0 rgba(68,170,238,0.6),
+    38vw 42vh 0 0 rgba(68,170,238,0.4),
+    /* Galaxy cluster — upper right (blurred glow) */
+    78vw  6vh 3px 1px rgba(180,160,255,0.15),
+    80vw  8vh 4px 2px rgba(140,160,255,0.12),
+    76vw  9vh 3px 1px rgba(200,180,255,0.10),
+    82vw  5vh 2px 1px rgba(255,255,255,0.5),
+    79vw  7vh 2px 1px rgba(255,224,102,0.4),
+    77vw  8vh 1px 0   rgba(255,255,255,0.6),
+    81vw  9vh 1px 0   rgba(68,170,238,0.5),
+    /* Galaxy cluster — mid left (blurred glow) */
+    12vw 28vh 4px 2px rgba(160,140,220,0.12),
+    14vw 30vh 3px 1px rgba(180,160,255,0.15),
+    10vw 29vh 3px 1px rgba(140,160,255,0.10),
+    13vw 29vh 2px 1px rgba(255,255,255,0.5),
+    11vw 31vh 1px 0   rgba(255,224,102,0.4),
+    15vw 28vh 1px 0   rgba(255,255,255,0.6),
+    /* Galaxy cluster — upper centre (subtle) */
+    45vw  8vh 4px 2px rgba(160,180,255,0.10),
+    47vw 10vh 3px 1px rgba(180,160,240,0.12),
+    43vw  9vh 2px 1px rgba(255,255,255,0.4),
+    46vw  9vh 1px 0   rgba(68,170,238,0.5);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
 }
 
 /* Metallic floor with blue accent */
