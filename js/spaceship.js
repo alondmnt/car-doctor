@@ -248,7 +248,7 @@ const Spaceship = (() => {
         </g>
       </g>
 
-      <!-- Wings outside ship__upper — stay in place when hull lifts -->
+      <!-- Wings outside ship__upper — good wing lifted via CSS when jacked -->
       ${_wingSVG(160, 48, 'left')}
       ${_wingSVG(160, 100, 'right')}
     </svg>`;
@@ -304,10 +304,11 @@ const Spaceship = (() => {
       ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash })}
     `;
 
-    // Apply broken wing after DOM construction
+    // Apply broken wing after DOM construction; mark side so CSS can lift the good wing
     if (hasFlatTyre) {
       const wing = el.querySelector(`.ship__wing--${flatWing}`);
       if (wing) wing.classList.add('ship__wing--broken');
+      el.dataset.brokenWing = flatWing;
     }
 
     garage.appendChild(el);

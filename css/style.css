@@ -1633,7 +1633,7 @@ html, body {
 .ship__wing {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s ease-out, opacity 0.3s;
   transform-box: fill-box;
   transform-origin: left center;
 }
@@ -1647,6 +1647,10 @@ html, body {
 @keyframes wing-wobble {
   0%, 100% { transform: rotate(25deg) scaleX(0.8); }
   50%      { transform: rotate(20deg) scaleX(0.8); }
+}
+/* Stop wobble once unbolted and lifted */
+.car--spaceship.car--jacked .ship__wing--broken {
+  animation: none;
 }
 /* Crack lines — only visible when broken */
 .ship__wing-crack { display: none; }
@@ -1725,12 +1729,19 @@ html, body {
   animation: arrow-bounce-down 0.8s ease-in-out infinite;
 }
 
-/* Jacked up — hull + struts + pad rise together, wings + pistons stay */
+/* Jacked up — hull + struts + pad rise; good wing follows, broken wing stays */
 .car--spaceship.car--jacked .ship__upper {
   transform: translateY(-12px);
   transition: transform 0.3s ease-out;
 }
 .car--spaceship.car--jacked .ship__platform-pad {
+  transform: translateY(-12px);
+  transition: transform 0.3s ease-out;
+}
+/* Lift the good wing (opposite of broken side) and any repaired wing with the hull */
+.car--spaceship.car--jacked[data-broken-wing="left"] .ship__wing--right,
+.car--spaceship.car--jacked[data-broken-wing="right"] .ship__wing--left,
+.car--spaceship.car--jacked .ship__wing--new {
   transform: translateY(-12px);
   transition: transform 0.3s ease-out;
 }
