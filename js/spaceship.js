@@ -25,7 +25,9 @@ const Spaceship = (() => {
       const bx = x + mirror * (15 + i * 20);
       const by = y + 10;
       const cr = boltR * 0.6;
-      return `<g class="ship__bolt ship__bolt--${i+1}" data-bolt="${i+1}">
+      // Number bolts left-to-right regardless of wing side
+      const boltNum = side === 'right' ? 3 - i : i + 1;
+      return `<g class="ship__bolt ship__bolt--${boltNum}" data-bolt="${boltNum}">
         <circle class="ship__bolt-halo" cx="${bx}" cy="${by}" r="${touchR}" style="fill:transparent"/>
         <circle cx="${bx}" cy="${by}" r="${boltR}" style="fill:#999;stroke:#777;stroke-width:1.5"/>
         <line x1="${bx-cr}" y1="${by}" x2="${bx+cr}" y2="${by}" style="stroke:#555;stroke-width:1.5"/>
