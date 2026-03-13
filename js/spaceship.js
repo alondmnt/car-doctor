@@ -248,7 +248,7 @@ const Spaceship = (() => {
 
   /** Standard spaceship — X-wing-style fighter with tapered fuselage and S-foil wings */
   function _standardSVG(opts) {
-    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield } = opts;
+    const { hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield, hasAntenna } = opts;
 
     const interactive = _shipInteractiveSVG(opts);
 
@@ -261,9 +261,35 @@ const Spaceship = (() => {
 
       <g class="ship__upper">
         <!-- Antenna — angular fin with diamond tip -->
+        ${!hasAntenna ? `
         <polygon points="120,56 126,38 120,30 114,38" style="fill:#aaa;stroke:#888;stroke-width:1;stroke-linejoin:miter"/>
         <polygon points="120,28 123,24 120,20 117,24" style="fill:#4ae;stroke:#3ad;stroke-width:0.8"/>
         <rect x="116" y="54" width="8" height="4" style="fill:#999"/>
+        ` : `
+        <!-- Antenna upgrade (tier 65) -->
+        <g class="ship__antenna-upgrade">
+          <!-- Damage indicator -->
+          <circle class="ship__antenna-damage" cx="120" cy="36" r="6"
+                  fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <!-- Telescoping mast -->
+          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
+                x="118" y="28" width="4" height="28" fill="#aaa" stroke="#888" stroke-width="0.5"/>
+          <!-- Dish with centre dot -->
+          <g class="ship__antenna-dish ship__antenna-dish--misaligned" style="cursor:pointer">
+            <path d="M112,18 Q120,10 128,18" fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="120" cy="16" r="2" fill="#4ae" stroke="#3ad" stroke-width="0.8"/>
+            <rect x="112" y="10" width="16" height="12" fill="transparent"/>
+          </g>
+          <!-- Signal rings (concentric) -->
+          <g class="ship__antenna-signal ship__antenna-signal--dead">
+            <circle cx="120" cy="10" r="6" fill="none" stroke="#4ae" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="120" cy="10" r="10" fill="none" stroke="#4ae" stroke-width="0.6" opacity="0.3"/>
+            <circle cx="120" cy="10" r="14" fill="none" stroke="#4ae" stroke-width="0.4" opacity="0.2"/>
+          </g>
+          <!-- Base mount -->
+          <rect x="116" y="54" width="8" height="4" style="fill:#999"/>
+        </g>
+        `}
 
         <!-- Main hull (fuselage) — tapered toward rear like X-wing -->
         <g class="ship__hull">
@@ -368,6 +394,7 @@ const Spaceship = (() => {
     const hasWash = faults.includes('wash');
     const hasLaser = faults.includes('laser');
     const hasShield = faults.includes('shield');
+    const hasAntenna = faults.includes('antenna');
 
     const el = document.createElement('div');
     el.className = 'car car--spaceship';
@@ -382,6 +409,7 @@ const Spaceship = (() => {
       { cls: 'engine', fault: hasEngine },
       ...(hasLaser   ? [{ cls: 'laser',   fault: true }] : []),
       ...(hasShield  ? [{ cls: 'shield',  fault: true }] : []),
+      ...(hasAntenna ? [{ cls: 'antenna', fault: true }] : []),
       { cls: 'wash', fault: hasWash },
       { cls: 'paint', fault: hasPaint },
       { cls: 'sticker', fault: hasSticker },
@@ -393,7 +421,7 @@ const Spaceship = (() => {
 
     el.innerHTML = `
       <div class="car__dashboard">${dashboardHTML}</div>
-      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield })}
+      ${templateFn({ hasFlatTyre, flatWing, hasEngine, hasPaint, hasSticker, hasWash, hasLaser, hasShield, hasAntenna })}
     `;
 
     // Apply broken wing after DOM construction; mark side so CSS can lift the good wing

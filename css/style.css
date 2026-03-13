@@ -2038,3 +2038,41 @@ html, body {
   0%, 100% { opacity: 0.35; stroke-width: 1.5; }
   50%      { opacity: 0.6; stroke-width: 2.5; }
 }
+
+/* ===== Antenna array (tier 65 upgrade) ===== */
+.ship__antenna-upgrade--hidden { display: none; }
+.ship__antenna-damage--hidden { display: none; }
+.ship__antenna-mast {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transition: transform 0.4s ease-out;
+}
+.ship__antenna-mast--collapsed {
+  transform: scaleY(0.4);
+}
+.ship__antenna-mast--extended {
+  transform: scaleY(1);
+}
+.ship__antenna-dish {
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition: transform 0.4s ease-out;
+}
+.ship__antenna-dish--misaligned {
+  transform: rotate(15deg);
+}
+.ship__antenna-dish--aligned {
+  transform: rotate(0deg);
+}
+.ship__antenna-signal--dead {
+  opacity: 0.15;
+}
+.ship__antenna-signal--active {
+  opacity: 1;
+  animation: signal-ping 1.5s ease-out infinite;
+}
+@keyframes signal-ping {
+  0%   { opacity: 1; transform: scale(1); }
+  50%  { opacity: 0.6; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}

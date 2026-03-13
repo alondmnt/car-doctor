@@ -42,6 +42,7 @@ const CONFIG = {
   },
   // Tier 55 adds: laser: 2
   // Tier 60 adds: shield: 2
+  // Tier 65 adds: antenna: 2
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -70,6 +71,7 @@ const UNLOCK_TIERS = [
     items: [] },
   { coins: 55, key: 'spaceshipLaser',   icon: '🔫', label: 'Laser cannons!',   items: [] },
   { coins: 60, key: 'spaceshipShield',  icon: '🛡️', label: 'Shield generator!', items: [] },
+  { coins: 65, key: 'spaceshipAntenna', icon: '📡', label: 'Antenna array!',   items: [] },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

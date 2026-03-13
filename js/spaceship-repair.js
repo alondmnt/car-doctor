@@ -203,5 +203,50 @@ const SpaceshipRepair = (() => {
     ];
   }
 
-  return { brokenWing, booster, hullDamage, emblem, spaceDust, laser, shield };
+  /** Antenna array — extend mast, align dish, test signal */
+  function antenna(_car) {
+    return [
+      {
+        id: 'extend-mast',
+        description: 'Drag up to extend the antenna mast',
+        tool: 'hand',
+        drag: { direction: 'up', threshold: 25 },
+        target: '.ship__antenna-mast',
+        sound: 'clank',
+        action: (el) => {
+          el.classList.remove('ship__antenna-mast--collapsed');
+          el.classList.add('ship__antenna-mast--extended');
+        },
+      },
+      {
+        id: 'align-dish',
+        description: 'Drag to align the antenna dish',
+        tool: 'hand',
+        drag: { direction: 'left', threshold: 25 },
+        target: '.ship__antenna-dish',
+        sound: 'clank',
+        action: (el) => {
+          el.classList.remove('ship__antenna-dish--misaligned');
+          el.classList.add('ship__antenna-dish--aligned');
+        },
+      },
+      {
+        id: 'test-signal',
+        description: 'Tap the dish to test the signal',
+        target: '.ship__antenna-dish',
+        sound: 'tap',
+        action: (el, carEl) => {
+          const rings = carEl.querySelector('.ship__antenna-signal');
+          if (rings) {
+            rings.classList.remove('ship__antenna-signal--dead');
+            rings.classList.add('ship__antenna-signal--active');
+          }
+          const dmg = carEl.querySelector('.ship__antenna-damage');
+          if (dmg) dmg.classList.add('ship__antenna-damage--hidden');
+        },
+      },
+    ];
+  }
+
+  return { brokenWing, booster, hullDamage, emblem, spaceDust, laser, shield, antenna };
 })();

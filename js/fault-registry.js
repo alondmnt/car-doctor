@@ -15,6 +15,7 @@ const FaultRegistry = (() => {
     { key: 'jetpack',     indicator: '.car__indicator--jetpack',     car: null,                                robot: (c) => RobotRepair.jetpack(c) },
     { key: 'laser',      indicator: '.car__indicator--laser',      car: null, robot: null, spaceship: (c) => SpaceshipRepair.laser(c) },
     { key: 'shield',     indicator: '.car__indicator--shield',     car: null, robot: null, spaceship: (c) => SpaceshipRepair.shield(c) },
+    { key: 'antenna',    indicator: '.car__indicator--antenna',    car: null, robot: null, spaceship: (c) => SpaceshipRepair.antenna(c) },
     { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c),     spaceship: (c) => SpaceshipRepair.spaceDust(c) },
     { key: 'paint',       indicator: '.car__indicator--paint',       car: (c) => Repair.paint(c),             robot: (c) => RobotRepair.plating(c),      spaceship: (c) => SpaceshipRepair.hullDamage(c) },
     { key: 'sticker',     indicator: '.car__indicator--sticker',     car: (c) => Repair.sticker(c),           robot: (c) => RobotRepair.badge(c),        spaceship: (c) => SpaceshipRepair.emblem(c) },
