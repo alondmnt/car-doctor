@@ -1745,7 +1745,14 @@ html, body {
 .ship__smoke--hidden { display: none; }
 .ship__smoke-puff {
   fill: rgba(90, 90, 90, 0.8);
-  animation: smoke-rise 1.8s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ship-smoke-rise 1.8s ease-out infinite;
+}
+@keyframes ship-smoke-rise {
+  0%   { opacity: 0.85; transform: translate(0, 0) scale(1); }
+  50%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translate(-25px, -30px) scale(2); }
 }
 .ship__smoke-puff--2 { animation-delay: 0.4s; }
 .ship__smoke-puff--3 { animation-delay: 0.9s; }
