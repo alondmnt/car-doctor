@@ -35,7 +35,7 @@ const CONFIG = {
 
   /* Spaceship settings — activated by tier 50 unlock */
   spaceshipEnabled: false,
-  spaceshipChance: 0.3,                // probability of spaceship once unlocked
+  spaceshipChance: 0.5,                // probability of spaceship once unlocked
   spaceshipShapes: ['standard'],
   spaceshipFaultWeights: {
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
