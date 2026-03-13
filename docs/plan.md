@@ -1,7 +1,7 @@
 # Car Mechanic Game — Build Plan (v4)
 
 ## Concept
-A visual, audio-driven car mechanic game for a 6yo who can't read yet.
+A visual, audio-driven car mechanic game for a young child who can't read yet.
 Cars pull into the garage with visible problems. The player diagnoses and fixes them through multi-step, tactile interactions. No text in the game UI.
 
 ---

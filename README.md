@@ -1,6 +1,6 @@
 # 🚗👨‍⚕️ Car Doctor
 
-A tiny game designed by my child and I after we had a real flat tyre (built with AI).
+A tiny game designed by my child and me, after helping me change a real flat tyre (built with AI).
 
 **Fix a car**
 
