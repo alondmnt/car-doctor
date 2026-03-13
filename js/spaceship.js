@@ -147,10 +147,12 @@ const Spaceship = (() => {
         <line x1="250" y1="90" x2="275" y2="85" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
-      <!-- Emblem zone (sticker equivalent) -->
+      <!-- Emblem zone (sticker equivalent) — double-layered border for contrast -->
       <g class="ship__emblem-zone ${hasSticker ? '' : 'ship__emblem-zone--hidden'}">
         <rect x="160" y="68" width="72" height="40" rx="4"
-              fill="transparent" stroke="rgba(0,0,0,0.35)" stroke-dasharray="4 3" stroke-width="2"/>
+              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+        <rect x="160" y="68" width="72" height="40" rx="4"
+              fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
         <text class="ship__emblem-text" x="196" y="88"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="160" y="68" width="72" height="40" fill="transparent"/>
