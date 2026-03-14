@@ -13,11 +13,47 @@ html, body {
 #garage {
   position: relative;
   width: 100%; height: 100%;
-  background: var(--garage-colour, #3a7d44);
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255,240,180,0.9) 0%, rgba(255,220,100,0.4) 3%, transparent 6%),
+    linear-gradient(to bottom, #4a90d9 0%, #7ab8e8 40%, #a8d8f0 65%, #d4eef8 80%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+/* Clouds */
+#garage::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 3px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  box-shadow:
+    /* Cloud 1 — upper left */
+    15vw 20vh 12px 8px rgba(255,255,255,0.5),
+    18vw 19vh 10px 6px rgba(255,255,255,0.6),
+    21vw 21vh 14px 10px rgba(255,255,255,0.45),
+    /* Cloud 2 — mid right */
+    65vw 30vh 16px 12px rgba(255,255,255,0.4),
+    68vw 29vh 12px 8px rgba(255,255,255,0.5),
+    72vw 31vh 14px 10px rgba(255,255,255,0.35),
+    /* Cloud 3 — upper centre */
+    40vw 12vh 10px 8px rgba(255,255,255,0.45),
+    43vw 11vh 14px 10px rgba(255,255,255,0.5),
+    46vw 13vh 12px 8px rgba(255,255,255,0.4),
+    /* Wisp — low left */
+    8vw 42vh 8px 6px rgba(255,255,255,0.25),
+    12vw 41vh 10px 6px rgba(255,255,255,0.3);
+  animation: cloud-drift 8s ease-in-out infinite alternate;
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(8px); }
 }
 
 /* Floor */
