@@ -13,8 +13,8 @@ const RobotRepair = (() => {
     '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
     '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
     '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
-    '🇮🇱': { sentences: ["שלום!", "יאללה!", "מה קורה?"] },
-    '🇸🇦': { sentences: ["مرحبا!", "يلا!", "كيف حالك؟"] },
+    '🇮🇱': { sentences: ["!שלום", "!יאללה", "?מה קורה"], rtl: true },
+    '🇸🇦': { sentences: ["!مرحبا", "!يلا", "؟كيف حالك"], rtl: true },
   };
   const VOICE_FLAGS = Object.keys(VOICE_LANGUAGES);
 
@@ -240,12 +240,16 @@ const RobotRepair = (() => {
           if (vf) vf.classList.add('robot__voice-fault--hidden');
           const flag = picked || VOICE_FLAGS[0];
           const sentence = _randomSentence(flag);
+          const lang = VOICE_LANGUAGES[flag];
           const bubble = carEl.querySelector('.robot__speech-bubble');
           if (bubble) {
             const text = bubble.querySelector('text');
             if (text) {
               text.textContent = `${flag} ${sentence}`;
               text.setAttribute('font-size', '11');
+              if (lang?.rtl) {
+                text.setAttribute('direction', 'rtl');
+              }
             }
             bubble.classList.remove('robot__speech-bubble--hidden');
             bubble.classList.add('robot__speech-bubble--visible');
