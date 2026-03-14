@@ -160,14 +160,14 @@ html, body {
 }
 
 /* ===== Robot lab theme ===== */
-.garage--lab {
+#garage.garage--lab {
   background: linear-gradient(to bottom,
     #1a1a3a 0%, #2d1b4e 20%, #5c2d6e 40%,
     #c44e3d 60%, #e8863a 72%, #f0a848 80%);
 }
 
 /* Sunset clouds */
-.garage--lab::before {
+#garage.garage--lab::before {
   content: '';
   position: absolute;
   top: 0; left: 0;
@@ -1622,7 +1622,7 @@ html, body {
 }
 
 /* Starfield */
-.garage--hangar::before {
+#garage.garage--hangar::before {
   content: '';
   position: absolute;
   top: 0; left: 0;
