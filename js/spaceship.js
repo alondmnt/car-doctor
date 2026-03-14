@@ -133,15 +133,19 @@ const Spaceship = (() => {
               fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
         <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${ieCy - 3.5}" width="20" height="7" rx="1"
               fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1.5"/>
-        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${ieCy}" r="4" fill="#ff3333" opacity="0.3"/>
-        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${ieCy}" x2="${x - 30}" y2="${ieCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${ieCy}" r="4" fill="rgba(255,255,255,0.25)" opacity="0.3"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${ieCy}" r="3" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${ieCy}" x2="0" y2="${ieCy}" stroke="rgba(255,255,255,0.2)" stroke-width="5" opacity="0"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${ieCy}" x2="0" y2="${ieCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
         <!-- Outer engine laser barrel (double-layer outline) -->
         <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${oeCy - 3.5}" width="20" height="7" rx="1"
               fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
         <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${oeCy - 3.5}" width="20" height="7" rx="1"
               fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1.5"/>
-        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${oeCy}" r="4" fill="#ff3333" opacity="0.3"/>
-        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${oeCy}" x2="${x - 30}" y2="${oeCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${oeCy}" r="4" fill="rgba(255,255,255,0.25)" opacity="0.3"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${oeCy}" r="3" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${oeCy}" x2="0" y2="${oeCy}" stroke="rgba(255,255,255,0.2)" stroke-width="5" opacity="0"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${oeCy}" x2="0" y2="${oeCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
         <!-- Touch target spanning both barrels -->
         <rect x="${x + wingLen - 24}" y="${Math.min(ieCy, oeCy) - 10}" width="28" height="${Math.abs(oeCy - ieCy) + 20}" fill="transparent"/>
       </g>` : ''}
@@ -511,8 +515,12 @@ const Spaceship = (() => {
       l.querySelectorAll('.ship__laser-barrel').forEach(b => {
         if (b.getAttribute('fill') !== 'none') b.setAttribute('fill', s.barrel);
       });
-      l.querySelectorAll('.ship__laser-tip').forEach(t => t.setAttribute('fill', s.tip));
-      l.querySelectorAll('.ship__laser-beam').forEach(b => b.setAttribute('stroke', s.beam));
+      l.querySelectorAll('.ship__laser-tip').forEach(t => {
+        if (!t.getAttribute('fill').startsWith('rgba')) t.setAttribute('fill', s.tip);
+      });
+      l.querySelectorAll('.ship__laser-beam').forEach(b => {
+        if (!b.getAttribute('stroke').startsWith('rgba')) b.setAttribute('stroke', s.beam);
+      });
       l.classList.remove('ship__laser--broken');
       l.classList.add('ship__laser--installed');
     });

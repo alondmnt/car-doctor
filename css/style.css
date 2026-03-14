@@ -2032,8 +2032,7 @@ html, body {
 }
 .ship__laser--active .ship__laser-tip {
   opacity: 1;
-  fill: #ff0000;
-  filter: drop-shadow(0 0 3px #ff0000);
+  filter: drop-shadow(0 0 4px currentColor);
 }
 .ship__laser-beam {
   opacity: 0;
