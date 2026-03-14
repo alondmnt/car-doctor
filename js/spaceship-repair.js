@@ -118,7 +118,6 @@ const SpaceshipRepair = (() => {
         id: 'install-emitter',
         description: 'Grab the laser emitter from the warehouse',
         warehouse: 'emitter',
-        tool: 'hand',
         target: '.ship__laser',
         sound: 'pop',
         action: (el, carEl) => {
@@ -177,7 +176,6 @@ const SpaceshipRepair = (() => {
         id: 'insert-crystal',
         description: 'Grab a shield crystal from the warehouse',
         warehouse: 'crystal',
-        tool: 'hand',
         target: '.ship__crystal-bay',
         sound: 'pop',
         action: (el, carEl) => {

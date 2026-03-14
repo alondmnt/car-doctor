@@ -229,18 +229,18 @@ const Spaceship = (() => {
         <g class="ship__shield-panel" style="cursor:pointer">
           <rect class="ship__shield-panel-lid svg-ship-paint" x="280" y="72" width="16" height="12" rx="1"
                 stroke="rgba(0,0,0,0.3)" stroke-width="1" opacity="0.9"/>
-          <rect x="280" y="72" width="16" height="12" fill="transparent"/>
+          <rect x="272" y="64" width="32" height="28" fill="transparent"/>
         </g>
         <!-- Crystal bay (hidden until panel opened) -->
         <g class="ship__crystal-bay ship__crystal-bay--hidden">
           <rect x="282" y="74" width="12" height="8" fill="#333" stroke="#444" stroke-width="0.5"/>
           <polygon class="ship__crystal" points="288,75 291,78 288,81 285,78" fill="#66eeff" stroke="#44ccdd" stroke-width="0.8"/>
+          <rect x="274" y="66" width="28" height="24" fill="transparent"/>
         </g>
         <!-- Shield bubble — large translucent ellipse around ship -->
         <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
                  cx="200" cy="80" rx="170" ry="55"
-                 fill="none" stroke="#44ccff" stroke-width="1.5"
-                 stroke-dasharray="8 4" opacity="0.25"/>
+                 fill="none" stroke="#44ccff" stroke-width="1.5"/>
       </g>`;
   }
 
