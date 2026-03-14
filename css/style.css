@@ -681,7 +681,7 @@ html, body {
   gap: 8px;
   z-index: 20;
   opacity: 0;
-  transition: opacity 0.4s ease-in;
+  transition: opacity 0.25s ease-in-out;
 }
 .car__dashboard--visible {
   opacity: 1;
@@ -1072,13 +1072,11 @@ html, body {
 .car__jack {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.25s ease-in-out;
 }
 .car__jack--hidden {
   opacity: 0;
   pointer-events: none;
-}
-.car__jack--appearing {
-  animation: platform-appear 0.4s ease-out forwards;
 }
 
 .car__jack-arm {
@@ -1376,13 +1374,11 @@ html, body {
 .robot__lift-pad {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.25s ease-in-out;
 }
 .robot__lift-pad--hidden {
   opacity: 0;
   pointer-events: none;
-}
-.robot__lift-pad--appearing {
-  animation: platform-appear 0.4s ease-out forwards;
 }
 .robot__lift-pad-arm {
   transition: transform 0.3s ease-out;
@@ -1881,17 +1877,11 @@ html, body {
 .ship__lift-pad {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.25s ease-in-out;
 }
 .ship__lift-pad--hidden {
   opacity: 0;
   pointer-events: none;
-}
-.ship__lift-pad--appearing {
-  animation: platform-appear 0.4s ease-out forwards;
-}
-@keyframes platform-appear {
-  0%   { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
 }
 .ship__lift-pad-arm {
   transition: transform 0.3s ease-out;

@@ -567,10 +567,7 @@ const Robot = (() => {
       },
       afterEntry: (el) => {
         const crane = el.querySelector('.robot__lift-pad');
-        if (crane) {
-          crane.classList.remove('robot__lift-pad--hidden');
-          crane.classList.add('robot__lift-pad--appearing');
-        }
+        if (crane) crane.classList.remove('robot__lift-pad--hidden');
       },
       beforeExit: (el) => {
         if (el.dataset.boosterExit) {

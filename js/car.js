@@ -534,10 +534,7 @@ const Car = (() => {
       pickExitAnim: () => _pick(CONFIG.exitAnimations),
       afterEntry: (el) => {
         const jack = el.querySelector('.car__jack');
-        if (jack) {
-          jack.classList.remove('car__jack--hidden');
-          jack.classList.add('car__jack--appearing');
-        }
+        if (jack) jack.classList.remove('car__jack--hidden');
       },
     });
   }

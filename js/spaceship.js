@@ -495,10 +495,7 @@ const Spaceship = (() => {
       pickExitAnim: () => 'ship-launch',
       afterEntry: (el) => {
         const lift = el.querySelector('.ship__lift-pad');
-        if (lift) {
-          lift.classList.remove('ship__lift-pad--hidden');
-          lift.classList.add('ship__lift-pad--appearing');
-        }
+        if (lift) lift.classList.remove('ship__lift-pad--hidden');
       },
       beforeExit: (el) => {
         const exhaust = el.querySelector('.ship__exhaust');

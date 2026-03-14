@@ -61,11 +61,11 @@ const Vehicle = (() => {
       driveAway() {
         return new Promise(resolve => {
           el.classList.remove('car--parked');
-          // Hide dashboard and lift mechanism before exit
+          // Fade out dashboard and lift mechanism before exit
           const dash = el.querySelector('.car__dashboard');
           if (dash) dash.classList.remove('car__dashboard--visible');
           const lift = el.querySelector(opts.liftSelector);
-          if (lift) lift.style.display = 'none';
+          if (lift) lift.classList.add(opts.liftSelector.replace('.', '') + '--hidden');
           if (opts.beforeExit) opts.beforeExit(el);
           const anim = opts.pickExitAnim(el);
           if (anim === 'rocket') {
