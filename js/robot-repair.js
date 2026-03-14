@@ -13,8 +13,8 @@ const RobotRepair = (() => {
     '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
     '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
     '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
-    '🇮🇱': { sentences: ["!שלום", "!יאללה", "?מה קורה"], rtl: true },
-    '🇸🇦': { sentences: ["!مرحبا", "!يلا", "؟كيف حالك"], rtl: true },
+    '🇮🇱': { sentences: ["!שלום", "!יאללה", "?מה קורה"] },
+    '🇸🇦': { sentences: ["!مرحبا", "!يلا", "؟كيف حالك"] },
   };
   const VOICE_FLAGS = Object.keys(VOICE_LANGUAGES);
 
