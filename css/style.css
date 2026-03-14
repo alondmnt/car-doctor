@@ -2006,8 +2006,9 @@ html, body {
   stroke: rgba(255, 255, 50, 0.8) !important;
   stroke-width: 3 !important;
 }
-.ship__antenna-mast.hint-glow {
-  fill: #ffcc00;
+.ship__antenna-mast.hint-glow .ship__antenna-mast-bar {
+  fill: #ffcc00 !important;
+  stroke: rgba(255, 255, 50, 0.8) !important;
   filter: drop-shadow(0 0 6px rgba(255, 255, 50, 0.9));
 }
 .ship__antenna-dish.hint-glow path,
@@ -2088,16 +2089,15 @@ html, body {
 /* ===== Antenna array (tier 65 upgrade) ===== */
 .ship__antenna-upgrade--hidden { display: none; }
 .ship__antenna-damage--hidden { display: none; }
-.ship__antenna-mast {
+.ship__antenna-mast-bar {
   transform-box: fill-box;
   transform-origin: center bottom;
   transition: transform 0.4s ease-out;
-  cursor: pointer;
 }
-.ship__antenna-mast--collapsed {
+.ship__antenna-mast-bar--collapsed {
   transform: scaleY(0.4);
 }
-.ship__antenna-mast--extended {
+.ship__antenna-mast-bar--extended {
   transform: scaleY(1);
 }
 .ship__antenna-dish {

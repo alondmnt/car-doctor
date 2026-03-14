@@ -218,9 +218,9 @@ const SpaceshipRepair = (() => {
         target: '.ship__antenna-mast',
         sound: 'clank',
         action: (_el, carEl) => {
-          carEl.querySelectorAll('.ship__antenna-mast').forEach(m => {
-            m.classList.remove('ship__antenna-mast--collapsed');
-            m.classList.add('ship__antenna-mast--extended');
+          carEl.querySelectorAll('.ship__antenna-mast-bar').forEach(b => {
+            b.classList.remove('ship__antenna-mast-bar--collapsed');
+            b.classList.add('ship__antenna-mast-bar--extended');
           });
         },
       },

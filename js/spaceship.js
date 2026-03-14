@@ -309,16 +309,18 @@ const Spaceship = (() => {
           <!-- Damage indicator -->
           <circle class="ship__antenna-damage" cx="120" cy="36" r="6"
                   fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <!-- Touch target for mast (first in DOM so querySelector finds it) -->
-          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
-                x="110" y="20" width="20" height="40" fill="transparent" style="cursor:pointer"/>
-          <!-- Telescoping mast (double-layer, wider for visibility) -->
-          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
-                x="117" y="26" width="6" height="30"
-                fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" style="pointer-events:none"/>
-          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
-                x="117" y="26" width="6" height="30"
-                fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1" style="pointer-events:none"/>
+          <!-- Mast group — drag target (not transformed; inner bars animate) -->
+          <g class="ship__antenna-mast" style="cursor:pointer">
+            <!-- Touch target (full size, never scales) -->
+            <rect x="108" y="16" width="24" height="44" fill="transparent"/>
+            <!-- Telescoping mast bars (double-layer, scale via CSS) -->
+            <rect class="ship__antenna-mast-bar ship__antenna-mast-bar--collapsed"
+                  x="117" y="26" width="6" height="30"
+                  fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" style="pointer-events:none"/>
+            <rect class="ship__antenna-mast-bar ship__antenna-mast-bar--collapsed"
+                  x="117" y="26" width="6" height="30"
+                  fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1" style="pointer-events:none"/>
+          </g>
           <!-- Dish with centre dot (double-layer) -->
           <g class="ship__antenna-dish ship__antenna-dish--misaligned" style="cursor:pointer">
             <path d="M110,18 Q120,8 130,18" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4" stroke-linecap="round"/>
