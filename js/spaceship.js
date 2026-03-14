@@ -127,7 +127,7 @@ const Spaceship = (() => {
       ${bolts}
       ${hasLaser ? `
       <!-- Laser barrels on engine pods -->
-      <g class="ship__laser ship__laser--broken" style="cursor:pointer">
+      <g class="ship__laser ship__laser--broken" data-role="interactive" style="cursor:pointer">
         <!-- Inner engine laser barrel (double-layer outline) -->
         <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${ieCy - 3.5}" width="20" height="7" rx="1"
               fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
@@ -175,7 +175,7 @@ const Spaceship = (() => {
       <line x1="${padX + 12}" y1="${padY + 1}" x2="${padX + 12}" y2="${padY + padH - 1}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
       <line x1="${padX + padW - 12}" y1="${padY + 1}" x2="${padX + padW - 12}" y2="${padY + padH - 1}" style="stroke:#c45e18;stroke-width:2;stroke-linecap:round"/>
       <!-- Arrows -->
-      <g class="ship__lift-pad-arrow">
+      <g class="ship__lift-pad-arrow" data-role="lift-arrow">
         <text class="ship__lift-pad-arrow-up" x="${padX + padW/2}" y="${arrowY}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
         <text class="ship__lift-pad-arrow-down" x="${padX + padW/2}" y="${arrowY}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
       </g>
@@ -212,7 +212,7 @@ const Spaceship = (() => {
       </g>
 
       <!-- Hull damage (paint equivalent — scratch lines on hull) -->
-      <g class="ship__hull-damage ${hasPaint ? '' : 'ship__hull-damage--hidden'}">
+      <g class="ship__hull-damage ${hasPaint ? '' : 'ship__hull-damage--hidden'}" data-role="paint-damage">
         <rect x="60" y="50" width="230" height="60" fill="transparent"/>
         <!-- Two-layer scratches: light edge + dark centre for contrast on any colour -->
         <line x1="110" y1="68" x2="145" y2="73" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
@@ -226,7 +226,7 @@ const Spaceship = (() => {
       </g>
 
       <!-- Emblem zone (sticker equivalent) — on widest fuselage section -->
-      <g class="ship__emblem-zone ${hasSticker ? '' : 'ship__emblem-zone--hidden'}">
+      <g class="ship__emblem-zone ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
         <rect x="150" y="65" width="60" height="30" rx="0"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="150" y="65" width="60" height="30" rx="0"
@@ -237,7 +237,7 @@ const Spaceship = (() => {
       </g>
 
       <!-- Space dust (wash equivalent — smaller, lighter cosmic dust) -->
-      <g class="ship__dust ${hasWash ? '' : 'ship__dust--hidden'}">
+      <g class="ship__dust ${hasWash ? '' : 'ship__dust--hidden'}" data-role="wash-target">
         <rect x="60" y="50" width="230" height="60" fill="transparent"/>
         <ellipse cx="120" cy="75" rx="12" ry="5" fill="rgba(120,130,180,0.45)"/>
         <ellipse cx="180" cy="85" rx="14" ry="5" fill="rgba(120,130,180,0.4)"/>
@@ -254,7 +254,7 @@ const Spaceship = (() => {
         <circle class="ship__shield-fault" cx="270" cy="60" r="6"
                 fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
         <!-- Shield panel on rear fuselage (double-layer outline) -->
-        <g class="ship__shield-panel" style="cursor:pointer">
+        <g class="ship__shield-panel" data-role="interactive" style="cursor:pointer">
           <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
                 stroke="rgba(255,255,255,0.25)" stroke-width="3" opacity="0.9"/>
           <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
@@ -263,7 +263,7 @@ const Spaceship = (() => {
           <rect x="268" y="62" width="40" height="32" fill="transparent"/>
         </g>
         <!-- Crystal bay (hidden until panel opened) -->
-        <g class="ship__crystal-bay ship__crystal-bay--hidden" style="cursor:pointer">
+        <g class="ship__crystal-bay ship__crystal-bay--hidden" data-role="interactive" style="cursor:pointer">
           <rect x="276" y="70" width="24" height="16" rx="1" fill="#333" stroke="#444" stroke-width="0.5"/>
           <polygon class="ship__crystal" points="288,72 293,78 288,84 283,78"
                    fill="#66eeff" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
@@ -322,7 +322,7 @@ const Spaceship = (() => {
                   fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1" style="pointer-events:none"/>
           </g>
           <!-- Dish with centre dot (double-layer) -->
-          <g class="ship__antenna-dish ship__antenna-dish--misaligned" style="cursor:pointer">
+          <g class="ship__antenna-dish ship__antenna-dish--misaligned" data-role="interactive" style="cursor:pointer">
             <path d="M110,18 Q120,8 130,18" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4" stroke-linecap="round"/>
             <path d="M110,18 Q120,8 130,18" fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
             <circle cx="120" cy="14" r="3" fill="#4ae" stroke="#3ad" stroke-width="1"/>
@@ -449,6 +449,7 @@ const Spaceship = (() => {
     el.className = 'car car--spaceship';
     el.style.setProperty('--ship-colour', colour);
     el.style.setProperty('--car-colour', colour);
+    el.style.setProperty('--vehicle-colour', colour);
 
     const templateFn = TEMPLATES[shape] || TEMPLATES.standard;
 
