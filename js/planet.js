@@ -68,58 +68,61 @@ const Planet = (() => {
 
   /* ─── Fault zone builders ─── */
 
-  /** Fire patches — red/orange flame spots on surface */
+  /** Fire patches — upper-right quadrant of sphere */
   function _fireZoneSVG(cx, cy) {
+    const fx = cx + 20, fy = cy - 20;
     return `<g class="planet__fires" data-role="wash-target">
-      <rect x="${cx - 70}" y="${cy - 65}" width="140" height="130" fill="transparent"/>
-      <ellipse cx="${cx - 25}" cy="${cy - 20}" rx="14" ry="9"
+      <rect x="${fx - 45}" y="${fy - 35}" width="90" height="70" fill="transparent"/>
+      <ellipse cx="${fx - 15}" cy="${fy - 8}" rx="14" ry="9"
                fill="rgba(230,80,30,0.6)" class="planet__fire-patch"/>
-      <ellipse cx="${cx + 20}" cy="${cy + 10}" rx="16" ry="10"
+      <ellipse cx="${fx + 15}" cy="${fy + 8}" rx="16" ry="10"
                fill="rgba(230,80,30,0.55)" class="planet__fire-patch"/>
-      <ellipse cx="${cx - 10}" cy="${cy + 30}" rx="12" ry="8"
+      <ellipse cx="${fx - 5}" cy="${fy + 22}" rx="12" ry="8"
                fill="rgba(230,80,30,0.5)" class="planet__fire-patch"/>
-      <ellipse cx="${cx + 35}" cy="${cy - 15}" rx="10" ry="7"
+      <ellipse cx="${fx + 30}" cy="${fy - 5}" rx="10" ry="7"
                fill="rgba(230,80,30,0.5)" class="planet__fire-patch"/>
       <!-- Flame flickers -->
-      <circle cx="${cx - 25}" cy="${cy - 23}" r="4" fill="rgba(255,200,50,0.6)"
+      <circle cx="${fx - 15}" cy="${fy - 11}" r="4" fill="rgba(255,200,50,0.6)"
               class="planet__flame-flicker"/>
-      <circle cx="${cx + 20}" cy="${cy + 7}" r="5" fill="rgba(255,200,50,0.55)"
+      <circle cx="${fx + 15}" cy="${fy + 5}" r="5" fill="rgba(255,200,50,0.55)"
               class="planet__flame-flicker"/>
-      <circle cx="${cx - 10}" cy="${cy + 27}" r="3.5" fill="rgba(255,200,50,0.5)"
+      <circle cx="${fx - 5}" cy="${fy + 19}" r="3.5" fill="rgba(255,200,50,0.5)"
               class="planet__flame-flicker"/>
     </g>`;
   }
 
-  /** Forest patches — barren brown spots that become green when planted */
+  /** Forest patches — left side of sphere */
   function _forestZoneSVG(cx, cy) {
+    const fx = cx - 30, fy = cy - 5;
     return `<g class="planet__forests" data-role="interactive">
-      <rect x="${cx - 65}" y="${cy - 60}" width="130" height="120" fill="transparent"/>
-      <ellipse cx="${cx - 30}" cy="${cy - 15}" rx="15" ry="10"
+      <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="transparent"/>
+      <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
                fill="rgba(120,90,50,0.5)" class="planet__barren-patch"/>
-      <ellipse cx="${cx + 15}" cy="${cy + 15}" rx="18" ry="11"
+      <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
                fill="rgba(120,90,50,0.45)" class="planet__barren-patch"/>
-      <ellipse cx="${cx + 5}" cy="${cy - 35}" rx="12" ry="8"
+      <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
                fill="rgba(120,90,50,0.4)" class="planet__barren-patch"/>
       <!-- Tree icons (hidden until planted) -->
-      <text class="planet__tree" x="${cx - 30}" y="${cy - 12}"
+      <text class="planet__tree" x="${fx - 10}" y="${fy - 12}"
             text-anchor="middle" font-size="14" opacity="0">🌲</text>
-      <text class="planet__tree" x="${cx + 15}" y="${cy + 18}"
+      <text class="planet__tree" x="${fx + 10}" y="${fy + 15}"
             text-anchor="middle" font-size="16" opacity="0">🌳</text>
-      <text class="planet__tree" x="${cx + 5}" y="${cy - 32}"
+      <text class="planet__tree" x="${fx - 5}" y="${fy - 29}"
             text-anchor="middle" font-size="12" opacity="0">🌲</text>
     </g>`;
   }
 
-  /** City zones — empty building sites with dashed outlines */
+  /** City zone — large continent on lower half of sphere for building */
   function _cityZoneSVG(cx, cy) {
+    const fx = cx + 5, fy = cy + 25;
     return `<g class="planet__cities" data-role="sticker-zone">
-      <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" rx="3"
+      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-      <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" rx="3"
+      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
             fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-      <text class="planet__city-text" x="${cx}" y="${cy}"
+      <text class="planet__city-text" x="${fx}" y="${fy}"
             text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-      <rect x="${cx - 25}" y="${cy - 15}" width="50" height="30" fill="transparent"/>
+      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" fill="transparent"/>
     </g>`;
   }
 

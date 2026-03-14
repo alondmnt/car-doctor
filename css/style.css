@@ -2386,10 +2386,7 @@ html, body {
   stroke-dasharray: 0 !important;
 }
 
-/* ===== Hint glows ===== */
-.planet__fires .hint-glow {
-  filter: drop-shadow(0 0 6px rgba(255,255,50,0.6));
-}
-.planet__forests.hint-glow {
-  filter: drop-shadow(0 0 6px rgba(255,255,50,0.6));
-}
+/* ===== Planet hint glows (extend generic .hint-glow) ===== */
+/* Fire: glow on individual ellipses/circles via wash-target path — generic .hint-glow applies */
+/* Forest: glow on the group via interactive path — generic .hint-glow applies */
+/* City: yellow fill on first rect via sticker-zone path — handled by picker.js */
