@@ -2377,7 +2377,12 @@ html, body {
 
 /* ===== Fire fault zone ===== */
 .planet__fires--hidden { display: none; }
-.planet__fires--washing .planet__fire-patch {
+.planet__fires--washing .planet__fire-patch,
+.planet__fires--washing .planet__ember-glow,
+.planet__fires--washing .planet__flame-tongue,
+.planet__fires--washing .planet__smoke-plume,
+.planet__fires--washing .planet__heat-ring,
+.planet__fires--washing .planet__scorch-mark {
   transition: opacity 0.6s;
   opacity: 0;
 }
@@ -2390,7 +2395,7 @@ html, body {
 }
 @keyframes fire-flicker {
   0%   { opacity: 0.5; }
-  100% { opacity: 0.8; }
+  100% { opacity: 0.85; }
 }
 .planet__flame-flicker {
   animation: flame-dance 0.5s ease-in-out infinite alternate;
@@ -2398,6 +2403,53 @@ html, body {
 @keyframes flame-dance {
   0%   { transform: translateY(0) scale(1); opacity: 0.5; transform-box: fill-box; transform-origin: center bottom; }
   100% { transform: translateY(-3px) scale(1.2); opacity: 0.8; transform-box: fill-box; transform-origin: center bottom; }
+}
+
+/* Flame tongues — teardrop shapes with staggered flicker */
+.planet__flame-tongue {
+  animation: flame-tongue-flicker 0.6s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+@keyframes flame-tongue-flicker {
+  0%   { transform: scaleY(0.7) scaleX(0.9); opacity: 0.35; }
+  50%  { transform: scaleY(1.1) scaleX(1.05); opacity: 0.55; }
+  100% { transform: scaleY(0.9) scaleX(0.95); opacity: 0.45; }
+}
+
+/* Smoke plumes — slow upward drift */
+.planet__smoke-plume {
+  animation: smoke-drift 2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center center;
+}
+@keyframes smoke-drift {
+  0%   { transform: translateY(0) scale(1); opacity: 0.3; }
+  50%  { transform: translateY(-4px) scale(1.15); opacity: 0.18; }
+  100% { transform: translateY(-1px) scale(1.05); opacity: 0.25; }
+}
+
+/* Ember glow — pulsing bright core */
+.planet__ember-glow {
+  animation: ember-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes ember-pulse {
+  0%   { opacity: 0.5; }
+  100% { opacity: 0.8; }
+}
+
+/* Heat distortion ring */
+.planet__heat-ring {
+  animation: heat-shimmer 1.5s ease-in-out infinite alternate;
+}
+@keyframes heat-shimmer {
+  0%   { stroke-opacity: 0.15; stroke-dashoffset: 0; }
+  100% { stroke-opacity: 0.3; stroke-dashoffset: 7; }
+}
+
+/* Scorch marks — static, no animation */
+.planet__scorch-mark {
+  pointer-events: none;
 }
 
 /* Body sparkle after extinguishing */

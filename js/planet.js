@@ -147,20 +147,67 @@ const Planet = (() => {
 
   /* ─── Fault zone builders ─── */
 
-  /** Fire patches — upper-right quadrant of sphere */
+  /** Fire patches — upper-right quadrant with smoke, embers, scorch, flames */
   function _fireZoneSVG(cx, cy) {
     const fx = cx + 20, fy = cy - 20;
-    return `<g class="planet__fires" data-role="wash-target">
-      <rect x="${fx - 45}" y="${fy - 35}" width="90" height="70" fill="transparent"/>
-      <ellipse cx="${fx - 15}" cy="${fy - 8}" rx="14" ry="9"
-               fill="rgba(230,80,30,0.6)" class="planet__fire-patch"/>
-      <ellipse cx="${fx + 15}" cy="${fy + 8}" rx="16" ry="10"
-               fill="rgba(230,80,30,0.55)" class="planet__fire-patch"/>
-      <ellipse cx="${fx - 5}" cy="${fy + 22}" rx="12" ry="8"
-               fill="rgba(230,80,30,0.5)" class="planet__fire-patch"/>
-      <ellipse cx="${fx + 30}" cy="${fy - 5}" rx="10" ry="7"
-               fill="rgba(230,80,30,0.5)" class="planet__fire-patch"/>
-      <!-- Flame flickers -->
+
+    // Fire cluster data: [dx, dy, rx, ry, opacity]
+    const patches = [
+      [-15, -8, 14, 9, 0.6], [15, 8, 16, 10, 0.55],
+      [-5, 22, 12, 8, 0.5], [30, -5, 10, 7, 0.5],
+    ];
+
+    let svg = `<g class="planet__fires" data-role="wash-target">
+      <rect x="${fx - 45}" y="${fy - 35}" width="90" height="70" fill="transparent"/>`;
+
+    patches.forEach(([dx, dy, rx, ry, op], i) => {
+      const px = fx + dx, py = fy + dy;
+
+      // Ground scorch mark (underneath fire)
+      svg += `
+      <ellipse cx="${px}" cy="${py + 3}" rx="${rx + 4}" ry="${ry + 2}"
+               fill="rgba(0,0,0,0.2)" class="planet__scorch-mark"/>`;
+
+      // Main fire patch
+      svg += `
+      <ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}"
+               fill="rgba(230,80,30,${op})" class="planet__fire-patch"/>`;
+
+      // Ember glow — bright inner core
+      svg += `
+      <ellipse cx="${px}" cy="${py}" rx="${rx * 0.5}" ry="${ry * 0.45}"
+               fill="rgba(255,100,20,0.7)" class="planet__ember-glow"/>`;
+
+      // Heat distortion ring
+      svg += `
+      <circle cx="${px}" cy="${py}" r="${Math.max(rx, ry) + 6}"
+              fill="none" stroke="rgba(255,150,50,0.2)" stroke-width="1"
+              stroke-dasharray="3 4" class="planet__heat-ring"/>`;
+
+      // Flame tongues — 2-3 teardrop paths per patch
+      const tongueOffsets = [[-4, 0], [3, -2], [0, 3]];
+      tongueOffsets.forEach(([tdx, tdy], j) => {
+        const tx = px + tdx, ty = py + tdy;
+        const h = 8 + j * 3;
+        svg += `
+      <path d="M${tx},${ty} C${tx - 3},${ty - h * 0.5} ${tx - 1},${ty - h} ${tx},${ty - h - 2}
+               C${tx + 1},${ty - h} ${tx + 3},${ty - h * 0.5} ${tx},${ty} Z"
+            fill="rgba(255,180,40,0.5)" class="planet__flame-tongue"
+            style="animation-delay: ${(i * 0.2 + j * 0.15).toFixed(2)}s"/>`;
+      });
+
+      // Smoke plumes — staggered above fire
+      const smokeOffsets = [[0, -12], [-5, -18], [4, -15]];
+      smokeOffsets.forEach(([sdx, sdy], j) => {
+        svg += `
+      <ellipse cx="${px + sdx}" cy="${py + sdy}" rx="${5 + j * 2}" ry="${3 + j}"
+               fill="rgba(80,80,80,0.3)" class="planet__smoke-plume"
+               style="animation-delay: ${(i * 0.3 + j * 0.2).toFixed(2)}s"/>`;
+      });
+    });
+
+    // Flame flicker circles (existing — kept for wash transition logic)
+    svg += `
       <circle cx="${fx - 15}" cy="${fy - 11}" r="4" fill="rgba(255,200,50,0.6)"
               class="planet__flame-flicker"/>
       <circle cx="${fx + 15}" cy="${fy + 5}" r="5" fill="rgba(255,200,50,0.55)"
@@ -168,6 +215,8 @@ const Planet = (() => {
       <circle cx="${fx - 5}" cy="${fy + 19}" r="3.5" fill="rgba(255,200,50,0.5)"
               class="planet__flame-flicker"/>
     </g>`;
+
+    return svg;
   }
 
   /** Forest patches — left side of sphere */
