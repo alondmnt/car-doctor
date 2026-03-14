@@ -223,12 +223,6 @@ const Picker = (() => {
     } else if (step.picker === 'colour') {
       showColourPicker((colour) => {
         car.el.style.setProperty('--vehicle-colour', colour);
-        car.el.style.setProperty('--car-colour', colour);
-        if (car.type === 'robot') {
-          car.el.style.setProperty('--robot-colour', colour);
-        } else if (car.type === 'spaceship') {
-          car.el.style.setProperty('--ship-colour', colour);
-        }
         onPick(colour);
       });
     } else if (step.picker === 'sticker') {

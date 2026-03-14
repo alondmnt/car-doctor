@@ -744,7 +744,7 @@ html, body {
 
 /* ===== SVG car paint — fill via CSS variable ===== */
 .svg-paint {
-  fill: var(--car-colour, #e63946);
+  fill: var(--vehicle-colour, var(--car-colour, #e63946));
 }
 
 /* ===== SVG state rules ===== */
@@ -1327,7 +1327,7 @@ html, body {
 
 /* ===== Robot SVG paint — fill via CSS variable ===== */
 .svg-robot-paint {
-  fill: var(--robot-colour, #7c8a96);
+  fill: var(--vehicle-colour, var(--robot-colour, #7c8a96));
 }
 
 /* ===== Robot base states ===== */
@@ -1757,7 +1757,7 @@ html, body {
 
 /* ===== Spaceship SVG paint — fill via CSS variable ===== */
 .svg-ship-paint {
-  fill: var(--ship-colour, #6a7fdb);
+  fill: var(--vehicle-colour, var(--ship-colour, #6a7fdb));
 }
 
 /* ===== Spaceship entry animation — wobbly spiral descent ===== */
