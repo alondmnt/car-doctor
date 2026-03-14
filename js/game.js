@@ -106,8 +106,7 @@ const Game = (() => {
       faults = FaultRegistry.pickWeightedFaults(faultCount, weights);
     }
 
-    garage.classList.toggle('garage--lab', spawnRobot);
-    garage.classList.toggle('garage--hangar', spawnShip);
+    garage.dataset.theme = spawnShip ? 'hangar' : spawnRobot ? 'lab' : '';
 
     if (spawnShip) {
       currentCar = Spaceship.create(garage, { colour, faults, flatTyre });
