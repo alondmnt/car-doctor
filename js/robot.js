@@ -63,7 +63,7 @@ const Robot = (() => {
       <path d="M${cableX - 5},${hookY} Q${cableX - 5},${hookY + 7} ${cableX},${hookY + 9} Q${cableX + 5},${hookY + 7} ${cableX + 5},${hookY}"
             fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
       <!-- Arrows -->
-      <g class="robot__lift-pad-arrow">
+      <g class="robot__lift-pad-arrow" data-role="lift-arrow">
         <text class="robot__lift-pad-arrow-up" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
         <text class="robot__lift-pad-arrow-down" x="${cableX}" y="${hookY + 18}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
       </g>
@@ -294,7 +294,7 @@ const Robot = (() => {
       </g>
 
       <!-- Plating damage (paint equivalent — dent/scratch lines on torso/head) -->
-      <g class="robot__plating-damage ${hasPaint ? '' : 'robot__plating-damage--hidden'}">
+      <g class="robot__plating-damage ${hasPaint ? '' : 'robot__plating-damage--hidden'}" data-role="paint-damage">
         <rect x="140" y="8" width="120" height="118" fill="transparent"/>
         <!-- Two-layer scratches: light edge + dark centre for contrast on any colour -->
         <line x1="165" y1="75" x2="190" y2="82" stroke="rgba(255,255,255,0.3)" stroke-width="5" stroke-linecap="round"/>
@@ -308,7 +308,7 @@ const Robot = (() => {
       </g>
 
       <!-- Badge zone (sticker equivalent) -->
-      <g class="robot__badge-zone ${hasSticker ? '' : 'robot__badge-zone--hidden'}">
+      <g class="robot__badge-zone ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
         <rect x="164" y="78" width="72" height="40" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="164" y="78" width="72" height="40" rx="4"
@@ -319,7 +319,7 @@ const Robot = (() => {
       </g>
 
       <!-- Oil grime (wash equivalent — dark grey-blue splatters) -->
-      <g class="robot__grime ${hasWash ? '' : 'robot__grime--hidden'}">
+      <g class="robot__grime ${hasWash ? '' : 'robot__grime--hidden'}" data-role="wash-target">
         <rect x="140" y="8" width="120" height="150" fill="transparent"/>
         <ellipse cx="180" cy="80" rx="18" ry="8" fill="rgba(60,70,90,0.7)"/>
         <ellipse cx="220" cy="95" rx="22" ry="9" fill="rgba(60,70,90,0.6)"/>
@@ -506,6 +506,7 @@ const Robot = (() => {
     el.className = `car car--robot`;
     el.style.setProperty('--robot-colour', colour);
     el.style.setProperty('--car-colour', colour);
+    el.style.setProperty('--vehicle-colour', colour);
 
     const templateFn = TEMPLATES[shape] || TEMPLATES.standard;
 
