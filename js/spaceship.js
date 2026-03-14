@@ -331,9 +331,9 @@ const Spaceship = (() => {
           </g>
           <!-- Signal rings (concentric) -->
           <g class="ship__antenna-signal ship__antenna-signal--dead">
-            <circle cx="120" cy="8" r="6" fill="none" stroke="#4ae" stroke-width="0.8" opacity="0.4"/>
-            <circle cx="120" cy="8" r="10" fill="none" stroke="#4ae" stroke-width="0.6" opacity="0.3"/>
-            <circle cx="120" cy="8" r="14" fill="none" stroke="#4ae" stroke-width="0.4" opacity="0.2"/>
+            <circle cx="120" cy="8" r="6" fill="none" stroke="#5cf" stroke-width="1.2"/>
+            <circle cx="120" cy="8" r="10" fill="none" stroke="#5cf" stroke-width="1.0"/>
+            <circle cx="120" cy="8" r="14" fill="none" stroke="#5cf" stroke-width="0.8"/>
           </g>
           <!-- Base mount -->
           <rect x="116" y="54" width="8" height="4" style="fill:#999"/>

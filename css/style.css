@@ -2177,15 +2177,20 @@ html, body {
 .ship__antenna-dish--aligned {
   transform: rotate(0deg);
 }
-.ship__antenna-signal--dead {
-  opacity: 0.15;
+.ship__antenna-signal--dead circle {
+  opacity: 0;
 }
-.ship__antenna-signal--active {
-  opacity: 1;
-  animation: signal-ping 1.5s ease-out infinite;
+.ship__antenna-signal--active circle {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: sonar-arc 2s ease-out infinite;
 }
-@keyframes signal-ping {
-  0%   { opacity: 1; transform: scale(1); }
-  50%  { opacity: 0.6; transform: scale(1.15); }
-  100% { opacity: 1; transform: scale(1); }
+.ship__antenna-signal--active circle:nth-child(1) { animation-delay: 0s; }
+.ship__antenna-signal--active circle:nth-child(2) { animation-delay: 0.4s; }
+.ship__antenna-signal--active circle:nth-child(3) { animation-delay: 0.8s; }
+@keyframes sonar-arc {
+  0%   { opacity: 0; transform: scale(0.5); }
+  15%  { opacity: 0.9; }
+  60%  { opacity: 0.3; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
