@@ -2234,7 +2234,7 @@ html, body {
 /* Pegboard → glowing sun (upper-right radial gradient) */
 #garage[data-theme="space"] .garage-decor--pegboard {
   left: auto;
-  right: 5%;
+  right: 15%;
   top: 5%;
   bottom: auto;
   width: min(18vw, 120px);
