@@ -680,6 +680,11 @@ html, body {
   display: flex;
   gap: 8px;
   z-index: 20;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+}
+.car__dashboard--visible {
+  opacity: 1;
 }
 
 .car__indicator {

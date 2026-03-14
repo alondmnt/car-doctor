@@ -44,12 +44,18 @@ const Vehicle = (() => {
         el.offsetHeight;  // force reflow for transition
         el.classList.remove('car--entering');
         el.classList.add('car--parked');
-        if (opts.afterEntry) {
-          el.addEventListener('animationend', (e) => {
-            if (e.target !== el) return;
-            opts.afterEntry(el);
-          }, { once: true });
+
+        /** Reveal dashboard and fire afterEntry once vehicle settles */
+        function onSettled(e) {
+          if (e.target !== el) return;
+          el.removeEventListener('transitionend', onSettled);
+          el.removeEventListener('animationend', onSettled);
+          const dash = el.querySelector('.car__dashboard');
+          if (dash) dash.classList.add('car__dashboard--visible');
+          if (opts.afterEntry) opts.afterEntry(el);
         }
+        el.addEventListener('transitionend', onSettled);
+        el.addEventListener('animationend', onSettled);
       },
 
       driveAway() {
