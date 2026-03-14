@@ -452,13 +452,15 @@ const Spaceship = (() => {
 
     const templateFn = TEMPLATES[shape] || TEMPLATES.standard;
 
-    // Dashboard indicators — same order as car (structural → clean → cosmetic)
+    // Dashboard indicators — same order as car (structural → clean → cosmetic).
+    // Unlocked upgrades always show (grey if not broken on this vehicle).
+    const shipWeights = GameState.get('spaceshipFaultWeights');
     const indicators = [
       { cls: 'tyre', fault: hasFlatTyre },
       { cls: 'engine', fault: hasEngine },
-      ...(hasLaser   ? [{ cls: 'laser',   fault: true }] : []),
-      ...(hasShield  ? [{ cls: 'shield',  fault: true }] : []),
-      ...(hasAntenna ? [{ cls: 'antenna', fault: true }] : []),
+      ...('laser'   in shipWeights ? [{ cls: 'laser',   fault: hasLaser }]   : []),
+      ...('shield'  in shipWeights ? [{ cls: 'shield',  fault: hasShield }]  : []),
+      ...('antenna' in shipWeights ? [{ cls: 'antenna', fault: hasAntenna }] : []),
       { cls: 'wash', fault: hasWash },
       { cls: 'paint', fault: hasPaint },
       { cls: 'sticker', fault: hasSticker },

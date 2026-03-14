@@ -509,22 +509,20 @@ const Robot = (() => {
 
     const templateFn = TEMPLATES[shape] || TEMPLATES.standard;
 
-    // Dashboard indicators — ordered to match FAULT_ORDER (structural → clean → cosmetic)
+    // Dashboard indicators — ordered to match FAULT_ORDER (structural → clean → cosmetic).
+    // Unlocked upgrades always show (grey if not broken on this vehicle).
+    const robotWeights = GameState.get('robotFaultWeights');
     const indicators = [
       { cls: 'tyre', fault: hasFlatTyre },
       { cls: 'engine', fault: hasEngine },
-    ];
-    // Upgrade indicators only shown when that fault is present
-    if (hasArmJoint) indicators.push({ cls: 'armJoint', fault: true });
-    if (hasLegsRepair) indicators.push({ cls: 'legsRepair', fault: true });
-    if (hasVoiceModule) indicators.push({ cls: 'voiceModule', fault: true });
-    if (hasJetpack) indicators.push({ cls: 'jetpack', fault: true });
-    // Cosmetic faults last: wash → paint → sticker
-    indicators.push(
+      ...('armJoint'    in robotWeights ? [{ cls: 'armJoint',    fault: hasArmJoint }]    : []),
+      ...('legsRepair'  in robotWeights ? [{ cls: 'legsRepair',  fault: hasLegsRepair }]  : []),
+      ...('voiceModule' in robotWeights ? [{ cls: 'voiceModule', fault: hasVoiceModule }] : []),
+      ...('jetpack'     in robotWeights ? [{ cls: 'jetpack',     fault: hasJetpack }]     : []),
       { cls: 'wash', fault: hasWash },
       { cls: 'paint', fault: hasPaint },
       { cls: 'sticker', fault: hasSticker },
-    );
+    ];
 
     const dashboardHTML = indicators.map(ind =>
       `<div class="car__indicator car__indicator--${ind.cls} ${ind.fault ? 'car__indicator--fault' : 'car__indicator--ok'}">⚙</div>`
