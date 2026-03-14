@@ -2160,3 +2160,231 @@ html, body {
   60%  { opacity: 0.3; transform: scale(1.3); }
   100% { opacity: 0; transform: scale(1.5); }
 }
+
+/* ================================================================
+   PLANET — deep space theme, planet container, animations, faults
+   ================================================================ */
+
+/* ===== Deep space theme ===== */
+#garage[data-theme="space"] {
+  background: linear-gradient(to bottom, #040412 0%, #0a0a24 30%, #111136 60%, #181840 80%);
+}
+
+/* Dense starfield */
+#garage[data-theme="space"]::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 2px; height: 2px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  box-shadow:
+    /* White stars */
+    5vw   3vh 0 0 rgba(255,255,255,0.8),
+    12vw 10vh 0 0 rgba(255,255,255,0.6),
+    20vw  5vh 0 0 rgba(255,255,255,0.7),
+    28vw 16vh 0 0 rgba(255,255,255,0.5),
+    35vw  8vh 0 0 rgba(255,255,255,0.9),
+    42vw 22vh 0 0 rgba(255,255,255,0.6),
+    50vw  4vh 0 0 rgba(255,255,255,0.7),
+    58vw 14vh 0 0 rgba(255,255,255,0.5),
+    65vw  7vh 0 0 rgba(255,255,255,0.8),
+    72vw 20vh 0 0 rgba(255,255,255,0.6),
+    80vw 12vh 0 0 rgba(255,255,255,0.7),
+    88vw  3vh 0 0 rgba(255,255,255,0.5),
+    95vw 18vh 0 0 rgba(255,255,255,0.6),
+    3vw  28vh 0 0 rgba(255,255,255,0.8),
+    15vw 35vh 0 0 rgba(255,255,255,0.5),
+    30vw 40vh 0 0 rgba(255,255,255,0.6),
+    45vw 32vh 0 0 rgba(255,255,255,0.7),
+    60vw 45vh 0 0 rgba(255,255,255,0.4),
+    75vw 38vh 0 0 rgba(255,255,255,0.6),
+    90vw 42vh 0 0 rgba(255,255,255,0.5),
+    8vw  50vh 0 0 rgba(255,255,255,0.4),
+    25vw 55vh 0 0 rgba(255,255,255,0.5),
+    55vw 48vh 0 0 rgba(255,255,255,0.6),
+    /* Warm gold stars */
+    18vw  6vh 0 0 rgba(255,224,102,0.7),
+    38vw 25vh 0 0 rgba(255,224,102,0.6),
+    62vw 35vh 0 0 rgba(255,224,102,0.8),
+    82vw 28vh 0 0 rgba(255,224,102,0.5),
+    48vw 52vh 0 0 rgba(255,224,102,0.6),
+    /* Cyan blue stars */
+    10vw 18vh 0 0 rgba(68,170,238,0.7),
+    33vw 12vh 0 0 rgba(68,170,238,0.6),
+    52vw 30vh 0 0 rgba(68,170,238,0.8),
+    70vw 15vh 0 0 rgba(68,170,238,0.5),
+    85vw 45vh 0 0 rgba(68,170,238,0.7),
+    /* Galaxy cluster — centre */
+    48vw 10vh 4px 2px rgba(180,160,255,0.12),
+    50vw 12vh 3px 1px rgba(140,160,255,0.15),
+    46vw 11vh 3px 1px rgba(200,180,255,0.10),
+    49vw 11vh 2px 1px rgba(255,255,255,0.4);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+/* No visible floor */
+#garage[data-theme="space"]::after {
+  background: transparent;
+  border-top: none;
+}
+
+/* Pegboard → glowing sun (upper-right radial gradient) */
+#garage[data-theme="space"] .garage-decor--pegboard {
+  left: auto;
+  right: 5%;
+  top: 5%;
+  bottom: auto;
+  width: min(18vw, 120px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  transform: none;
+  background:
+    radial-gradient(circle, rgba(255,240,180,1) 10%, rgba(255,200,60,0.8) 30%, rgba(255,160,40,0.3) 60%, transparent 80%);
+  box-shadow: 0 0 40px 15px rgba(255,200,80,0.15);
+}
+
+/* Parts shelf → small satellite silhouette */
+#garage[data-theme="space"] .garage-decor--parts-shelf {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 140'%3E%3Crect x='35' y='55' width='30' height='20' rx='3' fill='%23556' stroke='%23778' stroke-width='1'/%3E%3Crect x='10' y='60' width='25' height='10' rx='1' fill='%23448' stroke='%23669' stroke-width='0.8'/%3E%3Crect x='65' y='60' width='25' height='10' rx='1' fill='%23448' stroke='%23669' stroke-width='0.8'/%3E%3Ccircle cx='50' cy='50' r='4' fill='%23e44' opacity='0.7'/%3E%3Cline x1='50' y1='45' x2='50' y2='38' stroke='%23999' stroke-width='1.5'/%3E%3Ccircle cx='50' cy='36' r='2' fill='%23999' opacity='0.6'/%3E%3C/svg%3E") no-repeat center / contain;
+  opacity: 0.4;
+}
+
+/* Hide lamp, door-frame, floor-marks */
+#garage[data-theme="space"] .garage-decor--lamp,
+#garage[data-theme="space"] .garage-decor--door-frame,
+#garage[data-theme="space"] .garage-decor--floor-marks {
+  display: none;
+}
+
+/* ===== Planet container ===== */
+.car--planet {
+  aspect-ratio: 400 / 240;
+}
+.planet__svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ===== Planet SVG paint — fill via CSS variable ===== */
+.svg-planet-paint {
+  fill: var(--vehicle-colour, var(--planet-colour, #c2956b));
+}
+
+/* ===== Planet entry animation — zoom in from deep space ===== */
+.car--planet.car--entering {
+  transform: translate(-30vw, -40vh) scale(0.1);
+  opacity: 0;
+}
+.car--planet.car--parked {
+  animation: planet-approach 1.4s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes planet-approach {
+  0%   { transform: translate(-30vw, -40vh) scale(0.1); opacity: 0; }
+  10%  { opacity: 1; }
+  30%  { transform: translate(-15vw, -20vh) scale(0.35); }
+  60%  { transform: translate(-5vw, -8vh) scale(0.7); }
+  80%  { transform: translate(-1vw, -2vh) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+/* ===== Planet exit animation — orbit toward sun, shrink, fade ===== */
+.car--exit-planet-orbit {
+  overflow: visible;
+  animation: exit-planet-orbit 1.8s cubic-bezier(0.3, 0, 0.7, 1) forwards;
+}
+
+@keyframes exit-planet-orbit {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  30%  { transform: translate(15vw, -15vh) scale(0.7); opacity: 0.9; }
+  60%  { transform: translate(30vw, -35vh) scale(0.4); opacity: 0.6; }
+  100% { transform: translate(40vw, -50vh) scale(0.1); opacity: 0; }
+}
+
+/* ===== Planet atmosphere ===== */
+.planet__atmosphere {
+  animation: atmosphere-pulse 3s ease-in-out infinite;
+}
+@keyframes atmosphere-pulse {
+  0%, 100% { stroke-opacity: 0.12; stroke-width: 6; }
+  50%      { stroke-opacity: 0.2; stroke-width: 8; }
+}
+
+/* ===== Planet highlight ===== */
+.planet__highlight {
+  pointer-events: none;
+}
+
+/* ===== Planet ring (ringed geometry) ===== */
+.planet__ring {
+  pointer-events: none;
+}
+
+/* ===== Fire fault zone ===== */
+.planet__fires--hidden { display: none; }
+.planet__fires--washing .planet__fire-patch {
+  transition: opacity 0.6s;
+  opacity: 0;
+}
+.planet__fires--washing .planet__flame-flicker {
+  transition: opacity 0.4s;
+  opacity: 0;
+}
+.planet__fire-patch {
+  animation: fire-flicker 0.8s ease-in-out infinite alternate;
+}
+@keyframes fire-flicker {
+  0%   { opacity: 0.5; }
+  100% { opacity: 0.8; }
+}
+.planet__flame-flicker {
+  animation: flame-dance 0.5s ease-in-out infinite alternate;
+}
+@keyframes flame-dance {
+  0%   { transform: translateY(0) scale(1); opacity: 0.5; transform-box: fill-box; transform-origin: center bottom; }
+  100% { transform: translateY(-3px) scale(1.2); opacity: 0.8; transform-box: fill-box; transform-origin: center bottom; }
+}
+
+/* Body sparkle after extinguishing */
+.planet__body--sparkle {
+  filter: brightness(1.15);
+  transition: filter 0.4s;
+}
+
+/* ===== Forest fault zone ===== */
+.planet__barren-patch {
+  transition: opacity 0.6s, fill 0.6s;
+}
+.planet__barren-patch--planted {
+  fill: rgba(60,140,60,0.5);
+}
+.planet__tree {
+  transition: opacity 0.5s ease-out;
+}
+.planet__tree--grown {
+  opacity: 1 !important;
+  animation: tree-sprout 0.5s ease-out;
+}
+@keyframes tree-sprout {
+  0%   { transform: scale(0); opacity: 0; transform-box: fill-box; transform-origin: center bottom; }
+  60%  { transform: scale(1.3); opacity: 1; transform-box: fill-box; transform-origin: center bottom; }
+  100% { transform: scale(1); opacity: 1; transform-box: fill-box; transform-origin: center bottom; }
+}
+
+/* ===== City fault zone ===== */
+.planet__cities .sticker-zone--applied rect[stroke] {
+  stroke: transparent !important;
+  stroke-dasharray: 0 !important;
+}
+
+/* ===== Hint glows ===== */
+.planet__fires .hint-glow {
+  filter: drop-shadow(0 0 6px rgba(255,255,50,0.6));
+}
+.planet__forests.hint-glow {
+  filter: drop-shadow(0 0 6px rgba(255,255,50,0.6));
+}
