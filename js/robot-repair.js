@@ -247,9 +247,6 @@ const RobotRepair = (() => {
             if (text) {
               text.textContent = `${flag} ${sentence}`;
               text.setAttribute('font-size', '11');
-              if (lang?.rtl) {
-                text.setAttribute('direction', 'rtl');
-              }
             }
             bubble.classList.remove('robot__speech-bubble--hidden');
             bubble.classList.add('robot__speech-bubble--visible');
