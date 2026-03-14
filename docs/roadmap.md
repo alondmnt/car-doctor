@@ -23,7 +23,8 @@
 
 ## Next up
 
-1. **People doctor** — new vehicle type post-refactor
+1. **Multi-zone sticker placement** — let the user choose among multiple placement areas (e.g. different continents on the planet, bumper vs door on cars)
+2. **People doctor** — new vehicle type post-refactor
 
 ## On hold
 

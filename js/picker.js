@@ -109,18 +109,13 @@ const Picker = (() => {
 
   /* ─── Sticker / badge helper ─── */
 
-  /** Apply a sticker/badge emoji to the zone and clear the dashed border */
+  /** Apply a sticker/badge emoji to the zone and hide the dashed border */
   function applyStickerOrBadge(car, emoji) {
     const zone = car.el.querySelector('[data-role="sticker-zone"]');
     if (!zone) return;
     const textEl = zone.querySelector('text') || zone;
     textEl.textContent = emoji;
     zone.classList.add('sticker-zone--applied');
-    const borderRect = zone.querySelector('rect[stroke]') || zone.querySelector('rect');
-    if (borderRect) {
-      borderRect.setAttribute('stroke', 'transparent');
-      borderRect.setAttribute('stroke-dasharray', '0');
-    }
   }
 
   /* ─── Warehouse ─── */
