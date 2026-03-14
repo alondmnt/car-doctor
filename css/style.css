@@ -1134,6 +1134,11 @@ html, body {
 
 /* Generic sticker-zone applied (replaces per-vehicle applied classes) */
 .sticker-zone--applied text {
+  font-size: 40px;
+}
+/* Smaller text in compact zones (robot badge, ship emblem) */
+.robot__badge-zone.sticker-zone--applied text,
+.ship__emblem-zone.sticker-zone--applied text {
   font-size: 34px;
 }
 .sticker-zone--applied rect[stroke] {
