@@ -16,6 +16,46 @@ const Game = (() => {
   let faultQueue = [];
   let currentFault = null;
 
+  /** Ordered spawn registry — first matching entry wins; car is the fallback. */
+  const SPAWN_REGISTRY = [
+    {
+      type: 'spaceship',
+      creator: (...args) => Spaceship.create(...args),
+      enabled: () => GameState.get('spaceshipEnabled'),
+      chance: CONFIG.spaceshipChance,
+      weights: () => GameState.get('spaceshipFaultWeights'),
+      theme: 'hangar',
+    },
+    {
+      type: 'robot',
+      creator: (...args) => Robot.create(...args),
+      enabled: () => GameState.get('robotEnabled'),
+      chance: CONFIG.robotChance,
+      weights: () => GameState.get('robotFaultWeights'),
+      theme: 'lab',
+    },
+    {
+      type: 'car',
+      creator: (...args) => Car.create(...args),
+      enabled: () => true,
+      chance: 1,
+      weights: () => CONFIG.faultWeights,
+      theme: '',
+    },
+  ];
+
+  /** Pick a vehicle from the spawn registry.
+   *  @param {object} [spec] - showcase override with .vehicle property */
+  function pickVehicle(spec) {
+    if (spec?.vehicle) {
+      return SPAWN_REGISTRY.find(e => e.type === spec.vehicle) || SPAWN_REGISTRY.at(-1);
+    }
+    for (const entry of SPAWN_REGISTRY) {
+      if (entry.enabled() && Math.random() < entry.chance) return entry;
+    }
+    return SPAWN_REGISTRY.at(-1);
+  }
+
   function init() {
     garage = document.getElementById('garage');
     garage.style.setProperty('--garage-colour', CONFIG.garageColour);
@@ -77,22 +117,11 @@ const Game = (() => {
     const showcase = Progress.consumeShowcase();
     const spec = showcase?.showcase;
 
-    // 3-way spawn: spaceship (30%) → robot (of remaining, ~70%) → car
-    let spawnShip, spawnRobot;
-    if (spec?.vehicle === 'spaceship') {
-      spawnShip = true; spawnRobot = false;
-    } else if (spec?.vehicle === 'robot') {
-      spawnShip = false; spawnRobot = true;
-    } else {
-      const roll = Math.random();
-      spawnShip = GameState.get('spaceshipEnabled') && roll < CONFIG.spaceshipChance;
-      spawnRobot = !spawnShip && GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
-    }
+    const entry = pickVehicle(spec);
+    garage.dataset.theme = entry.theme;
 
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
-    const weights = spawnShip
-      ? GameState.get('spaceshipFaultWeights')
-      : spawnRobot ? GameState.get('robotFaultWeights') : CONFIG.faultWeights;
+    const weights = entry.weights();
 
     // Force showcased fault into the fault list
     let faults;
@@ -106,15 +135,7 @@ const Game = (() => {
       faults = FaultRegistry.pickWeightedFaults(faultCount, weights);
     }
 
-    garage.dataset.theme = spawnShip ? 'hangar' : spawnRobot ? 'lab' : '';
-
-    if (spawnShip) {
-      currentCar = Spaceship.create(garage, { colour, faults, flatTyre });
-    } else if (spawnRobot) {
-      currentCar = Robot.create(garage, { colour, faults, flatTyre });
-    } else {
-      currentCar = Car.create(garage, { colour, faults, flatTyre });
-    }
+    currentCar = entry.creator(garage, { colour, faults, flatTyre });
     faultQueue = [...faults].sort((a, b) =>
       FaultRegistry.ORDER.indexOf(a) - FaultRegistry.ORDER.indexOf(b)
     );
