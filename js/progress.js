@@ -17,10 +17,12 @@ const Progress = (() => {
         unlocked = data.unlocked || [];
       }
     } catch { /* corrupt data — start fresh */ }
-    // Sonic screwdriver — ?sonic unlocks everything
-    if (new URLSearchParams(location.search).has('sonicscrew')) {
-      coins = 999;
-      unlocked = UNLOCK_TIERS.map(t => t.coins);
+    // Sonic screwdriver — ?sonicscrew unlocks everything, ?sonicscrew=N sets coins to N
+    const params = new URLSearchParams(location.search);
+    if (params.has('sonicscrew')) {
+      const val = params.get('sonicscrew');
+      coins = val ? Math.max(0, parseInt(val, 10) || 0) : 999;
+      unlocked = UNLOCK_TIERS.filter(t => t.coins <= coins).map(t => t.coins);
       _save();
     }
 
