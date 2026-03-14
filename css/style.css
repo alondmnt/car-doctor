@@ -161,7 +161,37 @@ html, body {
 
 /* ===== Robot lab theme ===== */
 .garage--lab {
-  background: #2a2d3a;
+  background: linear-gradient(to bottom,
+    #1a1a3a 0%, #2d1b4e 20%, #5c2d6e 40%,
+    #c44e3d 60%, #e8863a 72%, #f0a848 80%);
+}
+
+/* Sunset clouds */
+.garage--lab::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 3px;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(255,160,80,0.5);
+  box-shadow:
+    /* Warm cloud 1 */
+    20vw 35vh 14px 10px rgba(200,100,60,0.35),
+    24vw 34vh 12px 8px rgba(220,120,70,0.4),
+    28vw 36vh 16px 12px rgba(180,90,50,0.3),
+    /* Warm cloud 2 */
+    55vw 28vh 12px 10px rgba(180,80,60,0.3),
+    59vw 27vh 16px 12px rgba(200,100,70,0.35),
+    63vw 29vh 14px 8px rgba(170,80,50,0.25),
+    /* Dark silhouette cloud higher up */
+    35vw 18vh 10px 8px rgba(60,30,60,0.3),
+    39vw 17vh 14px 10px rgba(50,25,50,0.35),
+    /* Wisp near horizon */
+    75vw 45vh 10px 6px rgba(240,160,80,0.3),
+    80vw 44vh 12px 8px rgba(220,140,60,0.25);
+  animation: none;
 }
 
 /* Metal floor */
