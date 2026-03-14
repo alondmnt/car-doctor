@@ -45,6 +45,14 @@ const CONFIG = {
   // Tier 55 adds: laser: 3
   // Tier 60 adds: shield: 3
   // Tier 65 adds: antenna: 3
+
+  /* Planet settings — activated by tier 70 unlock */
+  planetEnabled: false,
+  planetChance: 0.5,
+  planetShapes: ['rocky', 'gas', 'ringed'],
+  planetPalette: ['#c2956b', '#e8a87c', '#6b8fa3', '#a8c686', '#d4a5a5', '#8fbc8f'],
+  planetFaultWeights: { fire: 3, forest: 3, city: 3 },
+  planetStickers: ['🏙️', '🏗️', '🏰', '🗼', '🌆', '🏛️'],
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -91,6 +99,9 @@ const UNLOCK_TIERS = [
   { coins: 65, key: 'spaceshipAntenna', icon: '📡', label: 'Antenna array!',
     items: [],
     showcase: { vehicle: 'spaceship', fault: 'antenna' } },
+  { coins: 70, key: 'planetDoctor', icon: '🪐', label: 'Planet Doctor!',
+    items: [],
+    showcase: { vehicle: 'planet' } },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

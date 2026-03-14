@@ -12,6 +12,7 @@ const GameState = (() => {
   const TIER_ACTIONS = {
     robotDoctor:    () => { _booleans.robotEnabled = true; },
     spaceshipDoctor: () => { _booleans.spaceshipEnabled = true; },
+    planetDoctor:    () => { _booleans.planetEnabled = true; },
     robotArmJoint: () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), armJoint: 3 }; },
     robotLegs:     () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), legsRepair: 2 }; },
     robotVoice:    () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), voiceModule: 3 }; },

@@ -230,6 +230,16 @@ const Picker = (() => {
         applyStickerOrBadge(car, emoji);
         onPick(emoji);
       });
+    } else if (step.picker === 'planetCity') {
+      _showPicker({
+        containerClass: 'picker-row',
+        items: CONFIG.planetStickers,
+        renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
+        onPick: (emoji) => {
+          applyStickerOrBadge(car, emoji);
+          onPick(emoji);
+        },
+      });
     } else {
       onPick();
     }

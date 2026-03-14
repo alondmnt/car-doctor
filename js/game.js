@@ -19,6 +19,14 @@ const Game = (() => {
   /** Ordered spawn registry — first matching entry wins; car is the fallback. */
   const SPAWN_REGISTRY = [
     {
+      type: 'planet',
+      creator: (...args) => Planet.create(...args),
+      enabled: () => GameState.get('planetEnabled'),
+      chance: CONFIG.planetChance,
+      weights: () => CONFIG.planetFaultWeights,
+      theme: 'space',
+    },
+    {
       type: 'spaceship',
       creator: (...args) => Spaceship.create(...args),
       enabled: () => GameState.get('spaceshipEnabled'),
@@ -212,7 +220,8 @@ const Game = (() => {
         const allCarFaults = Object.keys(CONFIG.faultWeights);
         const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
         const allShipFaults = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
-        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults])];
+        const allPlanetFaults = GameState.get('planetEnabled') ? Object.keys(CONFIG.planetFaultWeights) : [];
+        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults, ...allPlanetFaults])];
         if (!hintsExplicit && GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
           GameState.setHintsOn(false);
           document.getElementById('hint-btn').classList.add('hint-btn--off');
