@@ -16,9 +16,9 @@ const GameState = (() => {
     robotLegs:     () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), legsRepair: 2 }; },
     robotVoice:    () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), voiceModule: 3 }; },
     robotJetpack:  () => { _objects.robotFaultWeights = { ...(_objects.robotFaultWeights || {}), jetpack: 3 }; },
-    spaceshipLaser:   () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), laser: 2 }; },
-    spaceshipShield:  () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), shield: 2 }; },
-    spaceshipAntenna: () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), antenna: 2 }; },
+    spaceshipLaser:   () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), laser: 3 }; },
+    spaceshipShield:  () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), shield: 3 }; },
+    spaceshipAntenna: () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), antenna: 3 }; },
   };
 
   /**

@@ -40,9 +40,9 @@ const CONFIG = {
   spaceshipFaultWeights: {
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
   },
-  // Tier 55 adds: laser: 2
-  // Tier 60 adds: shield: 2
-  // Tier 65 adds: antenna: 2
+  // Tier 55 adds: laser: 3
+  // Tier 60 adds: shield: 3
+  // Tier 65 adds: antenna: 3
 };
 
 /** Progression tiers — earn coins to unlock new content */
