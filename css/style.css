@@ -1073,6 +1073,13 @@ html, body {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.car__jack--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.car__jack--appearing {
+  animation: platform-appear 0.4s ease-out forwards;
+}
 
 .car__jack-arm {
   transition: transform 0.3s ease-out;
@@ -1369,6 +1376,13 @@ html, body {
 .robot__lift-pad {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+.robot__lift-pad--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.robot__lift-pad--appearing {
+  animation: platform-appear 0.4s ease-out forwards;
 }
 .robot__lift-pad-arm {
   transition: transform 0.3s ease-out;

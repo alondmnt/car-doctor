@@ -77,7 +77,7 @@ const Car = (() => {
   /** Jack with base, arm, and directional arrow hint */
   function _jackSVG(cx, gy) {
     const bw = 36, bh = 10, aw = 14, ah = 18;
-    return `<g class="car__jack">
+    return `<g class="car__jack car__jack--hidden">
       <rect class="car__jack-base" x="${cx-bw/2}" y="${gy-bh}" width="${bw}" height="${bh}" rx="2" style="fill:#c44"/>
       <rect class="car__jack-arm" x="${cx-aw/2}" y="${gy-bh-ah}" width="${aw}" height="${ah}" rx="2" style="fill:#a33"/>
       <g class="car__jack-arrow">
@@ -532,6 +532,13 @@ const Car = (() => {
       fixingClass: 'car__tyre--fixing',
       liftSelector: '.car__jack',
       pickExitAnim: () => _pick(CONFIG.exitAnimations),
+      afterEntry: (el) => {
+        const jack = el.querySelector('.car__jack');
+        if (jack) {
+          jack.classList.remove('car__jack--hidden');
+          jack.classList.add('car__jack--appearing');
+        }
+      },
     });
   }
 

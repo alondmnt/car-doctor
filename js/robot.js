@@ -48,7 +48,7 @@ const Robot = (() => {
     const cableH = 12;
     const hookY = cableTop + cableH;
 
-    return `<g class="robot__lift-pad">
+    return `<g class="robot__lift-pad robot__lift-pad--hidden">
       <!-- Vertical pole -->
       <rect class="robot__lift-pad-base" x="${poleX}" y="${poleTop}" width="${poleW}" height="${poleBot - poleTop}" rx="2"
             style="fill:#e07020;stroke:#c45e18;stroke-width:1"/>
@@ -564,6 +564,13 @@ const Robot = (() => {
         const boosterExit = el.dataset.boosterExit;
         if (boosterExit) return boosterExit;
         return _pick(CONFIG.exitAnimations.filter(a => a !== 'rocket'));
+      },
+      afterEntry: (el) => {
+        const crane = el.querySelector('.robot__lift-pad');
+        if (crane) {
+          crane.classList.remove('robot__lift-pad--hidden');
+          crane.classList.add('robot__lift-pad--appearing');
+        }
       },
       beforeExit: (el) => {
         if (el.dataset.boosterExit) {
