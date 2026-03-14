@@ -6,6 +6,7 @@ const Progress = (() => {
   const STORAGE_KEY = 'carDoctor_progress';
   let coins = 0;
   let unlocked = [];  // thresholds already unlocked, e.g. [5, 10]
+  let _showcaseTier = null;  // tier to force-spawn on next vehicle (one-shot)
 
   /** Load saved state from localStorage and apply unlocks */
   function load() {
@@ -67,6 +68,7 @@ const Progress = (() => {
         unlocked.push(tier.coins);
         _save();
         applyUnlocks();
+        _showcaseTier = tier;
         showFanfare(tier);
       }
     }
@@ -150,5 +152,12 @@ const Progress = (() => {
     setTimeout(dismiss, 2500);
   }
 
-  return { load, addCoins, getCoins, resetAll, renderPreview };
+  /** Return pending showcase tier and clear it (one-shot) */
+  function consumeShowcase() {
+    const tier = _showcaseTier;
+    _showcaseTier = null;
+    return tier;
+  }
+
+  return { load, addCoins, getCoins, resetAll, renderPreview, consumeShowcase };
 })();

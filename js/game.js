@@ -73,16 +73,38 @@ const Game = (() => {
     const colour = palette[Math.floor(Math.random() * palette.length)];
     const flatTyre = Math.random() < 0.5 ? 'front' : 'rear';
 
+    // Showcase override — force vehicle/fault for newly unlocked tier
+    const showcase = Progress.consumeShowcase();
+    const spec = showcase?.showcase;
+
     // 3-way spawn: spaceship (30%) → robot (of remaining, ~70%) → car
-    const roll = Math.random();
-    const spawnShip = GameState.get('spaceshipEnabled') && roll < CONFIG.spaceshipChance;
-    const spawnRobot = !spawnShip && GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
+    let spawnShip, spawnRobot;
+    if (spec?.vehicle === 'spaceship') {
+      spawnShip = true; spawnRobot = false;
+    } else if (spec?.vehicle === 'robot') {
+      spawnShip = false; spawnRobot = true;
+    } else {
+      const roll = Math.random();
+      spawnShip = GameState.get('spaceshipEnabled') && roll < CONFIG.spaceshipChance;
+      spawnRobot = !spawnShip && GameState.get('robotEnabled') && Math.random() < CONFIG.robotChance;
+    }
 
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
     const weights = spawnShip
       ? GameState.get('spaceshipFaultWeights')
       : spawnRobot ? GameState.get('robotFaultWeights') : CONFIG.faultWeights;
-    const faults = FaultRegistry.pickWeightedFaults(faultCount, weights);
+
+    // Force showcased fault into the fault list
+    let faults;
+    if (spec?.fault) {
+      const remaining = Object.fromEntries(
+        Object.entries(weights).filter(([k]) => k !== spec.fault));
+      faults = faultCount > 1
+        ? [spec.fault, ...FaultRegistry.pickWeightedFaults(1, remaining)]
+        : [spec.fault];
+    } else {
+      faults = FaultRegistry.pickWeightedFaults(faultCount, weights);
+    }
 
     garage.classList.toggle('garage--lab', spawnRobot);
     garage.classList.toggle('garage--hangar', spawnShip);
