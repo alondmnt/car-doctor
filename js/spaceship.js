@@ -248,29 +248,29 @@ const Spaceship = (() => {
         <circle cx="200" cy="94" r="3" fill="rgba(120,130,180,0.35)"/>
       </g>
 
-      <!-- Shield generator (tier 60 upgrade) -->
+      <!-- Shield generator (tier 60 upgrade) — mid-fuselage to avoid booster hatch overlap -->
       <g class="ship__shield-group ${hasShield ? '' : 'ship__shield-group--hidden'}">
         <!-- Fault indicator — dashed red circle -->
-        <circle class="ship__shield-fault" cx="270" cy="60" r="6"
+        <circle class="ship__shield-fault" cx="214" cy="58" r="6"
                 fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
-        <!-- Shield panel on rear fuselage (double-layer outline) -->
+        <!-- Shield panel on mid-fuselage (double-layer outline) -->
         <g class="ship__shield-panel" data-role="interactive" style="cursor:pointer">
-          <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
+          <rect class="ship__shield-panel-lid svg-ship-paint" x="206" y="64" width="28" height="20" rx="2"
                 stroke="rgba(255,255,255,0.25)" stroke-width="3" opacity="0.9"/>
-          <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
+          <rect class="ship__shield-panel-lid svg-ship-paint" x="206" y="64" width="28" height="20" rx="2"
                 stroke="rgba(0,0,0,0.35)" stroke-width="1.5" opacity="0.9"/>
           <!-- Touch target -->
-          <rect x="268" y="62" width="40" height="32" fill="transparent"/>
+          <rect x="200" y="58" width="40" height="32" fill="transparent"/>
         </g>
         <!-- Crystal bay (hidden until panel opened) -->
         <g class="ship__crystal-bay ship__crystal-bay--hidden" data-role="interactive" style="cursor:pointer">
-          <rect x="276" y="70" width="24" height="16" rx="1" fill="#333" stroke="#444" stroke-width="0.5"/>
-          <polygon class="ship__crystal" points="288,72 293,78 288,84 283,78"
+          <rect x="208" y="66" width="24" height="16" rx="1" fill="#333" stroke="#444" stroke-width="0.5"/>
+          <polygon class="ship__crystal" points="220,68 225,74 220,80 215,74"
                    fill="#66eeff" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-          <polygon class="ship__crystal" points="288,72 293,78 288,84 283,78"
+          <polygon class="ship__crystal" points="220,68 225,74 220,80 215,74"
                    fill="#66eeff" stroke="#44ccdd" stroke-width="1"/>
           <!-- Touch target -->
-          <rect x="270" y="64" width="36" height="28" fill="transparent"/>
+          <rect x="202" y="60" width="36" height="28" fill="transparent"/>
         </g>
         <!-- Shield bubble — large translucent ellipse (double-layer halo) -->
         <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
