@@ -272,13 +272,13 @@ const Spaceship = (() => {
           <!-- Touch target -->
           <rect x="270" y="64" width="36" height="28" fill="transparent"/>
         </g>
-        <!-- Shield bubble — large translucent ellipse (double-layer) -->
+        <!-- Shield bubble — large translucent ellipse (double-layer halo) -->
         <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
                  cx="200" cy="80" rx="170" ry="55"
-                 fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+                 fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
         <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
                  cx="200" cy="80" rx="170" ry="55"
-                 fill="none" stroke="#44ccff" stroke-width="1.5"/>
+                 fill="none" stroke="#44ccff" stroke-width="2.5"/>
       </g>`;
   }
 

@@ -2077,12 +2077,12 @@ html, body {
 .ship__shield-bubble--active {
   stroke-dasharray: none;
   opacity: 0.5;
-  stroke-width: 2;
+  stroke-width: 3;
   animation: shield-glow 2s ease-in-out infinite;
 }
 @keyframes shield-glow {
-  0%, 100% { opacity: 0.35; stroke-width: 1.5; }
-  50%      { opacity: 0.6; stroke-width: 2.5; }
+  0%, 100% { opacity: 0.35; stroke-width: 2.5; }
+  50%      { opacity: 0.6; stroke-width: 4; }
 }
 
 /* ===== Antenna array (tier 65 upgrade) ===== */
