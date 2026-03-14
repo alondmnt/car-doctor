@@ -52,6 +52,7 @@ const Vehicle = (() => {
           el.removeEventListener('animationend', onSettled);
           const dash = el.querySelector('.car__dashboard');
           if (dash) dash.classList.add('car__dashboard--visible');
+          Audio.play('arrive');
           if (opts.afterEntry) opts.afterEntry(el);
         }
         el.addEventListener('transitionend', onSettled);
@@ -68,6 +69,8 @@ const Vehicle = (() => {
           if (lift) lift.classList.add(opts.liftSelector.replace('.', '') + '--hidden');
           if (opts.beforeExit) opts.beforeExit(el);
           const anim = opts.pickExitAnim(el);
+          const exitSounds = { rocket: 'rocket', 'rocket-boost': 'rocket', wheelie: 'wheelie', honk: 'honk' };
+          Audio.play(exitSounds[anim] || 'whoosh');
           if (anim === 'rocket') {
             const flame = document.createElement('div');
             flame.className = 'car__flame';

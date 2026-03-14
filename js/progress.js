@@ -139,7 +139,7 @@ const Progress = (() => {
     }
 
     overlay.classList.add('unlock-fanfare--active');
-    Audio.play('success');
+    Audio.play('fanfare');
 
     // Auto-dismiss after 2.5s, or tap to dismiss
     function dismiss() {

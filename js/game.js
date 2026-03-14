@@ -204,7 +204,6 @@ const Game = (() => {
           Audio.play('success');
           setTimeout(() => {
             if (generation !== gen) return;
-            Audio.play('whoosh');
             currentCar.driveAway().then(() => {
               if (generation !== gen) return;
               currentCar = null;
@@ -236,6 +235,7 @@ const Game = (() => {
     jar.classList.remove('coin-jar--pop');
     jar.offsetHeight;
     jar.classList.add('coin-jar--pop');
+    Audio.play('coin');
     Progress.addCoins(amount);
   }
 
