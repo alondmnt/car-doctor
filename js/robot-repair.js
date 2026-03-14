@@ -9,11 +9,12 @@ const RobotRepair = (() => {
 
   const VOICE_LANGUAGES = {
     '🇦🇺': { sentences: ["G'day!", "No worries!", "How ya going?"] },
-    '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
-    '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
-    '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
-    '🇮🇱': { sentences: ["שלום!", "יאללה!", "מה קורה?"], rtl: true },
     '🇮🇳': { sentences: ["नमस्ते!", "चलो!", "बहुत अच्छा!"] },
+    '🇹🇭': { sentences: ["สวัสดี!", "สบายดี!", "ไปเลย!"] },
+    '🇨🇳': { sentences: ["你好！", "嗨！", "加油！"] },
+    '🇯🇵': { sentences: ["やあ！", "元気？", "よろしく！"] },
+    '🇮🇱': { sentences: ["שלום!", "יאללה!", "מה קורה?"], rtl: true },
+    '🇸🇦': { sentences: ["!مرحبا", "!يلا", "كيف حالك؟"], rtl: true },
   };
   const VOICE_FLAGS = Object.keys(VOICE_LANGUAGES);
 
