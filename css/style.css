@@ -2344,9 +2344,25 @@ html, body {
 .planet__atmosphere {
   animation: atmosphere-pulse 3s ease-in-out infinite;
 }
+.planet__atmosphere--outer {
+  animation: atmosphere-pulse-outer 4s ease-in-out infinite;
+}
 @keyframes atmosphere-pulse {
-  0%, 100% { stroke-opacity: 0.12; stroke-width: 6; }
-  50%      { stroke-opacity: 0.2; stroke-width: 8; }
+  0%, 100% { stroke-opacity: 0.12; stroke-width: 8; }
+  50%      { stroke-opacity: 0.22; stroke-width: 10; }
+}
+@keyframes atmosphere-pulse-outer {
+  0%, 100% { stroke-opacity: 0.06; stroke-width: 4; }
+  50%      { stroke-opacity: 0.1; stroke-width: 5; }
+}
+
+/* ===== Planet environmental details ===== */
+.planet__ocean-shimmer,
+.planet__continents,
+.planet__ice-caps,
+.planet__terminator,
+.planet__construction-band {
+  pointer-events: none;
 }
 
 /* ===== Planet highlight ===== */

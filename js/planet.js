@@ -8,6 +8,85 @@ const Planet = (() => {
 
   function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+  /* ─── Environmental detail builders ─── */
+
+  /** Ocean shimmer — subtle gradient overlay on sphere body */
+  function _oceanShimmerSVG(cx, cy, r) {
+    return `<ellipse class="planet__ocean-shimmer" cx="${cx}" cy="${cy + 10}"
+                     rx="${r * 0.85}" ry="${r * 0.55}"
+                     fill="rgba(0,0,0,0.06)" pointer-events="none"/>`;
+  }
+
+  /**
+   * Continent landmasses for rocky and ringed types.
+   * Large southern continent (city zone sits here), smaller northern
+   * landmass, and a small island/archipelago.
+   */
+  function _continentsSVG(cx, cy, r) {
+    // Southern continent — irregular blob in lower hemisphere
+    const sc = `M${cx - 45},${cy + 15} C${cx - 50},${cy + 25} ${cx - 40},${cy + 50} ${cx - 20},${cy + 55}
+                C${cx - 5},${cy + 60} ${cx + 25},${cy + 55} ${cx + 40},${cy + 45}
+                C${cx + 50},${cy + 38} ${cx + 45},${cy + 20} ${cx + 30},${cy + 15}
+                C${cx + 15},${cy + 10} ${cx - 30},${cy + 8} ${cx - 45},${cy + 15} Z`;
+    // Northern landmass — smaller blob upper-left
+    const nc = `M${cx - 35},${cy - 40} C${cx - 45},${cy - 35} ${cx - 40},${cy - 20} ${cx - 25},${cy - 18}
+                C${cx - 10},${cy - 16} ${cx - 5},${cy - 25} ${cx - 10},${cy - 35}
+                C${cx - 15},${cy - 45} ${cx - 28},${cy - 45} ${cx - 35},${cy - 40} Z`;
+    // Small island/archipelago — upper-right
+    const island = `M${cx + 20},${cy - 30} C${cx + 25},${cy - 35} ${cx + 35},${cy - 32} ${cx + 32},${cy - 26}
+                    C${cx + 28},${cy - 22} ${cx + 18},${cy - 24} ${cx + 20},${cy - 30} Z`;
+    return `<g class="planet__continents" pointer-events="none">
+      <path d="${sc}" fill="rgba(255,255,255,0.12)" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>
+      <path d="${nc}" fill="rgba(255,255,255,0.10)" stroke="rgba(0,0,0,0.12)" stroke-width="0.6"/>
+      <path d="${island}" fill="rgba(255,255,255,0.09)" stroke="rgba(0,0,0,0.10)" stroke-width="0.5"/>
+    </g>`;
+  }
+
+  /**
+   * Gas construction band — metallic orbital ring where city zone sits.
+   * "Cloud city" on an artificial rim built around the planet.
+   */
+  function _constructionBandSVG(cx, cy, r) {
+    const bandY = cy + 25;
+    const dy = bandY - cy;
+    const halfW = Math.sqrt(Math.max(0, r * r - dy * dy));
+    // Rivet dots along the band
+    const rivets = [];
+    const rivetCount = 8;
+    for (let i = 0; i < rivetCount; i++) {
+      const rx = cx - halfW + (halfW * 2 / (rivetCount - 1)) * i;
+      rivets.push(`<circle cx="${rx}" cy="${bandY + 4}" r="1.5"
+                           fill="rgba(200,200,210,0.5)" stroke="rgba(100,100,120,0.3)" stroke-width="0.5"/>`);
+    }
+    return `<g class="planet__construction-band" pointer-events="none">
+      <ellipse cx="${cx}" cy="${bandY + 3}" rx="${halfW * 0.95}" ry="7"
+               fill="rgba(160,170,185,0.25)" stroke="rgba(120,130,150,0.3)" stroke-width="1"/>
+      <ellipse cx="${cx}" cy="${bandY + 3}" rx="${halfW * 0.95}" ry="3"
+               fill="rgba(200,210,220,0.15)"/>
+      ${rivets.join('\n      ')}
+    </g>`;
+  }
+
+  /** Polar ice caps — white ellipses at top and bottom of sphere */
+  function _iceCapsSVG(cx, cy, r) {
+    return `<g class="planet__ice-caps" pointer-events="none">
+      <ellipse cx="${cx}" cy="${cy - r + 8}" rx="30" ry="10"
+               fill="rgba(255,255,255,0.2)"/>
+      <ellipse cx="${cx + 3}" cy="${cy + r - 8}" rx="25" ry="9"
+               fill="rgba(255,255,255,0.18)"/>
+    </g>`;
+  }
+
+  /** Terminator shading — dark arc on right side for 3D depth */
+  function _terminatorSVG(cx, cy, r) {
+    const startY = cy - r;
+    const endY = cy + r;
+    return `<path class="planet__terminator" pointer-events="none"
+                  d="M${cx + 20},${startY} A${r},${r} 0 0,1 ${cx + 20},${endY}
+                     A${r * 1.1},${r} 0 0,0 ${cx + 20},${startY} Z"
+                  fill="rgba(0,0,0,0.15)"/>`;
+  }
+
   /* ─── Geometry overlay builders ─── */
 
   /** Rocky — crater ellipses scattered on surface */
@@ -128,20 +207,32 @@ const Planet = (() => {
 
   /* ─── Main SVG template ─── */
 
+  /**
+   * Render order:
+   * shadow → atmosphere (outer + inner) → ring-back (ringed only)
+   * → body circle → ocean shimmer → continents → terminator shading
+   * → geometry overlay (craters/bands) → ice caps → specular highlights
+   * → fault zones → ring-front (ringed only)
+   */
   function _planetSVG(opts) {
     const { shape, hasFire, hasForest, hasCity } = opts;
     const cx = 200, cy = 110, r = 90;
 
     const geometryFn = GEOMETRY[shape] || GEOMETRY.rocky;
     const isRinged = shape === 'ringed';
+    const isGas = shape === 'gas';
+    const hasLand = !isGas; // Rocky and ringed have continents
 
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" class="planet__svg">
       <!-- Ground shadow -->
       <ellipse class="car__shadow" cx="200" cy="220" rx="100" ry="8" fill="rgba(0,0,0,0.12)"/>
 
-      <!-- Atmosphere glow -->
+      <!-- Atmosphere glow — outer ring -->
+      <circle class="planet__atmosphere planet__atmosphere--outer" cx="${cx}" cy="${cy}" r="${r + 14}"
+              fill="none" stroke="rgba(100,180,255,0.06)" stroke-width="4"/>
+      <!-- Atmosphere glow — inner ring -->
       <circle class="planet__atmosphere" cx="${cx}" cy="${cy}" r="${r + 8}"
-              fill="none" stroke="rgba(100,180,255,0.12)" stroke-width="6"/>
+              fill="none" stroke="rgba(100,180,255,0.12)" stroke-width="8"/>
 
       <!-- Ring back half (ringed only — behind body) -->
       ${isRinged ? `<ellipse class="planet__ring planet__ring--back" cx="${cx}" cy="${cy + 5}"
@@ -152,13 +243,30 @@ const Planet = (() => {
       <!-- Main body -->
       <circle class="planet__body svg-planet-paint" cx="${cx}" cy="${cy}" r="${r}"/>
 
+      <!-- Ocean shimmer -->
+      ${_oceanShimmerSVG(cx, cy, r)}
+
+      <!-- Continents (rocky/ringed) or construction band (gas) -->
+      ${hasLand ? _continentsSVG(cx, cy, r) : ''}
+      ${isGas && hasCity ? _constructionBandSVG(cx, cy, r) : ''}
+
+      <!-- Terminator shading (day/night edge) -->
+      ${_terminatorSVG(cx, cy, r)}
+
       <!-- Geometry overlay (craters/bands, or nothing for ringed — ring is separate) -->
       ${shape !== 'ringed' ? geometryFn(cx, cy, r) : ''}
 
-      <!-- Specular highlight -->
+      <!-- Polar ice caps -->
+      ${_iceCapsSVG(cx, cy, r)}
+
+      <!-- Specular highlight — main -->
       <ellipse class="planet__highlight" cx="${cx - 25}" cy="${cy - 30}"
-               rx="35" ry="25" fill="rgba(255,255,255,0.12)"
+               rx="35" ry="25" fill="rgba(255,255,255,0.18)"
                transform="rotate(-20 ${cx - 25} ${cy - 30})"/>
+      <!-- Specular highlight — bright spot -->
+      <ellipse class="planet__highlight" cx="${cx - 30}" cy="${cy - 35}"
+               rx="12" ry="8" fill="rgba(255,255,255,0.22)"
+               transform="rotate(-20 ${cx - 30} ${cy - 35})"/>
 
       <!-- Fault zones (shown per active faults) -->
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
