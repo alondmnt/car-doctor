@@ -975,15 +975,6 @@ html, body {
   stroke-dasharray: none;
 }
 
-.car__sticker-zone--applied .car__sticker-text {
-  font-size: 40px;
-}
-.car__sticker-zone--applied rect[stroke] {
-  stroke: transparent;
-}
-.car__sticker-zone--applied {
-  animation: sticker-slap 0.4s ease-out;
-}
 
 @keyframes sticker-slap {
   0%   { transform: scale(2) rotate(-10deg); opacity: 0.5; }
@@ -1089,27 +1080,6 @@ html, body {
   transform: scaleY(1.8);
 }
 
-/* Arrow indicators — hidden by default */
-.car__jack-arrow text {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* Show correct arrow based on data-direction */
-.car__jack-arrow--visible .car__jack-arrow-up,
-.car__jack-arrow--visible .car__jack-arrow-down {
-  opacity: 0;
-}
-.car__jack-arrow--visible[data-direction="up"] .car__jack-arrow-up {
-  opacity: 1;
-  animation: arrow-bounce 0.8s ease-in-out infinite;
-}
-.car__jack-arrow--visible[data-direction="down"] .car__jack-arrow-down {
-  opacity: 1;
-  animation: arrow-bounce-down 0.8s ease-in-out infinite;
-}
-
 @keyframes arrow-bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
@@ -1121,7 +1091,12 @@ html, body {
 
 /* ===== Shared data-role styles ===== */
 
-/* Generic lift-arrow visibility (replaces per-vehicle arrow classes) */
+/* Lift-arrow text — hidden by default, shown via .lift-arrow--visible */
+[data-role="lift-arrow"] text {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
 .lift-arrow--visible text { opacity: 0; }
 .lift-arrow--visible[data-direction="up"] text:first-of-type {
   opacity: 1;
@@ -1418,25 +1393,6 @@ html, body {
   transform: scaleY(0.3);
 }
 
-/* Lift pad arrows — hidden by default */
-.robot__lift-pad-arrow text {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-.robot__lift-pad-arrow--visible .robot__lift-pad-arrow-up,
-.robot__lift-pad-arrow--visible .robot__lift-pad-arrow-down {
-  opacity: 0;
-}
-.robot__lift-pad-arrow--visible[data-direction="up"] .robot__lift-pad-arrow-up {
-  opacity: 1;
-  animation: arrow-bounce 0.8s ease-in-out infinite;
-}
-.robot__lift-pad-arrow--visible[data-direction="down"] .robot__lift-pad-arrow-down {
-  opacity: 1;
-  animation: arrow-bounce-down 0.8s ease-in-out infinite;
-}
-
 /* Jacked up — lift upper group */
 .car--robot.car--jacked .robot__upper {
   transform: translateY(-12px);
@@ -1544,15 +1500,6 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 .robot__badge-zone--hidden { display: none; }
-.robot__badge-zone--applied .robot__badge-text {
-  font-size: 34px;
-}
-.robot__badge-zone--applied rect[stroke] {
-  stroke: transparent;
-}
-.robot__badge-zone--applied {
-  animation: sticker-slap 0.4s ease-out;
-}
 
 /* Oil grime (wash equivalent) */
 .robot__grime {
@@ -1920,24 +1867,6 @@ html, body {
 .ship__lift-pad--raised .ship__lift-pad-arm {
   transform: scaleY(2);
 }
-.ship__lift-pad-arrow text {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-.ship__lift-pad-arrow--visible .ship__lift-pad-arrow-up,
-.ship__lift-pad-arrow--visible .ship__lift-pad-arrow-down {
-  opacity: 0;
-}
-.ship__lift-pad-arrow--visible[data-direction="up"] .ship__lift-pad-arrow-up {
-  opacity: 1;
-  animation: arrow-bounce 0.8s ease-in-out infinite;
-}
-.ship__lift-pad-arrow--visible[data-direction="down"] .ship__lift-pad-arrow-down {
-  opacity: 1;
-  animation: arrow-bounce-down 0.8s ease-in-out infinite;
-}
-
 /* Jacked up — hull + struts + pad rise; good wing follows, broken wing stays */
 .car--spaceship.car--jacked .ship__upper {
   transform: translateY(-12px);
@@ -2066,15 +1995,6 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 .ship__emblem-zone--hidden { display: none; }
-.ship__emblem-zone--applied .ship__emblem-text {
-  font-size: 34px;
-}
-.ship__emblem-zone--applied rect[stroke] {
-  stroke: transparent;
-}
-.ship__emblem-zone--applied {
-  animation: sticker-slap 0.4s ease-out;
-}
 
 /* ===== Space dust (wash equivalent) ===== */
 .ship__dust {
