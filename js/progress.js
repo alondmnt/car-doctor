@@ -17,6 +17,13 @@ const Progress = (() => {
         unlocked = data.unlocked || [];
       }
     } catch { /* corrupt data — start fresh */ }
+    // Sonic screwdriver — ?sonic unlocks everything
+    if (new URLSearchParams(location.search).has('sonicscrew')) {
+      coins = 999;
+      unlocked = UNLOCK_TIERS.map(t => t.coins);
+      _save();
+    }
+
     applyUnlocks();
     renderPreview();
 
