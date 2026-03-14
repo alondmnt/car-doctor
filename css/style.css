@@ -1989,6 +1989,34 @@ html, body {
   animation: wash-sparkle 0.8s ease-out;
 }
 
+/* ===== Spaceship upgrade hints ===== */
+.ship__laser.hint-glow .ship__laser-tip {
+  opacity: 1;
+  fill: #ffcc00;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+}
+.ship__shield-panel.hint-glow .ship__shield-panel-lid {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 50, 0.9));
+}
+.ship__crystal-bay.hint-glow .ship__crystal {
+  fill: #ffee44;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+}
+.ship__shield-bubble.hint-glow {
+  opacity: 0.6;
+  stroke: rgba(255, 255, 50, 0.8) !important;
+  stroke-width: 3 !important;
+}
+.ship__antenna-mast.hint-glow {
+  fill: #ffcc00;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 50, 0.9));
+}
+.ship__antenna-dish.hint-glow path,
+.ship__antenna-dish.hint-glow circle {
+  stroke: rgba(255, 255, 50, 0.8);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+}
+
 /* ===== Laser cannons (tier 55 upgrade) ===== */
 .ship__laser {
   cursor: pointer;
