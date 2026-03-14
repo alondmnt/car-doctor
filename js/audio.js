@@ -6,6 +6,7 @@
 const Audio = (() => {
   let ctx = null;
   let unlocked = false;
+  let muted = false;
 
   /** Unlock AudioContext on first user gesture */
   function unlock() {
@@ -74,9 +75,12 @@ const Audio = (() => {
   };
 
   function play(name) {
-    if (!unlocked) return;
+    if (!unlocked || muted) return;
     if (effects[name]) effects[name]();
   }
 
-  return { unlock, play };
+  function isMuted() { return muted; }
+  function setMuted(v) { muted = v; }
+
+  return { unlock, play, isMuted, setMuted };
 })();

@@ -50,6 +50,7 @@ const Game = (() => {
     });
 
     document.getElementById('hint-btn').addEventListener('click', toggleHints);
+    document.getElementById('sound-btn').addEventListener('click', toggleSound);
 
     Progress.load();
     coins = Progress.getCoins();
@@ -248,6 +249,11 @@ const Game = (() => {
         t => t.classList.remove('toolbox__tool--hint')
       );
     }
+  }
+
+  function toggleSound() {
+    Audio.setMuted(!Audio.isMuted());
+    document.getElementById('sound-btn').classList.toggle('sound-btn--off', Audio.isMuted());
   }
 
   return { init };
