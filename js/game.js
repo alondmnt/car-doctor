@@ -10,7 +10,8 @@ const Game = (() => {
   let busy = false;
   let coins = 0;
   let generation = 0;  // incremented on reset/new car to cancel stale callbacks
-  const seenFaults = new Set();  // auto-disable hints once all fault types seen
+  const seenFaults = new Set();  // auto-toggle hints based on seen vs active faults
+  let hintsExplicit = false;     // true when user manually toggled (respect their choice)
 
   let faultQueue = [];
   let currentFault = null;
@@ -97,8 +98,9 @@ const Game = (() => {
       FaultRegistry.ORDER.indexOf(a) - FaultRegistry.ORDER.indexOf(b)
     );
 
-    // Re-enable hints if the vehicle has any fault type not yet seen
+    // Auto-enable hints if vehicle has any fault type not yet seen (overrides explicit)
     if (faults.some(f => !seenFaults.has(f))) {
+      hintsExplicit = false;
       GameState.setHintsOn(true);
       document.getElementById('hint-btn').classList.remove('hint-btn--off');
     }
@@ -169,7 +171,7 @@ const Game = (() => {
         const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
         const allShipFaults = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
         const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults])];
-        if (GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
+        if (!hintsExplicit && GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
           GameState.setHintsOn(false);
           document.getElementById('hint-btn').classList.add('hint-btn--off');
         }
@@ -236,8 +238,9 @@ const Game = (() => {
     nextCar();
   }
 
-  /** Toggle hints on/off */
+  /** Toggle hints on/off (explicit user action) */
   function toggleHints() {
+    hintsExplicit = true;
     GameState.setHintsOn(!GameState.hintsOn());
     document.getElementById('hint-btn').classList.toggle('hint-btn--off', !GameState.hintsOn());
     if (GameState.hintsOn()) {
