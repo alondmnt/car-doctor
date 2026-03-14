@@ -89,58 +89,150 @@ const Planet = (() => {
 
   /* ─── Geometry overlay builders ─── */
 
-  /** Rocky — crater ellipses scattered on surface */
+  /** Rocky — craters with rims and inner shadows, mountain ridges */
   function _rockySVG(cx, cy, r) {
-    return `<g class="planet__geometry planet__geometry--rocky">
-      <ellipse cx="${cx - 30}" cy="${cy - 25}" rx="18" ry="10"
+    // Crater data: [x-offset, y-offset, rx, ry]
+    const craters = [
+      [-30, -25, 18, 10], [35, -10, 14, 8], [-10, 30, 20, 11],
+      [25, 20, 10, 6], [-40, 5, 5, 5],
+      // Additional small craters for density
+      [15, -40, 7, 4], [-50, -15, 6, 4], [45, 35, 5, 3],
+    ];
+    const craterSVG = craters.map(([dx, dy, rx, ry]) => {
+      const x = cx + dx, y = cy + dy;
+      return `<!-- Crater at ${dx},${dy} -->
+      <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"
                fill="rgba(0,0,0,0.12)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
-      <ellipse cx="${cx + 35}" cy="${cy - 10}" rx="14" ry="8"
-               fill="rgba(0,0,0,0.1)" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
-      <ellipse cx="${cx - 10}" cy="${cy + 30}" rx="20" ry="11"
-               fill="rgba(0,0,0,0.13)" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
-      <ellipse cx="${cx + 25}" cy="${cy + 20}" rx="10" ry="6"
-               fill="rgba(0,0,0,0.09)" stroke="rgba(0,0,0,0.14)" stroke-width="1"/>
-      <circle cx="${cx - 40}" cy="${cy + 5}" r="5"
-              fill="rgba(0,0,0,0.08)" stroke="rgba(0,0,0,0.12)" stroke-width="0.8"/>
+      <!-- Rim highlight (sun-lit upper edge) -->
+      <ellipse cx="${x}" cy="${y - ry * 0.3}" rx="${rx * 0.9}" ry="${ry * 0.4}"
+               fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+      <!-- Inner shadow -->
+      <ellipse cx="${x + 2}" cy="${y + ry * 0.15}" rx="${rx * 0.55}" ry="${ry * 0.45}"
+               fill="rgba(0,0,0,0.18)"/>`;
+    }).join('\n      ');
+
+    // Mountain ridge lines
+    const ridges = `
+      <polyline points="${cx - 55},${cy + 5} ${cx - 45},${cy - 5} ${cx - 35},${cy + 2} ${cx - 25},${cy - 8} ${cx - 18},${cy + 3}"
+                fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-linecap="round"/>
+      <polyline points="${cx + 30},${cy - 35} ${cx + 38},${cy - 45} ${cx + 48},${cy - 38} ${cx + 55},${cy - 42}"
+                fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" stroke-linecap="round"/>`;
+
+    return `<g class="planet__geometry planet__geometry--rocky">
+      ${craterSVG}
+      ${ridges}
     </g>`;
   }
 
-  /** Gas — horizontal band stripes (Jupiter-like) */
+  /** Gas — alternating band colours, wavy edges, Great Storm, construction band */
   function _gasSVG(cx, cy, r) {
     const bands = [];
     const offsets = [-55, -35, -15, 5, 25, 45];
     const widths = [12, 10, 14, 10, 12, 8];
-    const opacities = [0.12, 0.08, 0.15, 0.1, 0.12, 0.06];
+    const opacities = [0.12, 0.06, 0.15, 0.08, 0.12, 0.05];
+    const lightBands = [1, 3, 5]; // Alternating lighter bands
+
     for (let i = 0; i < offsets.length; i++) {
       const by = cy + offsets[i];
-      // Clip band width to sphere boundary
       const dy = by - cy;
       const halfW = Math.sqrt(Math.max(0, r * r - dy * dy));
       if (halfW < 5) continue;
-      bands.push(`<rect x="${cx - halfW}" y="${by}" width="${halfW * 2}" height="${widths[i]}"
-                         rx="2" fill="rgba(0,0,0,${opacities[i]})" opacity="0.9"/>`);
+
+      const isLight = lightBands.includes(i);
+      const fill = isLight
+        ? `rgba(255,255,255,${opacities[i]})`
+        : `rgba(0,0,0,${opacities[i]})`;
+
+      // Wavy band edges on bands 1 and 3
+      if (i === 1 || i === 3) {
+        const w = halfW * 2;
+        const x0 = cx - halfW;
+        const h = widths[i];
+        const wave = `M${x0},${by}
+          C${x0 + w * 0.2},${by - 3} ${x0 + w * 0.4},${by + 2} ${x0 + w * 0.6},${by - 1}
+          C${x0 + w * 0.8},${by + 3} ${x0 + w * 0.95},${by - 1} ${x0 + w},${by}
+          L${x0 + w},${by + h}
+          C${x0 + w * 0.8},${by + h + 2} ${x0 + w * 0.6},${by + h - 2} ${x0 + w * 0.4},${by + h + 1}
+          C${x0 + w * 0.2},${by + h - 1} ${x0 + w * 0.05},${by + h + 2} ${x0},${by + h} Z`;
+        bands.push(`<path d="${wave}" fill="${fill}" opacity="0.9"/>`);
+      } else {
+        bands.push(`<rect x="${cx - halfW}" y="${by}" width="${halfW * 2}" height="${widths[i]}"
+                           rx="2" fill="${fill}" opacity="0.9"/>`);
+      }
     }
+
+    // Great Storm spot — upper-right area (nested ellipses with rotation)
+    const stormCx = cx + 30, stormCy = cy - 30;
+    const storm = `
+      <g class="planet__storm" transform="rotate(-15 ${stormCx} ${stormCy})">
+        <ellipse cx="${stormCx}" cy="${stormCy}" rx="20" ry="12"
+                 fill="rgba(180,80,40,0.2)" stroke="rgba(160,60,30,0.15)" stroke-width="0.8"/>
+        <ellipse cx="${stormCx}" cy="${stormCy}" rx="14" ry="8"
+                 fill="rgba(200,100,50,0.18)" transform="rotate(10 ${stormCx} ${stormCy})"/>
+        <ellipse cx="${stormCx}" cy="${stormCy}" rx="8" ry="4"
+                 fill="rgba(220,120,60,0.22)" transform="rotate(-8 ${stormCx} ${stormCy})"/>
+      </g>`;
+
     return `<g class="planet__geometry planet__geometry--gas">
       ${bands.join('\n      ')}
+      ${storm}
     </g>`;
   }
 
-  /** Ringed — tilted ring ellipse around sphere */
+  /** Ringed — ring shadow on body; ring halves rendered separately in _planetSVG */
   function _ringedSVG(cx, cy, r) {
+    // Ring shadow on planet body — thin dark arc
     return `<g class="planet__geometry planet__geometry--ringed">
-      <!-- Ring back (behind planet — drawn first, clipped by planet body layering) -->
-      <ellipse class="planet__ring planet__ring--back" cx="${cx}" cy="${cy + 5}"
-               rx="${r + 40}" ry="18"
-               fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"
-               transform="rotate(-12 ${cx} ${cy + 5})"/>
-      <!-- Ring front (drawn after planet body via CSS z-ordering) -->
-      <ellipse class="planet__ring planet__ring--front" cx="${cx}" cy="${cy + 5}"
-               rx="${r + 40}" ry="18"
-               fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="10"
-               transform="rotate(-12 ${cx} ${cy + 5})"
-               stroke-dasharray="${Math.PI * (r + 40)},${Math.PI * (r + 40)}"
-               stroke-dashoffset="${Math.PI * (r + 40)}"/>
+      <ellipse cx="${cx + 8}" cy="${cy + 12}" rx="${r * 0.7}" ry="5"
+               fill="rgba(0,0,0,0.12)" transform="rotate(-12 ${cx + 8} ${cy + 12})"
+               pointer-events="none"/>
     </g>`;
+  }
+
+  /** Ring back half — drawn behind planet body */
+  function _ringBackSVG(cx, cy, r) {
+    const ringRx = r + 40;
+    const ringCy = cy + 5;
+    const rot = `rotate(-12 ${cx} ${ringCy})`;
+    return `<!-- Ring back half -->
+      <ellipse class="planet__ring planet__ring--back" cx="${cx}" cy="${ringCy}"
+               rx="${ringRx}" ry="18"
+               fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10"
+               transform="${rot}"/>
+      <!-- Cassini division (back) -->
+      <ellipse cx="${cx}" cy="${ringCy}"
+               rx="${ringRx - 6}" ry="15"
+               fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2.5"
+               transform="${rot}" pointer-events="none"/>`;
+  }
+
+  /** Ring front half — drawn in front of planet body */
+  function _ringFrontSVG(cx, cy, r) {
+    const ringRx = r + 40;
+    const ringCy = cy + 5;
+    const rot = `rotate(-12 ${cx} ${ringCy})`;
+    const dashLen = Math.round(Math.PI * ringRx);
+    return `<!-- Ring front half -->
+      <ellipse class="planet__ring planet__ring--front" cx="${cx}" cy="${ringCy}"
+               rx="${ringRx}" ry="18"
+               fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="10"
+               transform="${rot}"
+               stroke-dasharray="${dashLen},${dashLen}"
+               stroke-dashoffset="${dashLen}"/>
+      <!-- Inner ring — slightly darker -->
+      <ellipse class="planet__ring" cx="${cx}" cy="${ringCy}"
+               rx="${ringRx - 12}" ry="13"
+               fill="none" stroke="rgba(255,255,255,0.10)" stroke-width="4"
+               transform="${rot}"
+               stroke-dasharray="${Math.round(Math.PI * (ringRx - 12))},${Math.round(Math.PI * (ringRx - 12))}"
+               stroke-dashoffset="${Math.round(Math.PI * (ringRx - 12))}"/>
+      <!-- Cassini division (front) -->
+      <ellipse cx="${cx}" cy="${ringCy}"
+               rx="${ringRx - 6}" ry="15"
+               fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="2.5"
+               transform="${rot}" pointer-events="none"
+               stroke-dasharray="${Math.round(Math.PI * (ringRx - 6))},${Math.round(Math.PI * (ringRx - 6))}"
+               stroke-dashoffset="${Math.round(Math.PI * (ringRx - 6))}"/>`;
   }
 
   const GEOMETRY = { rocky: _rockySVG, gas: _gasSVG, ringed: _ringedSVG };
@@ -284,10 +376,7 @@ const Planet = (() => {
               fill="none" stroke="rgba(100,180,255,0.12)" stroke-width="8"/>
 
       <!-- Ring back half (ringed only — behind body) -->
-      ${isRinged ? `<ellipse class="planet__ring planet__ring--back" cx="${cx}" cy="${cy + 5}"
-               rx="${r + 40}" ry="18"
-               fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10"
-               transform="rotate(-12 ${cx} ${cy + 5})"/>` : ''}
+      ${isRinged ? _ringBackSVG(cx, cy, r) : ''}
 
       <!-- Main body -->
       <circle class="planet__body svg-planet-paint" cx="${cx}" cy="${cy}" r="${r}"/>
@@ -302,8 +391,8 @@ const Planet = (() => {
       <!-- Terminator shading (day/night edge) -->
       ${_terminatorSVG(cx, cy, r)}
 
-      <!-- Geometry overlay (craters/bands, or nothing for ringed — ring is separate) -->
-      ${shape !== 'ringed' ? geometryFn(cx, cy, r) : ''}
+      <!-- Geometry overlay (craters/bands/ring-shadow) -->
+      ${geometryFn(cx, cy, r)}
 
       <!-- Polar ice caps -->
       ${_iceCapsSVG(cx, cy, r)}
@@ -323,12 +412,7 @@ const Planet = (() => {
       ${hasCity ? _cityZoneSVG(cx, cy) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
-      ${isRinged ? `<ellipse class="planet__ring planet__ring--front" cx="${cx}" cy="${cy + 5}"
-               rx="${r + 40}" ry="18"
-               fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="10"
-               transform="rotate(-12 ${cx} ${cy + 5})"
-               stroke-dasharray="${Math.round(Math.PI * (r + 40))},${Math.round(Math.PI * (r + 40))}"
-               stroke-dashoffset="${Math.round(Math.PI * (r + 40))}"/>` : ''}
+      ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}
     </svg>`;
   }
 
