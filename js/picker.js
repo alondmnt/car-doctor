@@ -63,7 +63,7 @@ const Picker = (() => {
   function clearHighlights(car) {
     clearVisualHints(car);
     if (!car) return;
-    car.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime, .ship__hull-damage, .ship__emblem-zone, .ship__dust').forEach(
+    car.el.querySelectorAll('.car__paint-damage, .car__sticker-zone, .car__mud, .robot__plating-damage, .robot__badge-zone, .robot__grime, .ship__hull-damage, .ship__emblem-zone, .ship__dust, .ship__shield-panel, .ship__crystal-bay, .ship__laser, .ship__antenna-mast, .ship__antenna-dish').forEach(
       el => el.style.pointerEvents = ''
     );
   }
@@ -146,7 +146,7 @@ const Picker = (() => {
     const part = document.createElement('div');
     part.className = `warehouse__part warehouse__part--${partType}`;
 
-    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒', wing: '🪽', emitter: '🔫', crystal: '💎' };
+    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒', wing: '🪽', laser: '🔫', crystal: '💎' };
     part.textContent = icons[partType] || '📦';
 
     function grab(e) {

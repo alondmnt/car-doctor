@@ -34,6 +34,8 @@ const FaultRegistry = (() => {
     arm:     { styles: () => GameState.get('armStyles'),      preview: (s) => Robot.armPreviewSVG(s) },
     booster: { styles: () => GameState.get('boosterStyles'),  preview: (s) => Robot.boosterPreviewSVG(s) },
     voice:   { styles: () => RobotRepair.voiceFlags(), preview: (f) => `<span style="font-size:28px">${f}</span>` },
+    laser:   { styles: () => GameState.get('laserStyles'),  preview: (s) => Spaceship.laserPreviewSVG(s) },
+    shield:  { styles: () => GameState.get('shieldStyles'), preview: (s) => Spaceship.shieldPreviewSVG(s) },
   };
 
   /** Pick N unique faults using weighted random selection */

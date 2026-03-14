@@ -40,6 +40,8 @@ const CONFIG = {
   spaceshipFaultWeights: {
     flatTyre: 2, engine: 2, paint: 3, sticker: 3, wash: 2,
   },
+  laserStyles: ['plasma', 'photon', 'ion'],
+  shieldStyles: ['ruby', 'sapphire', 'emerald'],
   // Tier 55 adds: laser: 3
   // Tier 60 adds: shield: 3
   // Tier 65 adds: antenna: 3

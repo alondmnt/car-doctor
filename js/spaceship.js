@@ -8,6 +8,22 @@ const Spaceship = (() => {
 
   function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+  /* ─── Style definitions ─── */
+
+  /** Laser barrel colour sets — keyed by style name from CONFIG.laserStyles */
+  const LASER_STYLES = {
+    plasma: { barrel: '#884444', tip: '#ff3333', beam: '#ff0000' },
+    photon: { barrel: '#448844', tip: '#33ff33', beam: '#00ff00' },
+    ion:    { barrel: '#444488', tip: '#3399ff', beam: '#0066ff' },
+  };
+
+  /** Shield crystal/bubble colour sets — keyed by style name from CONFIG.shieldStyles */
+  const SHIELD_STYLES = {
+    ruby:     { crystal: '#ff4466', bubble: '#ff4466' },
+    sapphire: { crystal: '#4488ff', bubble: '#4488ff' },
+    emerald:  { crystal: '#44dd66', bubble: '#44dd66' },
+  };
+
   /* ─── SVG helpers ─── */
 
   /** Wing with 3 tappable bolt screws — two rectangular S-foil panels with engine pods at tips */
@@ -111,15 +127,23 @@ const Spaceship = (() => {
       ${bolts}
       ${hasLaser ? `
       <!-- Laser barrels on engine pods -->
-      <g class="ship__laser ship__laser--broken">
-        <!-- Inner engine laser -->
-        <rect x="${x + wingLen - 14}" y="${ieCy - 2}" width="14" height="4" fill="#aaa" stroke="#888" stroke-width="0.5"/>
-        <circle class="ship__laser-tip" cx="${x + wingLen - 14}" cy="${ieCy}" r="2.5" fill="#ff3333" opacity="0.3"/>
-        <line class="ship__laser-beam" x1="${x + wingLen - 14}" y1="${ieCy}" x2="${x - 20}" y2="${ieCy}" stroke="#ff0000" stroke-width="2" opacity="0"/>
-        <!-- Outer engine laser -->
-        <rect x="${x + wingLen - 14}" y="${oeCy - 2}" width="14" height="4" fill="#aaa" stroke="#888" stroke-width="0.5"/>
-        <circle class="ship__laser-tip" cx="${x + wingLen - 14}" cy="${oeCy}" r="2.5" fill="#ff3333" opacity="0.3"/>
-        <line class="ship__laser-beam" x1="${x + wingLen - 14}" y1="${oeCy}" x2="${x - 20}" y2="${oeCy}" stroke="#ff0000" stroke-width="2" opacity="0"/>
+      <g class="ship__laser ship__laser--broken" style="cursor:pointer">
+        <!-- Inner engine laser barrel (double-layer outline) -->
+        <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${ieCy - 3.5}" width="20" height="7" rx="1"
+              fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+        <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${ieCy - 3.5}" width="20" height="7" rx="1"
+              fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1.5"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${ieCy}" r="4" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${ieCy}" x2="${x - 30}" y2="${ieCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
+        <!-- Outer engine laser barrel (double-layer outline) -->
+        <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${oeCy - 3.5}" width="20" height="7" rx="1"
+              fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+        <rect class="ship__laser-barrel" x="${x + wingLen - 20}" y="${oeCy - 3.5}" width="20" height="7" rx="1"
+              fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1.5"/>
+        <circle class="ship__laser-tip" cx="${x + wingLen - 20}" cy="${oeCy}" r="4" fill="#ff3333" opacity="0.3"/>
+        <line class="ship__laser-beam" x1="${x + wingLen - 20}" y1="${oeCy}" x2="${x - 30}" y2="${oeCy}" stroke="#ff0000" stroke-width="2.5" opacity="0"/>
+        <!-- Touch target spanning both barrels -->
+        <rect x="${x + wingLen - 24}" y="${Math.min(ieCy, oeCy) - 10}" width="28" height="${Math.abs(oeCy - ieCy) + 20}" fill="transparent"/>
       </g>` : ''}
     </g>`;
   }
@@ -225,19 +249,29 @@ const Spaceship = (() => {
         <!-- Fault indicator — dashed red circle -->
         <circle class="ship__shield-fault" cx="270" cy="60" r="6"
                 fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
-        <!-- Shield panel on rear fuselage -->
+        <!-- Shield panel on rear fuselage (double-layer outline) -->
         <g class="ship__shield-panel" style="cursor:pointer">
-          <rect class="ship__shield-panel-lid svg-ship-paint" x="280" y="72" width="16" height="12" rx="1"
-                stroke="rgba(0,0,0,0.3)" stroke-width="1" opacity="0.9"/>
-          <rect x="272" y="64" width="32" height="28" fill="transparent"/>
+          <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
+                stroke="rgba(255,255,255,0.25)" stroke-width="3" opacity="0.9"/>
+          <rect class="ship__shield-panel-lid svg-ship-paint" x="274" y="68" width="28" height="20" rx="2"
+                stroke="rgba(0,0,0,0.35)" stroke-width="1.5" opacity="0.9"/>
+          <!-- Touch target -->
+          <rect x="268" y="62" width="40" height="32" fill="transparent"/>
         </g>
         <!-- Crystal bay (hidden until panel opened) -->
-        <g class="ship__crystal-bay ship__crystal-bay--hidden">
-          <rect x="282" y="74" width="12" height="8" fill="#333" stroke="#444" stroke-width="0.5"/>
-          <polygon class="ship__crystal" points="288,75 291,78 288,81 285,78" fill="#66eeff" stroke="#44ccdd" stroke-width="0.8"/>
-          <rect x="274" y="66" width="28" height="24" fill="transparent"/>
+        <g class="ship__crystal-bay ship__crystal-bay--hidden" style="cursor:pointer">
+          <rect x="276" y="70" width="24" height="16" rx="1" fill="#333" stroke="#444" stroke-width="0.5"/>
+          <polygon class="ship__crystal" points="288,72 293,78 288,84 283,78"
+                   fill="#66eeff" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+          <polygon class="ship__crystal" points="288,72 293,78 288,84 283,78"
+                   fill="#66eeff" stroke="#44ccdd" stroke-width="1"/>
+          <!-- Touch target -->
+          <rect x="270" y="64" width="36" height="28" fill="transparent"/>
         </g>
-        <!-- Shield bubble — large translucent ellipse around ship -->
+        <!-- Shield bubble — large translucent ellipse (double-layer) -->
+        <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
+                 cx="200" cy="80" rx="170" ry="55"
+                 fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
         <ellipse class="ship__shield-bubble ship__shield-bubble--broken"
                  cx="200" cy="80" rx="170" ry="55"
                  fill="none" stroke="#44ccff" stroke-width="1.5"/>
@@ -271,20 +305,29 @@ const Spaceship = (() => {
           <!-- Damage indicator -->
           <circle class="ship__antenna-damage" cx="120" cy="36" r="6"
                   fill="none" stroke="#e63946" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <!-- Telescoping mast -->
+          <!-- Touch target for mast (first in DOM so querySelector finds it) -->
           <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
-                x="118" y="28" width="4" height="28" fill="#aaa" stroke="#888" stroke-width="0.5"/>
-          <!-- Dish with centre dot -->
+                x="110" y="20" width="20" height="40" fill="transparent" style="cursor:pointer"/>
+          <!-- Telescoping mast (double-layer, wider for visibility) -->
+          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
+                x="117" y="26" width="6" height="30"
+                fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3" style="pointer-events:none"/>
+          <rect class="ship__antenna-mast ship__antenna-mast--collapsed"
+                x="117" y="26" width="6" height="30"
+                fill="#aaa" stroke="rgba(40,30,20,0.4)" stroke-width="1" style="pointer-events:none"/>
+          <!-- Dish with centre dot (double-layer) -->
           <g class="ship__antenna-dish ship__antenna-dish--misaligned" style="cursor:pointer">
-            <path d="M112,18 Q120,10 128,18" fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="120" cy="16" r="2" fill="#4ae" stroke="#3ad" stroke-width="0.8"/>
-            <rect x="112" y="10" width="16" height="12" fill="transparent"/>
+            <path d="M110,18 Q120,8 130,18" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4" stroke-linecap="round"/>
+            <path d="M110,18 Q120,8 130,18" fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="120" cy="14" r="3" fill="#4ae" stroke="#3ad" stroke-width="1"/>
+            <!-- Touch target -->
+            <rect x="108" y="6" width="24" height="16" fill="transparent"/>
           </g>
           <!-- Signal rings (concentric) -->
           <g class="ship__antenna-signal ship__antenna-signal--dead">
-            <circle cx="120" cy="10" r="6" fill="none" stroke="#4ae" stroke-width="0.8" opacity="0.4"/>
-            <circle cx="120" cy="10" r="10" fill="none" stroke="#4ae" stroke-width="0.6" opacity="0.3"/>
-            <circle cx="120" cy="10" r="14" fill="none" stroke="#4ae" stroke-width="0.4" opacity="0.2"/>
+            <circle cx="120" cy="8" r="6" fill="none" stroke="#4ae" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="120" cy="8" r="10" fill="none" stroke="#4ae" stroke-width="0.6" opacity="0.3"/>
+            <circle cx="120" cy="8" r="14" fill="none" stroke="#4ae" stroke-width="0.4" opacity="0.2"/>
           </g>
           <!-- Base mount -->
           <rect x="116" y="54" width="8" height="4" style="fill:#999"/>
@@ -461,5 +504,52 @@ const Spaceship = (() => {
     return controller;
   }
 
-  return { create };
+  /** Replace laser barrel colours with chosen style and mark as installed */
+  function replaceLaser(carEl, style) {
+    const s = LASER_STYLES[style] || LASER_STYLES.plasma;
+    carEl.querySelectorAll('.ship__laser').forEach(l => {
+      l.querySelectorAll('.ship__laser-barrel').forEach(b => {
+        if (b.getAttribute('fill') !== 'none') b.setAttribute('fill', s.barrel);
+      });
+      l.querySelectorAll('.ship__laser-tip').forEach(t => t.setAttribute('fill', s.tip));
+      l.querySelectorAll('.ship__laser-beam').forEach(b => b.setAttribute('stroke', s.beam));
+      l.classList.remove('ship__laser--broken');
+      l.classList.add('ship__laser--installed');
+    });
+  }
+
+  /** Apply shield crystal/bubble colours for chosen style */
+  function applyShield(carEl, style) {
+    const s = SHIELD_STYLES[style] || SHIELD_STYLES.ruby;
+    carEl.querySelectorAll('.ship__crystal').forEach(c => {
+      if (c.getAttribute('fill') !== 'none') c.setAttribute('fill', s.crystal);
+    });
+    carEl.querySelectorAll('.ship__shield-bubble').forEach(b => {
+      if (b.getAttribute('stroke') !== 'rgba(255,255,255,0.15)') b.setAttribute('stroke', s.bubble);
+    });
+  }
+
+  /** Compact laser preview SVG for picker thumbnails */
+  function laserPreviewSVG(style) {
+    const s = LASER_STYLES[style] || LASER_STYLES.plasma;
+    return `<svg viewBox="0 0 44 40" width="44" height="40">
+      <rect x="12" y="10" width="24" height="7" rx="1" fill="${s.barrel}" stroke="#666" stroke-width="1"/>
+      <circle cx="12" cy="13.5" r="4" fill="${s.tip}" opacity="0.8"/>
+      <line x1="12" y1="13.5" x2="0" y2="13.5" stroke="${s.beam}" stroke-width="2" opacity="0.7"/>
+      <rect x="12" y="23" width="24" height="7" rx="1" fill="${s.barrel}" stroke="#666" stroke-width="1"/>
+      <circle cx="12" cy="26.5" r="4" fill="${s.tip}" opacity="0.8"/>
+      <line x1="12" y1="26.5" x2="0" y2="26.5" stroke="${s.beam}" stroke-width="2" opacity="0.7"/>
+    </svg>`;
+  }
+
+  /** Compact shield preview SVG for picker thumbnails */
+  function shieldPreviewSVG(style) {
+    const s = SHIELD_STYLES[style] || SHIELD_STYLES.ruby;
+    return `<svg viewBox="0 0 44 44" width="44" height="44">
+      <ellipse cx="22" cy="22" rx="20" ry="18" fill="none" stroke="${s.bubble}" stroke-width="1.5" opacity="0.4"/>
+      <polygon points="22,8 16,18 16,30 22,36 28,30 28,18" fill="${s.crystal}" stroke="#fff" stroke-width="0.8" opacity="0.8"/>
+    </svg>`;
+  }
+
+  return { create, replaceLaser, applyShield, laserPreviewSVG, shieldPreviewSVG };
 })();

@@ -1999,8 +1999,7 @@ html, body {
   filter: drop-shadow(0 0 6px rgba(255, 255, 50, 0.9));
 }
 .ship__crystal-bay.hint-glow .ship__crystal {
-  fill: #ffee44;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 50, 0.8));
+  filter: drop-shadow(0 0 6px rgba(255, 255, 50, 0.9));
 }
 .ship__shield-bubble.hint-glow {
   opacity: 0.6;
@@ -2061,17 +2060,16 @@ html, body {
 }
 .ship__shield-panel-lid {
   transform-box: fill-box;
-  transform-origin: left bottom;
+  transform-origin: center bottom;
   transition: transform 0.4s ease-out;
 }
 .ship__shield-panel--open .ship__shield-panel-lid {
-  transform: translateY(-10px);
+  transform: translateY(-14px);
 }
 .ship__shield-fault--hidden { display: none; }
 .ship__crystal-bay--hidden { display: none; }
 .ship__crystal-bay--installed .ship__crystal {
-  fill: #88ffff;
-  filter: drop-shadow(0 0 4px #66eeff);
+  filter: drop-shadow(0 0 4px currentColor);
 }
 .ship__shield-bubble--broken {
   stroke-dasharray: 8 4;
@@ -2095,6 +2093,7 @@ html, body {
   transform-box: fill-box;
   transform-origin: center bottom;
   transition: transform 0.4s ease-out;
+  cursor: pointer;
 }
 .ship__antenna-mast--collapsed {
   transform: scaleY(0.4);

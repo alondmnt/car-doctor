@@ -111,30 +111,28 @@ const SpaceshipRepair = (() => {
 
   /* ─── Upgrade faults (spaceship-only) ─── */
 
-  /** Laser cannons — install emitters, align beam, test fire */
+  /** Laser cannons — grab from warehouse (pick style), wrench to attach, tap to test fire */
   function laser(_car) {
     return [
       {
-        id: 'install-emitter',
-        description: 'Grab the laser emitter from the warehouse',
-        warehouse: 'emitter',
+        id: 'grab-laser',
+        description: 'Grab a laser cannon from the warehouse',
+        warehouse: 'laser',
+        picker: 'laser',
         target: '.ship__laser',
         sound: 'pop',
-        action: (el, carEl) => {
-          carEl.querySelectorAll('.ship__laser').forEach(l => {
-            l.classList.remove('ship__laser--broken');
-            l.classList.add('ship__laser--installed');
-          });
+        action: (_el, carEl, picked) => {
+          const style = picked || 'plasma';
+          Spaceship.replaceLaser(carEl, style);
         },
       },
       {
-        id: 'align-beam',
-        description: 'Drag to align the laser beam',
-        tool: 'hand',
-        drag: { direction: 'left', threshold: 25 },
+        id: 'attach-laser',
+        description: 'Bolt the laser cannons on with a wrench',
         target: '.ship__laser',
-        sound: 'clank',
-        action: (el, carEl) => {
+        tool: 'wrench',
+        sound: 'ratchet',
+        action: (_el, carEl) => {
           carEl.querySelectorAll('.ship__laser').forEach(l => {
             l.classList.add('ship__laser--aligned');
           });
@@ -145,7 +143,7 @@ const SpaceshipRepair = (() => {
         description: 'Tap to test fire the lasers',
         target: '.ship__laser',
         sound: 'tap',
-        action: (el, carEl) => {
+        action: (_el, carEl) => {
           carEl.querySelectorAll('.ship__laser').forEach(l => {
             l.classList.add('ship__laser--active');
           });
@@ -158,13 +156,15 @@ const SpaceshipRepair = (() => {
     ];
   }
 
-  /** Shield generator — open panel, insert crystal, calibrate bubble */
+  /** Shield generator — open panel (drag up), grab crystal (pick style), close panel (drag down) */
   function shield(_car) {
     return [
       {
         id: 'open-shield-panel',
-        description: 'Tap the shield panel to open it',
+        description: 'Drag the shield panel open',
         target: '.ship__shield-panel',
+        tool: 'hand',
+        drag: { direction: 'up', threshold: 25 },
         sound: 'clank',
         action: (el, carEl) => {
           el.classList.add('ship__shield-panel--open');
@@ -176,32 +176,38 @@ const SpaceshipRepair = (() => {
         id: 'insert-crystal',
         description: 'Grab a shield crystal from the warehouse',
         warehouse: 'crystal',
+        picker: 'shield',
         target: '.ship__crystal-bay',
         sound: 'pop',
-        action: (el, carEl) => {
+        action: (el, carEl, picked) => {
+          const style = picked || 'ruby';
+          Spaceship.applyShield(carEl, style);
           el.classList.add('ship__crystal-bay--installed');
           const fault = carEl.querySelector('.ship__shield-fault');
           if (fault) fault.classList.add('ship__shield-fault--hidden');
         },
       },
       {
-        id: 'calibrate-shield',
-        description: 'Drag up to calibrate the shield bubble',
+        id: 'close-shield-panel',
+        description: 'Close the panel to activate the shield',
+        target: '.ship__shield-panel',
         tool: 'hand',
-        drag: { direction: 'up', threshold: 30 },
-        target: '.ship__shield-bubble',
+        drag: { direction: 'down', threshold: 25 },
         sound: 'clank',
         action: (el, carEl) => {
-          el.classList.remove('ship__shield-bubble--broken');
-          el.classList.add('ship__shield-bubble--active');
-          const panel = carEl.querySelector('.ship__shield-panel');
-          if (panel) panel.classList.remove('ship__shield-panel--open');
+          el.classList.remove('ship__shield-panel--open');
+          const bay = carEl.querySelector('.ship__crystal-bay');
+          if (bay) bay.classList.add('ship__crystal-bay--hidden');
+          carEl.querySelectorAll('.ship__shield-bubble').forEach(b => {
+            b.classList.remove('ship__shield-bubble--broken');
+            b.classList.add('ship__shield-bubble--active');
+          });
         },
       },
     ];
   }
 
-  /** Antenna array — extend mast, align dish, test signal */
+  /** Antenna array — drag up to extend mast, wrench to lock, tap to test signal */
   function antenna(_car) {
     return [
       {
@@ -211,21 +217,25 @@ const SpaceshipRepair = (() => {
         drag: { direction: 'up', threshold: 25 },
         target: '.ship__antenna-mast',
         sound: 'clank',
-        action: (el) => {
-          el.classList.remove('ship__antenna-mast--collapsed');
-          el.classList.add('ship__antenna-mast--extended');
+        action: (_el, carEl) => {
+          carEl.querySelectorAll('.ship__antenna-mast').forEach(m => {
+            m.classList.remove('ship__antenna-mast--collapsed');
+            m.classList.add('ship__antenna-mast--extended');
+          });
         },
       },
       {
-        id: 'align-dish',
-        description: 'Drag to align the antenna dish',
-        tool: 'hand',
-        drag: { direction: 'left', threshold: 25 },
-        target: '.ship__antenna-dish',
-        sound: 'clank',
-        action: (el) => {
-          el.classList.remove('ship__antenna-dish--misaligned');
-          el.classList.add('ship__antenna-dish--aligned');
+        id: 'lock-mast',
+        description: 'Lock the mast in place with a wrench',
+        target: '.ship__antenna-mast',
+        tool: 'wrench',
+        sound: 'ratchet',
+        action: (_el, carEl) => {
+          const dish = carEl.querySelector('.ship__antenna-dish');
+          if (dish) {
+            dish.classList.remove('ship__antenna-dish--misaligned');
+            dish.classList.add('ship__antenna-dish--aligned');
+          }
         },
       },
       {
@@ -233,7 +243,7 @@ const SpaceshipRepair = (() => {
         description: 'Tap the dish to test the signal',
         target: '.ship__antenna-dish',
         sound: 'tap',
-        action: (el, carEl) => {
+        action: (_el, carEl) => {
           const rings = carEl.querySelector('.ship__antenna-signal');
           if (rings) {
             rings.classList.remove('ship__antenna-signal--dead');
