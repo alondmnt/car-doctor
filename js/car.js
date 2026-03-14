@@ -80,7 +80,7 @@ const Car = (() => {
     return `<g class="car__jack car__jack--hidden">
       <rect class="car__jack-base" x="${cx-bw/2}" y="${gy-bh}" width="${bw}" height="${bh}" rx="2" style="fill:#c44"/>
       <rect class="car__jack-arm" x="${cx-aw/2}" y="${gy-bh-ah}" width="${aw}" height="${ah}" rx="2" style="fill:#a33"/>
-      <g class="car__jack-arrow">
+      <g class="car__jack-arrow" data-role="lift-arrow">
         <text class="car__jack-arrow-up" x="${cx}" y="${gy-bh-ah-6}" text-anchor="middle" font-size="16" fill="#ffe066">▲</text>
         <text class="car__jack-arrow-down" x="${cx}" y="${gy-bh-ah-6}" text-anchor="middle" font-size="16" fill="#ffe066">▼</text>
       </g>
@@ -124,7 +124,7 @@ const Car = (() => {
       </g>
 
       <!-- Paint damage -->
-      <g class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}">
+      <g class="car__paint-damage ${hasPaint ? '' : 'car__paint-damage--hidden'}" data-role="paint-damage">
         <rect x="40" y="28" width="330" height="130" fill="transparent"/>
         ${paint.map(p => {
           // Two-layer scratch: light edge + dark centre for contrast on any colour
@@ -145,7 +145,7 @@ const Car = (() => {
       </g>
 
       <!-- Sticker zone -->
-      <g class="car__sticker-zone ${hasSticker ? '' : 'car__sticker-zone--hidden'}">
+      <g class="car__sticker-zone ${hasSticker ? '' : 'car__sticker-zone--hidden'}" data-role="sticker-zone">
         <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" rx="5"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="5 3" stroke-width="3.5"/>
         <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" rx="5"
@@ -156,7 +156,7 @@ const Car = (() => {
       </g>
 
       <!-- Mud overlay (car wash fault) — splatter shapes with drips -->
-      <g class="car__mud ${hasWash ? '' : 'car__mud--hidden'}">
+      <g class="car__mud ${hasWash ? '' : 'car__mud--hidden'}" data-role="wash-target">
         <rect x="40" y="28" width="330" height="130" fill="transparent"/>
         ${mud.map(m => {
           // Main splat + 2-3 small drip circles for a splash look
@@ -498,6 +498,7 @@ const Car = (() => {
     const el = document.createElement('div');
     el.className = `car car--${shape}`;
     el.style.setProperty('--car-colour', colour);
+    el.style.setProperty('--vehicle-colour', colour);
 
     const skinColour = _pick(SKIN_TONES);
     const hairColour = _pick(HAIR_COLOURS);
