@@ -514,9 +514,6 @@ const Planet = (() => {
 
     const tremorCls = hasTectonic ? ' planet__svg--tremor' : '';
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" class="planet__svg${tremorCls}"
-      <!-- Ground shadow -->
-      <ellipse class="car__shadow" cx="200" cy="220" rx="100" ry="8" fill="rgba(0,0,0,0.12)"/>
-
       <!-- Atmosphere glow — outer ring -->
       <circle class="planet__atmosphere planet__atmosphere--outer" cx="${cx}" cy="${cy}" r="${r + 14}"
               fill="none" stroke="rgba(100,180,255,0.06)" stroke-width="4"/>
@@ -641,13 +638,15 @@ const Planet = (() => {
     const angles = [0, 120, 240];
 
     let sats = '';
+    const tilts = [25, -30, 18];
     angles.forEach((deg, i) => {
       const rad = deg * Math.PI / 180;
       const sx = cx + orbitRx * Math.cos(rad);
       const sy = cy + orbitRy * Math.sin(rad);
       sats += `
       <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
-         transform="translate(${sx}, ${sy})">
+         data-tilt="${tilts[i]}"
+         transform="translate(${sx}, ${sy}) rotate(${tilts[i]})">
         <!-- Transparent hit area for easy tapping -->
         <rect x="-28" y="-16" width="56" height="28" fill="transparent"/>
         <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>

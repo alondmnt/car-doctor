@@ -2599,6 +2599,7 @@ html, body {
 /* ===== Satellite network fault zone ===== */
 .planet__satellite--broken {
   filter: grayscale(1) brightness(0.6);
+  cursor: pointer;
 }
 .planet__sat-spark {
   animation: sat-spark 0.5s ease-in-out infinite alternate;

@@ -114,6 +114,21 @@ const PlanetRepair = (() => {
         action: (el, carEl) => {
           el.classList.remove('planet__satellite--broken');
           el.classList.add('planet__satellite--fixed');
+          // Align satellite — animate tilt back to 0
+          const tilt = parseFloat(el.dataset.tilt) || 0;
+          if (tilt) {
+            const base = el.getAttribute('transform').replace(/\s*rotate\([^)]*\)/, '');
+            let start = null;
+            const duration = 600;
+            function step(ts) {
+              if (!start) start = ts;
+              const t = Math.min((ts - start) / duration, 1);
+              const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+              el.setAttribute('transform', `${base} rotate(${tilt * (1 - ease)})`);
+              if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+          }
           const spark = el.querySelector('.planet__sat-spark');
           if (spark) spark.style.display = 'none';
           if (i === 2) {
