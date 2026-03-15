@@ -338,29 +338,54 @@ const Planet = (() => {
    */
   function _oceanZoneSVG(cx, cy, shape) {
     const isGas = shape === 'gas';
-    // Oil slick positions — ocean areas between/around continents
-    // [dx, dy, rx, ry, delay]
-    const slicks = [
-      [25, -20, 16, 9, 0],       // upper-right ocean gap
-      [-15, -35, 12, 7, 0.4],    // north of northern continent
-      [40, 10, 14, 8, 0.8],      // east ocean
-      [-40, -10, 11, 6, 1.2],    // west ocean
-      [5, -5, 18, 10, 0.6],      // central ocean gap
+    // Oil spill clusters — each has a main blob + tendrils + sheen
+    // [dx, dy, rx, ry, angle, delay]
+    const spills = [
+      [25, -20, 16, 9, -15, 0],
+      [-15, -35, 12, 7, 20, 0.4],
+      [40, 10, 14, 8, -8, 0.8],
+      [-40, -10, 11, 6, 30, 1.2],
+      [5, -5, 18, 10, 5, 0.6],
     ];
 
-    const fill = isGas
-      ? 'rgba(120,80,20,0.5)'    // amber/brown toxic cloud
-      : 'rgba(20,20,30,0.6)';    // dark oil slick
+    const darkFill = isGas ? 'rgba(120,80,20,0.5)' : 'rgba(20,20,30,0.55)';
+    const edgeFill = isGas ? 'rgba(140,100,30,0.3)' : 'rgba(40,30,50,0.35)';
+    const sheenFill = isGas ? 'rgba(180,140,60,0.2)' : 'rgba(80,40,120,0.2)';
+    const tendrilStroke = isGas ? 'rgba(100,70,15,0.4)' : 'rgba(15,15,25,0.45)';
 
     const fx = cx, fy = cy;
     let svg = `<g class="planet__ocean-spill" data-role="wash-target">
       <rect x="${fx - 60}" y="${fy - 55}" width="120" height="90" fill="transparent"/>`;
 
-    slicks.forEach(([dx, dy, rx, ry, delay]) => {
+    spills.forEach(([dx, dy, rx, ry, angle, delay]) => {
+      const sx = fx + dx, sy = fy + dy;
+      const rot = `rotate(${angle} ${sx} ${sy})`;
+      // Spreading edge — larger, lighter, animated outward
       svg += `
-      <ellipse cx="${fx + dx}" cy="${fy + dy}" rx="${rx}" ry="${ry}"
-               fill="${fill}" class="planet__oil-slick"
-               style="animation-delay: ${delay.toFixed(1)}s"/>`;
+      <ellipse cx="${sx}" cy="${sy}" rx="${rx * 1.4}" ry="${ry * 1.3}"
+               fill="${edgeFill}" class="planet__oil-edge"
+               transform="${rot}" style="animation-delay: ${delay.toFixed(1)}s"/>`;
+      // Main slick body
+      svg += `
+      <ellipse cx="${sx}" cy="${sy}" rx="${rx}" ry="${ry}"
+               fill="${darkFill}" class="planet__oil-slick"
+               transform="${rot}" style="animation-delay: ${delay.toFixed(1)}s"/>`;
+      // Iridescent sheen — offset highlight
+      svg += `
+      <ellipse cx="${sx - rx * 0.2}" cy="${sy - ry * 0.25}" rx="${rx * 0.5}" ry="${ry * 0.4}"
+               fill="${sheenFill}" class="planet__oil-sheen"
+               transform="${rot}" style="animation-delay: ${(delay + 0.3).toFixed(1)}s"/>`;
+      // Tendrils — 2-3 curved fingers spreading outward
+      const t1 = `M${sx + rx * 0.6},${sy} Q${sx + rx * 1.3},${sy + ry * 0.5} ${sx + rx * 1.6},${sy + ry * 0.2}`;
+      const t2 = `M${sx - rx * 0.5},${sy + ry * 0.3} Q${sx - rx * 1.1},${sy + ry * 1.0} ${sx - rx * 1.4},${sy + ry * 0.6}`;
+      const t3 = `M${sx},${sy - ry * 0.5} Q${sx + rx * 0.4},${sy - ry * 1.2} ${sx + rx * 0.8},${sy - ry * 1.0}`;
+      svg += `
+      <path d="${t1}" fill="none" stroke="${tendrilStroke}" stroke-width="2.5" stroke-linecap="round"
+            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.2).toFixed(1)}s"/>
+      <path d="${t2}" fill="none" stroke="${tendrilStroke}" stroke-width="2" stroke-linecap="round"
+            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.5).toFixed(1)}s"/>
+      <path d="${t3}" fill="none" stroke="${tendrilStroke}" stroke-width="1.5" stroke-linecap="round"
+            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.8).toFixed(1)}s"/>`;
     });
 
     svg += `

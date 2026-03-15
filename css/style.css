@@ -2524,17 +2524,52 @@ html, body {
 .planet__tectonic-zone--hidden { display: none; }
 
 /* ===== Ocean cleanup fault zone ===== */
+.planet__ocean-spill { cursor: pointer; }
 .planet__ocean-spill--hidden { display: none; }
-.planet__ocean-spill--washing .planet__oil-slick {
+.planet__ocean-spill--washing .planet__oil-slick,
+.planet__ocean-spill--washing .planet__oil-edge,
+.planet__ocean-spill--washing .planet__oil-sheen,
+.planet__ocean-spill--washing .planet__oil-tendril {
   transition: opacity 0.6s;
   opacity: 0;
 }
+/* Main slick — slow throb */
 .planet__oil-slick {
   animation: oil-pulse 2s ease-in-out infinite alternate;
+  transform-box: fill-box; transform-origin: center;
 }
 @keyframes oil-pulse {
-  0%   { opacity: 0.4; transform: scale(1); transform-box: fill-box; transform-origin: center; }
-  100% { opacity: 0.7; transform: scale(1.05); transform-box: fill-box; transform-origin: center; }
+  0%   { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.7; transform: scale(1.05); }
+}
+/* Spreading edge — expands outward */
+.planet__oil-edge {
+  animation: oil-spread 3s ease-in-out infinite alternate;
+  transform-box: fill-box; transform-origin: center;
+}
+@keyframes oil-spread {
+  0%   { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 0.4; transform: scale(1.15); }
+}
+/* Iridescent sheen — colour-shifting highlight */
+.planet__oil-sheen {
+  animation: oil-sheen 2.5s ease-in-out infinite alternate;
+  transform-box: fill-box; transform-origin: center;
+  mix-blend-mode: screen;
+}
+@keyframes oil-sheen {
+  0%   { opacity: 0.15; transform: translate(-1px, 0) scale(0.9); }
+  50%  { opacity: 0.35; }
+  100% { opacity: 0.2; transform: translate(1px, 0) scale(1.1); }
+}
+/* Tendrils — grow and recede */
+.planet__oil-tendril {
+  animation: oil-tendril 3.5s ease-in-out infinite alternate;
+  transform-box: fill-box; transform-origin: 0% 50%;
+}
+@keyframes oil-tendril {
+  0%   { stroke-dasharray: 0 40; opacity: 0.3; }
+  100% { stroke-dasharray: 40 0; opacity: 0.6; }
 }
 .planet__body--ocean-clean {
   filter: brightness(1.1) saturate(1.2);
