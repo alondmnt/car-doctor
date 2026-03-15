@@ -109,7 +109,7 @@ const PlanetRepair = (() => {
         id: `fix-sat-${i}`,
         description: `Tap satellite ${i + 1} to repair it`,
         target: `.planet__satellite--${i}`,
-        tool: 'wrench',
+        ...(i === 0 ? { tool: 'wrench' } : {}),
         sound: 'ratchet',
         action: (el, carEl) => {
           el.classList.remove('planet__satellite--broken');
