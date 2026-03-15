@@ -51,5 +51,37 @@ const PlanetRepair = (() => {
     }];
   }
 
-  return { extinguish, plantForests, buildCities };
+  /** Clean ocean — hose tool washes away oil-slick patches */
+  function cleanOcean(_car) {
+    return RepairTemplates.hoseWash({
+      grimeSelector: '.planet__ocean-spill',
+      grimeWashClass: 'planet__ocean-spill--washing',
+      grimeHiddenClass: 'planet__ocean-spill--hidden',
+      bodyParts: [
+        { selector: '.planet__body', sparkleClass: 'planet__body--ocean-clean' },
+      ],
+    });
+  }
+
+  /**
+   * Asteroid defence — tap 4 approaching meteors before they hit.
+   * All meteors animate from the start with staggered CSS delay.
+   */
+  function asteroidDefence(_car) {
+    const count = 4;
+    return Array.from({ length: count }, (_, i) => ({
+      id: `tap-meteor-${i}`,
+      target: `.planet__meteor-group--${i}`,
+      sound: 'tap',
+      action: (el, carEl) => {
+        el.classList.add('planet__meteor-group--destroyed');
+        if (i === count - 1) {
+          const zone = carEl.querySelector('.planet__asteroid-zone');
+          if (zone) setTimeout(() => zone.classList.add('planet__asteroid-zone--hidden'), 500);
+        }
+      },
+    }));
+  }
+
+  return { extinguish, plantForests, buildCities, cleanOcean, asteroidDefence };
 })();

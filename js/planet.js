@@ -332,6 +332,78 @@ const Planet = (() => {
     </g>`;
   }
 
+  /**
+   * Ocean cleanup fault zone — animated oil-slick ellipses on ocean areas.
+   * Gas shape uses amber/brown fills (toxic cloud), rocky/ringed use dark oil.
+   */
+  function _oceanZoneSVG(cx, cy, shape) {
+    const isGas = shape === 'gas';
+    // Oil slick positions — ocean areas between/around continents
+    // [dx, dy, rx, ry, delay]
+    const slicks = [
+      [25, -20, 16, 9, 0],       // upper-right ocean gap
+      [-15, -35, 12, 7, 0.4],    // north of northern continent
+      [40, 10, 14, 8, 0.8],      // east ocean
+      [-40, -10, 11, 6, 1.2],    // west ocean
+      [5, -5, 18, 10, 0.6],      // central ocean gap
+    ];
+
+    const fill = isGas
+      ? 'rgba(120,80,20,0.5)'    // amber/brown toxic cloud
+      : 'rgba(20,20,30,0.6)';    // dark oil slick
+
+    const fx = cx, fy = cy;
+    let svg = `<g class="planet__ocean-spill" data-role="wash-target">
+      <rect x="${fx - 60}" y="${fy - 55}" width="120" height="90" fill="transparent"/>`;
+
+    slicks.forEach(([dx, dy, rx, ry, delay]) => {
+      svg += `
+      <ellipse cx="${fx + dx}" cy="${fy + dy}" rx="${rx}" ry="${ry}"
+               fill="${fill}" class="planet__oil-slick"
+               style="animation-delay: ${delay.toFixed(1)}s"/>`;
+    });
+
+    svg += `
+    </g>`;
+    return svg;
+  }
+
+  /** Asteroid defence — 4 meteors approaching from outer viewbox edges */
+  function _asteroidZoneSVG(cx, cy, r) {
+    const meteors = [
+      { x: cx - 180, y: cy - 100, label: 0 },
+      { x: cx + 180, y: cy - 90,  label: 1 },
+      { x: cx - 190, y: cy + 60,  label: 2 },
+      { x: cx + 170, y: cy + 80,  label: 3 },
+    ];
+
+    const groups = meteors.map(({ x, y, label }) => {
+      const dx = cx - x, dy = cy - y;
+      const len = Math.sqrt(dx * dx + dy * dy);
+      const nx = dx / len, ny = dy / len;
+      const travel = len - r - 10;
+      const mdx = Math.round(nx * travel), mdy = Math.round(ny * travel);
+      // Tail: triangular path trailing behind
+      const tailLen = 18, tailSpread = 5;
+      const px = -ny * tailSpread, py = nx * tailSpread;
+      const tip = { x: -nx * tailLen, y: -ny * tailLen };
+      const tailPath = `M0,0 L${(px + tip.x).toFixed(1)},${(py + tip.y).toFixed(1)} L${(-px + tip.x).toFixed(1)},${(-py + tip.y).toFixed(1)} Z`;
+
+      return `<g class="planet__meteor-group planet__meteor-group--${label}"
+                 transform="translate(${x}, ${y})"
+                 style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${label * 0.6}s">
+        <circle r="8" fill="rgba(255,200,50,0.3)"/>
+        <circle class="planet__meteor" r="6" fill="rgba(255,120,30,0.8)"/>
+        <path class="planet__meteor-tail" d="${tailPath}" fill="rgba(255,80,20,0.4)"/>
+      </g>`;
+    });
+
+    return `<g class="planet__asteroid-zone" data-role="interactive">
+      <rect x="0" y="0" width="400" height="240" fill="transparent"/>
+      ${groups.join('\n      ')}
+    </g>`;
+  }
+
   /** City zone — large continent on lower half of sphere for building */
   function _cityZoneSVG(cx, cy) {
     const fx = cx + 5, fy = cy + 25;
@@ -410,8 +482,8 @@ const Planet = (() => {
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy) : ''}
-      ${hasOcean ? '<!-- TODO: ocean cleanup zone -->' : ''}
-      ${hasAsteroid ? '<!-- TODO: asteroid defence zone -->' : ''}
+      ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
+      ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasSatellite ? '<!-- TODO: satellite network zone -->' : ''}
       ${hasTectonic ? '<!-- TODO: tectonic volcanic zone -->' : ''}
 
