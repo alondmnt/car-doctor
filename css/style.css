@@ -2535,6 +2535,31 @@ html, body {
 
 /* ===== City fault zone ===== */
 
+/* ===== Satellite network fault zone ===== */
+.planet__satellite--broken {
+  filter: grayscale(1) brightness(0.6);
+}
+.planet__sat-spark {
+  animation: sat-spark 0.5s ease-in-out infinite alternate;
+}
+@keyframes sat-spark {
+  0%   { opacity: 0.3; r: 2; }
+  100% { opacity: 0.9; r: 4; }
+}
+.planet__satellite--fixed {
+  filter: none;
+  transition: filter 0.4s;
+}
+.planet__sat-orbit--complete {
+  stroke: rgba(100,180,255,0.2);
+  animation: orbit-glow 2s ease-in-out infinite alternate;
+}
+@keyframes orbit-glow {
+  0%   { stroke-opacity: 0.15; }
+  100% { stroke-opacity: 0.3; }
+}
+.planet__satellite-zone--hidden { display: none; }
+
 /* ===== Planet hint glows (extend generic .hint-glow) ===== */
 /* Fire: glow on individual ellipses/circles via wash-target path — generic .hint-glow applies */
 /* Forest: glow on the group via interactive path — generic .hint-glow applies */

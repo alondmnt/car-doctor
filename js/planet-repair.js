@@ -83,5 +83,45 @@ const PlanetRepair = (() => {
     }));
   }
 
-  return { extinguish, plantForests, buildCities, cleanOcean, asteroidDefence };
+  /**
+   * Satellite network — pick a satellite style, then tap 3 broken
+   * satellites to repair them. Orbit glows on completion.
+   */
+  function satelliteNetwork(_car) {
+    const steps = [
+      {
+        id: 'grab-satellite',
+        description: 'Grab a satellite part from the warehouse',
+        warehouse: 'satellite',
+        picker: 'satellite',
+        target: '.planet__satellite--0',
+        sound: 'pop',
+        action: () => {},
+      },
+    ];
+
+    for (let i = 0; i < 3; i++) {
+      steps.push({
+        id: `fix-sat-${i}`,
+        description: `Tap satellite ${i + 1} to repair it`,
+        target: `.planet__satellite--${i}`,
+        tool: 'wrench',
+        sound: 'ratchet',
+        action: (el, carEl) => {
+          el.classList.remove('planet__satellite--broken');
+          el.classList.add('planet__satellite--fixed');
+          const spark = el.querySelector('.planet__sat-spark');
+          if (spark) spark.style.display = 'none';
+          if (i === 2) {
+            const orbit = carEl.querySelector('.planet__sat-orbit');
+            if (orbit) orbit.classList.add('planet__sat-orbit--complete');
+          }
+        },
+      });
+    }
+
+    return steps;
+  }
+
+  return { extinguish, plantForests, buildCities, cleanOcean, asteroidDefence, satelliteNetwork };
 })();

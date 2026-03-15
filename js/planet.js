@@ -484,7 +484,7 @@ const Planet = (() => {
       ${hasCity ? _cityZoneSVG(cx, cy) : ''}
       ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
       ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
-      ${hasSatellite ? '<!-- TODO: satellite network zone -->' : ''}
+      ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? '<!-- TODO: tectonic volcanic zone -->' : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
@@ -555,9 +555,46 @@ const Planet = (() => {
     return controller;
   }
 
+  /** Satellite orbit with 3 broken satellites around the planet */
+  function _satelliteZoneSVG(cx, cy, r) {
+    const orbitRx = r + 25, orbitRy = 20;
+    const angles = [0, 120, 240];
+
+    let sats = '';
+    angles.forEach((deg, i) => {
+      const rad = deg * Math.PI / 180;
+      const sx = cx + orbitRx * Math.cos(rad);
+      const sy = cy + orbitRy * Math.sin(rad);
+      sats += `
+      <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
+         transform="translate(${sx}, ${sy})">
+        <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>
+        <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
+        <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
+        <line x1="0" y1="-4" x2="0" y2="-8" stroke="#999" stroke-width="1"/>
+        <circle cx="0" cy="-9" r="1.5" fill="#999"/>
+        <circle class="planet__sat-spark" cx="0" cy="0" r="3" fill="rgba(255,200,50,0.7)"/>
+      </g>`;
+    });
+
+    return `<g class="planet__satellite-zone">
+      <ellipse class="planet__sat-orbit" cx="${cx}" cy="${cy}"
+               rx="${orbitRx}" ry="${orbitRy}"
+               fill="none" stroke="rgba(255,255,255,0.08)" stroke-dasharray="4 3"
+               transform="rotate(-8 ${cx} ${cy})"/>
+      ${sats}
+    </g>`;
+  }
+
   /** Satellite part preview SVG for the picker widget */
   function satellitePreviewSVG(_style) {
-    return '<span style="font-size:28px">📡</span>';
+    return `<svg viewBox="0 0 40 30" style="width:40px;height:30px">
+      <rect x="14" y="10" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>
+      <rect x="2" y="12" width="12" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
+      <rect x="26" y="12" width="12" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
+      <circle cx="20" cy="8" r="2" fill="#999"/>
+      <line x1="20" y1="10" x2="20" y2="8" stroke="#999" stroke-width="1"/>
+    </svg>`;
   }
 
   return { create, satellitePreviewSVG };
