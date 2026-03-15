@@ -16,6 +16,29 @@ const Game = (() => {
   let faultQueue = [];
   let currentFault = null;
 
+  /** Randomise background spaceship trajectory across the screen */
+  function _randomiseShipFlyby() {
+    const lamp = document.querySelector('.garage-decor--lamp');
+    if (!lamp) return;
+    // Pick a random angle in (-45°, 45°) — negative = upward slant
+    const angle = (Math.random() - 0.5) * 90; // degrees
+    const rad = angle * Math.PI / 180;
+    // Start from the left edge at a random vertical position (10–90%)
+    const sy = 10 + Math.random() * 80; // vh
+    // Travel far enough to cross the full screen
+    const travel = 140; // vw — generous overshoot
+    const ex = travel;
+    const ey = sy + travel * Math.tan(rad) * (100 / 100); // rough vh from vw
+    // Duration: 18–28s for a leisurely crossing
+    const duration = 18 + Math.random() * 10;
+    lamp.style.setProperty('--ship-sx', '-30px');
+    lamp.style.setProperty('--ship-sy', `${sy}vh`);
+    lamp.style.setProperty('--ship-ex', `${ex}vw`);
+    lamp.style.setProperty('--ship-ey', `${ey}vh`);
+    lamp.style.setProperty('--ship-angle', `${-angle}deg`);
+    lamp.style.setProperty('--ship-duration', `${duration.toFixed(1)}s`);
+  }
+
   /** Ordered spawn registry — first matching entry wins; car is the fallback. */
   const SPAWN_REGISTRY = [
     {
@@ -101,6 +124,10 @@ const Game = (() => {
     document.getElementById('hint-btn').addEventListener('click', toggleHints);
     document.getElementById('sound-btn').addEventListener('click', toggleSound);
 
+    // Re-randomise background spaceship trajectory each time it completes a pass
+    const lamp = document.querySelector('.garage-decor--lamp');
+    if (lamp) lamp.addEventListener('animationiteration', _randomiseShipFlyby);
+
     Progress.load();
     coins = Progress.getCoins();
   }
@@ -127,6 +154,7 @@ const Game = (() => {
 
     const entry = pickVehicle(spec);
     garage.dataset.theme = entry.theme;
+    if (entry.theme === 'space') _randomiseShipFlyby();
 
     const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
     const weights = entry.weights();
