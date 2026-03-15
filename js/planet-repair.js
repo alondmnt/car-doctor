@@ -123,5 +123,43 @@ const PlanetRepair = (() => {
     return steps;
   }
 
-  return { extinguish, plantForests, buildCities, cleanOcean, asteroidDefence, satelliteNetwork };
+  /**
+   * Tectonic volcanic — seal 3 magma cracks, then cap 2 eruptions.
+   * Removes planet tremor once all faults are resolved.
+   */
+  function tectonicRepair(_car) {
+    const steps = [];
+
+    for (let i = 0; i < 3; i++) {
+      steps.push({
+        id: `seal-crack-${i}`,
+        target: `.planet__magma-crack--${i}`,
+        sound: 'tap',
+        action: (el) => {
+          el.classList.add('planet__magma-crack--sealed');
+        },
+      });
+    }
+
+    for (let i = 0; i < 2; i++) {
+      steps.push({
+        id: `cap-volcano-${i}`,
+        target: `.planet__eruption--${i}`,
+        sound: 'tap',
+        action: (el, carEl) => {
+          el.classList.add('planet__eruption--capped');
+          const remainingCracks = carEl.querySelectorAll('.planet__magma-crack:not(.planet__magma-crack--sealed)');
+          const remainingVolcanos = carEl.querySelectorAll('.planet__eruption:not(.planet__eruption--capped)');
+          if (!remainingCracks.length && remainingVolcanos.length <= 1) {
+            const svg = carEl.querySelector('.planet__svg');
+            if (svg) svg.classList.remove('planet__svg--tremor');
+          }
+        },
+      });
+    }
+
+    return steps;
+  }
+
+  return { extinguish, plantForests, buildCities, cleanOcean, asteroidDefence, satelliteNetwork, tectonicRepair };
 })();

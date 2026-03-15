@@ -368,6 +368,74 @@ const Planet = (() => {
     return svg;
   }
 
+  /** Tectonic volcanic — magma cracks + volcano eruptions */
+  function _tectonicZoneSVG(cx, cy, r, shape) {
+    const isGas = shape === 'gas';
+    const yBias = isGas ? 20 : 0;
+
+    const cracks = [
+      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 6 + yBias} L${cx + 35},${cy - 1 + yBias} L${cx + 50},${cy + 4 + yBias}`,
+      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy - 8 + yBias} L${cx + 30},${cy + 5 + yBias}`,
+      `M${cx - 30},${cy + 25 + yBias} L${cx - 15},${cy + 18 + yBias} L${cx + 5},${cy + 30 + yBias} L${cx + 22},${cy + 22 + yBias} L${cx + 40},${cy + 28 + yBias}`,
+    ];
+
+    let svg = `<g class="planet__tectonic-zone" data-role="interactive">
+      <rect x="${cx - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" fill="transparent"/>`;
+
+    cracks.forEach((d, i) => {
+      // Wider glowing stroke underneath
+      svg += `
+      <path d="${d}" fill="none"
+            stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
+            class="planet__magma-crack planet__magma-crack--${i}" pointer-events="none"/>`;
+      // Narrower bright crack on top
+      svg += `
+      <path d="${d}" fill="none"
+            stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"
+            class="planet__magma-crack planet__magma-crack--${i}"/>`;
+    });
+
+    // 2 volcanoes at crack endpoints
+    const volcanoPositions = [
+      { x: cx + 50, y: cy + 4 + yBias },
+      { x: cx + 30, y: cy + 5 + yBias },
+    ];
+
+    volcanoPositions.forEach((pos, i) => {
+      const vx = pos.x, vy = pos.y;
+      const halfW = 10, coneH = 15;
+      const conePoints = `${vx - halfW},${vy} ${vx},${vy - coneH} ${vx + halfW},${vy}`;
+      const lavaPath = `M${vx},${vy - coneH} C${vx - 3},${vy - coneH + 5} ${vx + 4},${vy - coneH + 10} ${vx + 2},${vy - coneH + 14}`;
+
+      svg += `
+      <g class="planet__eruption planet__eruption--${i}">
+        <polygon class="planet__volcano" points="${conePoints}"
+                 fill="rgba(80,50,30,0.8)" stroke="rgba(60,30,10,0.6)" stroke-width="1"/>
+        <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.6)" stroke-width="2.5" stroke-linecap="round"/>`;
+
+      const particles = [
+        { dx: 0,  dy: -3,  r: 2.5 },
+        { dx: -4, dy: -7,  r: 2 },
+        { dx: 3,  dy: -10, r: 1.8 },
+        { dx: -2, dy: -13, r: 1.5 },
+        { dx: 1,  dy: -16, r: 1.2 },
+      ];
+      particles.forEach((p, j) => {
+        svg += `
+        <circle class="planet__lava-particle" cx="${vx + p.dx}" cy="${vy - coneH + p.dy}" r="${p.r}"
+                fill="rgba(255,${120 + j * 20},20,0.7)"
+                style="animation-delay: ${(j * 0.15).toFixed(2)}s"/>`;
+      });
+
+      svg += `
+      </g>`;
+    });
+
+    svg += `
+    </g>`;
+    return svg;
+  }
+
   /** Asteroid defence — 4 meteors approaching from outer viewbox edges */
   function _asteroidZoneSVG(cx, cy, r) {
     const meteors = [
@@ -436,7 +504,8 @@ const Planet = (() => {
     const isGas = shape === 'gas';
     const hasLand = !isGas; // Rocky and ringed have continents
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" class="planet__svg">
+    const tremorCls = hasTectonic ? ' planet__svg--tremor' : '';
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" class="planet__svg${tremorCls}"
       <!-- Ground shadow -->
       <ellipse class="car__shadow" cx="200" cy="220" rx="100" ry="8" fill="rgba(0,0,0,0.12)"/>
 
@@ -485,7 +554,7 @@ const Planet = (() => {
       ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
       ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
-      ${hasTectonic ? '<!-- TODO: tectonic volcanic zone -->' : ''}
+      ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
       ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}

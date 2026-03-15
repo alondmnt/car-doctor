@@ -2462,6 +2462,56 @@ html, body {
   transition: filter 0.4s;
 }
 
+/* ===== Tectonic volcanic fault zone ===== */
+.planet__svg--tremor {
+  animation: planet-tremor 0.15s ease-in-out infinite;
+}
+@keyframes planet-tremor {
+  0%   { transform: translate(-1px, 1px); }
+  25%  { transform: translate(1px, -1px); }
+  50%  { transform: translate(-1px, -1px); }
+  75%  { transform: translate(1px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.planet__magma-crack {
+  animation: magma-glow 1.2s ease-in-out infinite alternate;
+  fill: none;
+}
+@keyframes magma-glow {
+  0%   { stroke-opacity: 0.6; }
+  100% { stroke-opacity: 1; }
+}
+.planet__magma-crack--sealed {
+  stroke: rgba(100,100,100,0.3);
+  animation: none;
+  transition: stroke 0.5s, stroke-opacity 0.5s;
+  stroke-opacity: 0.4;
+}
+
+.planet__lava-particle {
+  animation: lava-scatter 0.8s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+@keyframes lava-scatter {
+  0%   { transform: translateY(0) scale(1); opacity: 0.8; }
+  60%  { transform: translateY(-8px) scale(0.7); opacity: 0.5; }
+  100% { transform: translateY(-12px) scale(0.3); opacity: 0; }
+}
+
+.planet__eruption--capped .planet__lava-particle {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.planet__eruption--capped .planet__volcano {
+  fill: rgba(60,60,60,0.6);
+  transition: fill 0.5s;
+}
+
+.planet__tectonic-zone--hidden { display: none; }
+
 /* ===== Ocean cleanup fault zone ===== */
 .planet__ocean-spill--hidden { display: none; }
 .planet__ocean-spill--washing .planet__oil-slick {
