@@ -128,7 +128,7 @@ const Picker = (() => {
     const part = document.createElement('div');
     part.className = `warehouse__part warehouse__part--${partType}`;
 
-    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒', wing: '🪽', laser: '🔫', crystal: '💎' };
+    const icons = { tyre: '⚫', engine: '⚙️', boot: '🥾', joint: '🦾', chip: '💾', jetpack: '🎒', wing: '🪽', laser: '🔫', crystal: '💎', satellite: '🛰️' };
     part.textContent = icons[partType] || '📦';
 
     function grab(e) {

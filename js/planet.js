@@ -385,13 +385,17 @@ const Planet = (() => {
     cracks.forEach((d, i) => {
       svg += `
       <g class="planet__magma-crack planet__magma-crack--${i}">
+        <!-- Transparent wide stroke for easy tapping -->
+        <path d="${d}" fill="none"
+              stroke="transparent" stroke-width="16" stroke-linecap="round"/>
         <!-- Wider glowing stroke underneath -->
         <path d="${d}" fill="none"
               stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
               pointer-events="none"/>
-        <!-- Narrower bright crack on top (tappable) -->
+        <!-- Narrower bright crack on top -->
         <path d="${d}" fill="none"
-              stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"/>
+              stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"
+              pointer-events="none"/>
       </g>`;
     });
 
@@ -409,6 +413,8 @@ const Planet = (() => {
 
       svg += `
       <g class="planet__eruption planet__eruption--${i}">
+        <!-- Transparent hit area for easy tapping -->
+        <rect x="${vx - halfW - 5}" y="${vy - coneH - 20}" width="${halfW * 2 + 10}" height="${coneH + 25}" fill="transparent"/>
         <polygon class="planet__volcano" points="${conePoints}"
                  fill="rgba(80,50,30,0.8)" stroke="rgba(60,30,10,0.6)" stroke-width="1"/>
         <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.6)" stroke-width="2.5" stroke-linecap="round"/>`;
@@ -460,6 +466,8 @@ const Planet = (() => {
       return `<g class="planet__meteor-group planet__meteor-group--${label}"
                  transform="translate(${x}, ${y})"
                  style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${label * 0.6}s">
+        <!-- Transparent hit area for easy tapping -->
+        <circle r="20" fill="transparent"/>
         <circle r="8" fill="rgba(255,200,50,0.3)"/>
         <circle class="planet__meteor" r="6" fill="rgba(255,120,30,0.8)"/>
         <path class="planet__meteor-tail" d="${tailPath}" fill="rgba(255,80,20,0.4)"/>
@@ -525,15 +533,17 @@ const Planet = (() => {
       <!-- Ocean shimmer -->
       ${_oceanShimmerSVG(cx, cy, r)}
 
-      <!-- Continents (rocky/ringed) or construction band (gas) -->
+      <!-- Continents (rocky/ringed) -->
       ${hasLand ? _continentsSVG(cx, cy, r) : ''}
-      ${isGas && hasCity ? _constructionBandSVG(cx, cy, r) : ''}
 
       <!-- Terminator shading (day/night edge) -->
       ${_terminatorSVG(cx, cy, r)}
 
       <!-- Geometry overlay (craters/bands/ring-shadow) -->
       ${geometryFn(cx, cy, r)}
+
+      <!-- Construction band (gas only — after bands so it's visible) -->
+      ${isGas && hasCity ? _constructionBandSVG(cx, cy, r) : ''}
 
       <!-- Polar ice caps -->
       ${_iceCapsSVG(cx, cy, r)}
@@ -589,15 +599,16 @@ const Planet = (() => {
     el.style.setProperty('--planet-colour', colour);
     el.style.setProperty('--vehicle-colour', colour);
 
-    // Dashboard indicators — planet faults only
+    // Dashboard indicators — base faults always shown, upgrades shown when unlocked
+    const planetWeights = GameState.get('planetFaultWeights');
     const indicators = [
-      ...(hasFire      ? [{ cls: 'fire',             fault: true }] : []),
-      ...(hasForest    ? [{ cls: 'forest',           fault: true }] : []),
-      ...(hasCity      ? [{ cls: 'city',             fault: true }] : []),
-      ...(hasOcean     ? [{ cls: 'oceanCleanup',     fault: true }] : []),
-      ...(hasAsteroid  ? [{ cls: 'asteroidDefence',  fault: true }] : []),
-      ...(hasSatellite ? [{ cls: 'satelliteNetwork', fault: true }] : []),
-      ...(hasTectonic  ? [{ cls: 'tectonicVolcanic', fault: true }] : []),
+      { cls: 'fire',             fault: hasFire },
+      { cls: 'forest',          fault: hasForest },
+      { cls: 'city',             fault: hasCity },
+      ...('oceanCleanup'    in planetWeights ? [{ cls: 'oceanCleanup',     fault: hasOcean }]     : []),
+      ...('asteroidDefence' in planetWeights ? [{ cls: 'asteroidDefence',  fault: hasAsteroid }]  : []),
+      ...('satelliteNetwork' in planetWeights ? [{ cls: 'satelliteNetwork', fault: hasSatellite }] : []),
+      ...('tectonicVolcanic' in planetWeights ? [{ cls: 'tectonicVolcanic', fault: hasTectonic }]  : []),
     ];
 
     const dashboardHTML = indicators.map(ind =>
@@ -637,6 +648,8 @@ const Planet = (() => {
       sats += `
       <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
          transform="translate(${sx}, ${sy})">
+        <!-- Transparent hit area for easy tapping -->
+        <rect x="-28" y="-16" width="56" height="28" fill="transparent"/>
         <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>
         <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
         <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>

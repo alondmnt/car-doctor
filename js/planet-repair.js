@@ -88,8 +88,12 @@ const PlanetRepair = (() => {
    * satellites to repair them. Orbit glows on completion.
    */
   function satelliteNetwork(_car) {
-    const steps = [
-      {
+    const styles = GameState.get('satelliteStyles') || ['standard'];
+    const steps = [];
+
+    // Only show warehouse + picker when multiple satellite styles are unlocked
+    if (styles.length > 1) {
+      steps.push({
         id: 'grab-satellite',
         description: 'Grab a satellite part from the warehouse',
         warehouse: 'satellite',
@@ -97,8 +101,8 @@ const PlanetRepair = (() => {
         target: '.planet__satellite--0',
         sound: 'pop',
         action: () => {},
-      },
-    ];
+      });
+    }
 
     for (let i = 0; i < 3; i++) {
       steps.push({
