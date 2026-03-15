@@ -52,6 +52,7 @@ const CONFIG = {
   planetShapes: ['rocky', 'gas', 'ringed'],
   planetPalette: ['#c2956b', '#e8a87c', '#6b8fa3', '#a8c686', '#d4a5a5', '#8fbc8f'],
   planetFaultWeights: { fire: 3, forest: 3, city: 3 },
+  satelliteStyles: ['standard'],
   planetStickers: ['🏙️', '🏗️', '🏰', '🗼', '🌆', '🏛️'],
 };
 
@@ -102,6 +103,14 @@ const UNLOCK_TIERS = [
   { coins: 70, key: 'planetDoctor', icon: '🪐', label: 'Planet Doctor!',
     items: [],
     showcase: { vehicle: 'planet' } },
+  { coins: 75, key: 'planetOcean', label: 'Ocean cleanup!', icon: '🌊', items: [],
+    showcase: { vehicle: 'planet', fault: 'oceanCleanup' } },
+  { coins: 80, key: 'planetAsteroid', label: 'Asteroid defence!', icon: '☄️', items: [],
+    showcase: { vehicle: 'planet', fault: 'asteroidDefence' } },
+  { coins: 85, key: 'planetSatellite', label: 'Satellite network!', icon: '📡', items: [],
+    showcase: { vehicle: 'planet', fault: 'satelliteNetwork' } },
+  { coins: 90, key: 'planetTectonic', label: 'Tectonic repair!', icon: '🌋', items: [],
+    showcase: { vehicle: 'planet', fault: 'tectonicVolcanic' } },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

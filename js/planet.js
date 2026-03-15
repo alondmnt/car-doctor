@@ -356,7 +356,7 @@ const Planet = (() => {
    * → fault zones → ring-front (ringed only)
    */
   function _planetSVG(opts) {
-    const { shape, hasFire, hasForest, hasCity } = opts;
+    const { shape, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic } = opts;
     const cx = 200, cy = 110, r = 90;
 
     const geometryFn = GEOMETRY[shape] || GEOMETRY.rocky;
@@ -410,6 +410,10 @@ const Planet = (() => {
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy) : ''}
+      ${hasOcean ? '<!-- TODO: ocean cleanup zone -->' : ''}
+      ${hasAsteroid ? '<!-- TODO: asteroid defence zone -->' : ''}
+      ${hasSatellite ? '<!-- TODO: satellite network zone -->' : ''}
+      ${hasTectonic ? '<!-- TODO: tectonic volcanic zone -->' : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
       ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}
@@ -434,6 +438,10 @@ const Planet = (() => {
     const hasFire = faults.includes('fire');
     const hasForest = faults.includes('forest');
     const hasCity = faults.includes('city');
+    const hasOcean = faults.includes('oceanCleanup');
+    const hasAsteroid = faults.includes('asteroidDefence');
+    const hasSatellite = faults.includes('satelliteNetwork');
+    const hasTectonic = faults.includes('tectonicVolcanic');
 
     const el = document.createElement('div');
     el.className = 'car car--planet';
@@ -442,9 +450,13 @@ const Planet = (() => {
 
     // Dashboard indicators — planet faults only
     const indicators = [
-      ...(hasFire   ? [{ cls: 'fire',   fault: true }]  : []),
-      ...(hasForest ? [{ cls: 'forest', fault: true }]  : []),
-      ...(hasCity   ? [{ cls: 'city',   fault: true }]  : []),
+      ...(hasFire      ? [{ cls: 'fire',             fault: true }] : []),
+      ...(hasForest    ? [{ cls: 'forest',           fault: true }] : []),
+      ...(hasCity      ? [{ cls: 'city',             fault: true }] : []),
+      ...(hasOcean     ? [{ cls: 'oceanCleanup',     fault: true }] : []),
+      ...(hasAsteroid  ? [{ cls: 'asteroidDefence',  fault: true }] : []),
+      ...(hasSatellite ? [{ cls: 'satelliteNetwork', fault: true }] : []),
+      ...(hasTectonic  ? [{ cls: 'tectonicVolcanic', fault: true }] : []),
     ];
 
     const dashboardHTML = indicators.map(ind =>
@@ -453,7 +465,7 @@ const Planet = (() => {
 
     el.innerHTML = `
       <div class="car__dashboard">${dashboardHTML}</div>
-      ${_planetSVG({ shape, hasFire, hasForest, hasCity })}
+      ${_planetSVG({ shape, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic })}
     `;
 
     garage.appendChild(el);
@@ -471,5 +483,10 @@ const Planet = (() => {
     return controller;
   }
 
-  return { create };
+  /** Satellite part preview SVG for the picker widget */
+  function satellitePreviewSVG(_style) {
+    return '<span style="font-size:28px">📡</span>';
+  }
+
+  return { create, satellitePreviewSVG };
 })();

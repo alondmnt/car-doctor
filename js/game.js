@@ -23,7 +23,7 @@ const Game = (() => {
       creator: (...args) => Planet.create(...args),
       enabled: () => GameState.get('planetEnabled'),
       chance: CONFIG.planetChance,
-      weights: () => CONFIG.planetFaultWeights,
+      weights: () => GameState.get('planetFaultWeights'),
       theme: 'space',
     },
     {
@@ -220,7 +220,7 @@ const Game = (() => {
         const allCarFaults = Object.keys(CONFIG.faultWeights);
         const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
         const allShipFaults = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
-        const allPlanetFaults = GameState.get('planetEnabled') ? Object.keys(CONFIG.planetFaultWeights) : [];
+        const allPlanetFaults = GameState.get('planetEnabled') ? Object.keys(GameState.get('planetFaultWeights')) : [];
         const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults, ...allPlanetFaults])];
         if (!hintsExplicit && GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
           GameState.setHintsOn(false);

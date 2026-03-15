@@ -18,7 +18,11 @@ const FaultRegistry = (() => {
     { key: 'antenna',    indicator: '.car__indicator--antenna',    car: null, robot: null, spaceship: (c) => SpaceshipRepair.antenna(c) },
     { key: 'fire',       indicator: '.car__indicator--fire',       car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.extinguish(c) },
     { key: 'forest',     indicator: '.car__indicator--forest',     car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.plantForests(c) },
-    { key: 'city',       indicator: '.car__indicator--city',       car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.buildCities(c) },
+    { key: 'city',            indicator: '.car__indicator--city',            car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.buildCities(c) },
+    { key: 'oceanCleanup',    indicator: '.car__indicator--oceanCleanup',    car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.oceanCleanup(c) },
+    { key: 'asteroidDefence', indicator: '.car__indicator--asteroidDefence', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.asteroidDefence(c) },
+    { key: 'satelliteNetwork', indicator: '.car__indicator--satelliteNetwork', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.satelliteNetwork(c) },
+    { key: 'tectonicVolcanic', indicator: '.car__indicator--tectonicVolcanic', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.tectonicVolcanic(c) },
     { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c),     spaceship: (c) => SpaceshipRepair.spaceDust(c) },
     { key: 'paint',       indicator: '.car__indicator--paint',       car: (c) => Repair.paint(c),             robot: (c) => RobotRepair.plating(c),      spaceship: (c) => SpaceshipRepair.hullDamage(c) },
     { key: 'sticker',     indicator: '.car__indicator--sticker',     car: (c) => Repair.sticker(c),           robot: (c) => RobotRepair.badge(c),        spaceship: (c) => SpaceshipRepair.emblem(c) },
@@ -39,6 +43,7 @@ const FaultRegistry = (() => {
     voice:   { styles: () => RobotRepair.voiceFlags(), preview: (f) => `<span style="font-size:28px">${f}</span>` },
     laser:   { styles: () => GameState.get('laserStyles'),  preview: (s) => Spaceship.laserPreviewSVG(s) },
     shield:  { styles: () => GameState.get('shieldStyles'), preview: (s) => Spaceship.shieldPreviewSVG(s) },
+    satellite: { styles: () => GameState.get('satelliteStyles'), preview: (s) => Planet.satellitePreviewSVG(s) },
   };
 
   /** Pick N unique faults using weighted random selection */
