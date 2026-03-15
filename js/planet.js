@@ -383,16 +383,16 @@ const Planet = (() => {
       <rect x="${cx - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" fill="transparent"/>`;
 
     cracks.forEach((d, i) => {
-      // Wider glowing stroke underneath
       svg += `
-      <path d="${d}" fill="none"
-            stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
-            class="planet__magma-crack planet__magma-crack--${i}" pointer-events="none"/>`;
-      // Narrower bright crack on top
-      svg += `
-      <path d="${d}" fill="none"
-            stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"
-            class="planet__magma-crack planet__magma-crack--${i}"/>`;
+      <g class="planet__magma-crack planet__magma-crack--${i}">
+        <!-- Wider glowing stroke underneath -->
+        <path d="${d}" fill="none"
+              stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
+              pointer-events="none"/>
+        <!-- Narrower bright crack on top (tappable) -->
+        <path d="${d}" fill="none"
+              stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"/>
+      </g>`;
     });
 
     // 2 volcanoes at crack endpoints
