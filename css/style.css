@@ -1038,6 +1038,8 @@ html, body {
 
 /* Part picker item styles (container uses .picker-row) */
 .part-picker__option {
+  --blade-sweep: 14px;
+  --blade-speed: 0.16s;
   width: 56px;
   height: 56px;
   border-radius: 12px;
@@ -1049,6 +1051,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 .part-picker__option:active {
   transform: scale(0.85);
@@ -1314,6 +1317,20 @@ html, body {
   50%  { transform: translateY(-40px) rotate(1deg); }
   70%  { transform: translateY(-80px) rotate(-1deg); }
   100% { transform: translateY(-120vh) rotate(0.5deg); }
+}
+
+/* Propeller blade spin — horizontal sweep simulates side-view rotor */
+.robot__propeller-blade--front {
+  animation: propeller-sweep var(--blade-speed, 0.14s) linear infinite alternate;
+}
+.robot__propeller-blade--back {
+  animation: propeller-sweep var(--blade-speed, 0.14s) linear infinite alternate-reverse;
+}
+/* Idle speed before test fires */
+.robot__jetpack-flames--idle .robot__propeller-blade { --blade-speed: 0.6s; }
+@keyframes propeller-sweep {
+  0%   { translate: calc(-1 * var(--blade-sweep, 56px)); }
+  100% { translate: var(--blade-sweep, 56px); }
 }
 
 @keyframes exit-balloon {
@@ -1590,7 +1607,7 @@ html, body {
   animation: svg-bounce 0.3s ease-out;
 }
 .robot__jetpack-flames--hidden { display: none; }
-.robot__jetpack-flames--active ellipse {
+.robot__jetpack-flames--active ellipse:not(.robot__propeller-blade) {
   animation: jetpack-flame 0.15s ease-in-out infinite alternate;
 }
 

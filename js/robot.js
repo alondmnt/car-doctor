@@ -161,11 +161,11 @@ const Robot = (() => {
       behind: () => `
         <rect x="192" y="-12" width="16" height="16" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
         <circle cx="200" cy="-4" r="3" fill="#555"/>
-        <rect x="175" y="-16" width="50" height="80" fill="transparent"/>`,
+        <rect x="140" y="-16" width="120" height="80" fill="transparent"/>`,
       flames: () => `
-        <line x1="172" y1="-4" x2="228" y2="-4" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
-        <ellipse cx="172" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>
-        <ellipse cx="228" cy="-4" rx="8" ry="3" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>`,
+        <line x1="144" y1="-4" x2="256" y2="-4" stroke="#aaa" stroke-width="3" stroke-linecap="round"/>
+        <ellipse class="robot__propeller-blade robot__propeller-blade--back" cx="200" cy="-5" rx="10" ry="3" fill="#bbb" stroke="#999" stroke-width="0.5" opacity="0.6"/>
+        <ellipse class="robot__propeller-blade robot__propeller-blade--front" cx="200" cy="-3" rx="10" ry="3.5" fill="#ccc" stroke="#aaa" stroke-width="0.5"/>`,
       strap: () => '',
     },
     balloon: {
@@ -216,8 +216,9 @@ const Robot = (() => {
         <ellipse cx="29" cy="38" rx="4" ry="8" fill="#ff4400" opacity="0.9"/>`,
       propeller: `<rect x="16" y="18" width="8" height="10" rx="2" fill="#888" stroke="#666" stroke-width="1"/>
         <circle cx="20" cy="23" r="2" fill="#555"/>
-        <line x1="4" y1="16" x2="36" y2="16" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
-        <ellipse cx="6" cy="16" rx="6" ry="2.5" fill="#ccc"/><ellipse cx="34" cy="16" rx="6" ry="2.5" fill="#ccc"/>`,
+        <line x1="0" y1="16" x2="40" y2="16" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse class="robot__propeller-blade robot__propeller-blade--back" cx="20" cy="15" rx="5" ry="2" fill="#bbb" opacity="0.6"/>
+        <ellipse class="robot__propeller-blade robot__propeller-blade--front" cx="20" cy="17" rx="5" ry="2.5" fill="#ccc"/>`,
       balloon: `<ellipse cx="20" cy="14" rx="14" ry="18" fill="#e63946" stroke="#c33" stroke-width="1"/>
         <line x1="20" y1="32" x2="20" y2="42" stroke="#888" stroke-width="1.5"/>
         <path d="M17,42 L20,40 L23,42" fill="#e63946"/>`,
@@ -603,6 +604,8 @@ const Robot = (() => {
       flames.innerHTML = s.flames();
       const showImmediately = !['jetpack', 'rocket'].includes(style);
       flames.classList.toggle('robot__jetpack-flames--hidden', !showImmediately);
+      // Propeller starts at idle speed until test fires
+      if (style === 'propeller') flames.classList.add('robot__jetpack-flames--idle');
     }
 
     // Replace/show chest strap (second .robot__jetpack group)

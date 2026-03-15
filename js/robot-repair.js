@@ -299,6 +299,16 @@ const RobotRepair = (() => {
             flames.classList.remove('robot__jetpack-flames--hidden');
             flames.classList.add('robot__jetpack-flames--active');
             setTimeout(() => flames.classList.remove('robot__jetpack-flames--active'), 1500);
+
+            // Propeller spool-up: step from idle → full speed
+            if (flames.classList.contains('robot__jetpack-flames--idle')) {
+              const blades = flames.querySelectorAll('.robot__propeller-blade');
+              const speeds = [0.4, 0.28, 0.2, 0.14];
+              speeds.forEach((spd, i) => {
+                setTimeout(() => blades.forEach(b => b.style.setProperty('--blade-speed', `${spd}s`)), i * 250);
+              });
+              setTimeout(() => flames.classList.remove('robot__jetpack-flames--idle'), speeds.length * 250);
+            }
           }
         },
       },
