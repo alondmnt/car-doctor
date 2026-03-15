@@ -482,7 +482,7 @@ const Planet = (() => {
 
   /** City zone — large continent on lower half of sphere for building */
   function _cityZoneSVG(cx, cy) {
-    const fx = cx + 5, fy = cy + 25;
+    const fx = cx + 5, fy = cy + 15;
     return `<g class="planet__cities" data-role="sticker-zone">
       <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
