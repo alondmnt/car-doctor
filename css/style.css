@@ -2304,22 +2304,26 @@ html, body {
   fill: var(--vehicle-colour, var(--planet-colour, #c2956b));
 }
 
-/* ===== Planet entry animation — zoom in from deep space ===== */
+/* ===== Planet entry animation — orbital arc from near the sun =====
+   Sun sits at upper-right (~85vw, ~8vh from garage origin).
+   Path: start near sun → arc left through upper space → settle into
+   centre with the same upper-left diagonal approach vector. */
 .car--planet.car--entering {
-  transform: translate(-20vw, -30vh) scale(0.05);
+  transform: translate(0vw, -35vh) scale(0.05);
   opacity: 0;
 }
 .car--planet.car--parked {
-  animation: planet-approach 1.6s ease-out forwards;
+  animation: planet-approach 1.8s ease-out forwards;
 }
 
 @keyframes planet-approach {
-  0%   { transform: translate(-20vw, -30vh) scale(0.05); opacity: 0; }
-  8%   { transform: translate(-18vw, -27vh) scale(0.08); opacity: 0.6; }
-  20%  { transform: translate(-14vw, -20vh) scale(0.2);  opacity: 1; }
-  40%  { transform: translate(-8vw,  -12vh) scale(0.45); opacity: 1; }
-  60%  { transform: translate(-3vw,  -5vh)  scale(0.7);  opacity: 1; }
-  80%  { transform: translate(-0.5vw, -1vh) scale(0.92); opacity: 1; }
+  0%   { transform: translate(0vw,   -35vh) scale(0.05); opacity: 0; }
+  8%   { transform: translate(-4vw,  -30vh) scale(0.08); opacity: 0.6; }
+  20%  { transform: translate(-12vw, -24vh) scale(0.2);  opacity: 1; }
+  35%  { transform: translate(-14vw, -18vh) scale(0.35); opacity: 1; }
+  50%  { transform: translate(-12vw, -13vh) scale(0.55); opacity: 1; }
+  65%  { transform: translate(-8vw,  -8vh)  scale(0.7);  opacity: 1; }
+  80%  { transform: translate(-3vw,  -3vh)  scale(0.88); opacity: 1; }
   100% { transform: translate(0, 0)         scale(1);    opacity: 1; }
 }
 
