@@ -38,13 +38,13 @@ const PlanetRepair = (() => {
     }];
   }
 
-  /** Build cities — hand tool + city sticker picker */
+  /** Build cities — jack (crane) tool + city sticker picker */
   function buildCities(_car) {
     return [{
       id: 'pick-city',
-      description: 'Select hand tool and tap the building zone',
+      description: 'Select the crane and tap the building zone',
       target: '.planet__cities',
-      tool: 'hand',
+      tool: 'jack',
       sound: 'tap',
       picker: 'planetCity',
       action: () => {},
@@ -153,6 +153,7 @@ const PlanetRepair = (() => {
       steps.push({
         id: `seal-crack-${i}`,
         target: `.planet__magma-crack--${i}`,
+        ...(i === 0 ? { tool: 'drill' } : {}),
         sound: 'tap',
         action: (el) => {
           el.classList.add('planet__magma-crack--sealed');
