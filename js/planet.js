@@ -23,22 +23,32 @@ const Planet = (() => {
    * landmass, and a small island/archipelago.
    */
   function _continentsSVG(cx, cy, r) {
-    // Southern continent — irregular blob in lower hemisphere
-    const sc = `M${cx - 45},${cy + 15} C${cx - 50},${cy + 25} ${cx - 40},${cy + 50} ${cx - 20},${cy + 55}
-                C${cx - 5},${cy + 60} ${cx + 25},${cy + 55} ${cx + 40},${cy + 45}
-                C${cx + 50},${cy + 38} ${cx + 45},${cy + 20} ${cx + 30},${cy + 15}
-                C${cx + 15},${cy + 10} ${cx - 30},${cy + 8} ${cx - 45},${cy + 15} Z`;
-    // Northern landmass — smaller blob upper-left
-    const nc = `M${cx - 35},${cy - 40} C${cx - 45},${cy - 35} ${cx - 40},${cy - 20} ${cx - 25},${cy - 18}
-                C${cx - 10},${cy - 16} ${cx - 5},${cy - 25} ${cx - 10},${cy - 35}
-                C${cx - 15},${cy - 45} ${cx - 28},${cy - 45} ${cx - 35},${cy - 40} Z`;
-    // Small island/archipelago — upper-right
-    const island = `M${cx + 20},${cy - 30} C${cx + 25},${cy - 35} ${cx + 35},${cy - 32} ${cx + 32},${cy - 26}
-                    C${cx + 28},${cy - 22} ${cx + 18},${cy - 24} ${cx + 20},${cy - 30} Z`;
+    // Southern continent — large temperate landmass with a notched bay on the west coast
+    const sc = `M${cx - 45},${cy + 15} C${cx - 52},${cy + 22} ${cx - 48},${cy + 35} ${cx - 38},${cy + 42}
+                C${cx - 30},${cy + 48} ${cx - 18},${cy + 55} ${cx},${cy + 58}
+                C${cx + 18},${cy + 60} ${cx + 35},${cy + 54} ${cx + 45},${cy + 44}
+                C${cx + 52},${cy + 36} ${cx + 48},${cy + 20} ${cx + 32},${cy + 14}
+                C${cx + 18},${cy + 9} ${cx - 5},${cy + 8} ${cx - 20},${cy + 10}
+                C${cx - 30},${cy + 8} ${cx - 38},${cy + 8} ${cx - 45},${cy + 15} Z`;
+    // Northern landmass — elongated, slightly fjord-y upper-left
+    const nc = `M${cx - 38},${cy - 42} C${cx - 48},${cy - 36} ${cx - 44},${cy - 22} ${cx - 30},${cy - 18}
+                C${cx - 20},${cy - 15} ${cx - 8},${cy - 20} ${cx - 6},${cy - 30}
+                C${cx - 4},${cy - 38} ${cx - 12},${cy - 46} ${cx - 22},${cy - 47}
+                C${cx - 30},${cy - 48} ${cx - 35},${cy - 47} ${cx - 38},${cy - 42} Z`;
+    // Small island/archipelago — upper-right, two overlapping lobes
+    const island = `M${cx + 20},${cy - 28} C${cx + 24},${cy - 35} ${cx + 34},${cy - 33} ${cx + 32},${cy - 26}
+                    C${cx + 30},${cy - 20} ${cx + 19},${cy - 22} ${cx + 20},${cy - 28} Z`;
+    const islet  = `M${cx + 30},${cy - 24} C${cx + 34},${cy - 28} ${cx + 40},${cy - 26} ${cx + 38},${cy - 21}
+                    C${cx + 36},${cy - 17} ${cx + 28},${cy - 19} ${cx + 30},${cy - 24} Z`;
     return `<g class="planet__continents" pointer-events="none">
-      <path d="${sc}" fill="rgba(255,255,255,0.12)" stroke="rgba(0,0,0,0.15)" stroke-width="0.8"/>
-      <path d="${nc}" fill="rgba(255,255,255,0.10)" stroke="rgba(0,0,0,0.12)" stroke-width="0.6"/>
-      <path d="${island}" fill="rgba(255,255,255,0.09)" stroke="rgba(0,0,0,0.10)" stroke-width="0.5"/>
+      <!-- Southern continent — light patch, faint white coastline -->
+      <path d="${sc}" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
+      <!-- Northern landmass -->
+      <path d="${nc}" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>
+      <!-- Island -->
+      <path d="${island}" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+      <!-- Islet -->
+      <path d="${islet}"  fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.14)" stroke-width="0.5"/>
     </g>`;
   }
 
@@ -89,34 +99,35 @@ const Planet = (() => {
 
   /* ─── Geometry overlay builders ─── */
 
-  /** Rocky — craters with rims and inner shadows, mountain ridges */
+  /** Rocky — craters defined by their rims (not dark fills), plus ridge lines */
   function _rockySVG(cx, cy, r) {
     // Crater data: [x-offset, y-offset, rx, ry]
+    // Fewer, well-spaced craters — large ones give character, small ones add depth
     const craters = [
-      [-30, -25, 18, 10], [35, -10, 14, 8], [-10, 30, 20, 11],
-      [25, 20, 10, 6], [-40, 5, 5, 5],
-      // Additional small craters for density
-      [15, -40, 7, 4], [-50, -15, 6, 4], [45, 35, 5, 3],
+      [-28, -22, 16, 9],   // large upper-left
+      [ 34,  -8, 12, 7],   // large right
+      [ -8,  32, 17, 9],   // large lower-left
+      [ 28,  22,  8, 5],   // medium lower-right
+      [ 14, -42,  5, 3],   // small upper
+      [-48,  18,  4, 3],   // small far-left
     ];
     const craterSVG = craters.map(([dx, dy, rx, ry]) => {
       const x = cx + dx, y = cy + dy;
-      return `<!-- Crater at ${dx},${dy} -->
+      return `
+      <!-- Crater floor — dark hollow -->
       <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"
-               fill="rgba(0,0,0,0.12)" stroke="rgba(0,0,0,0.18)" stroke-width="1"/>
-      <!-- Rim highlight (sun-lit upper edge) -->
-      <ellipse cx="${x}" cy="${y - ry * 0.3}" rx="${rx * 0.9}" ry="${ry * 0.4}"
-               fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
-      <!-- Inner shadow -->
-      <ellipse cx="${x + 2}" cy="${y + ry * 0.15}" rx="${rx * 0.55}" ry="${ry * 0.45}"
-               fill="rgba(0,0,0,0.18)"/>`;
-    }).join('\n      ');
+               fill="rgba(0,0,0,0.14)" stroke="rgba(0,0,0,0.12)" stroke-width="0.5"/>
+      <!-- Sunlit rim crescent — single bright arc on upper-left edge only -->
+      <ellipse cx="${x - rx * 0.1}" cy="${y - ry * 0.18}" rx="${rx * 0.8}" ry="${ry * 0.38}"
+               fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="0.9"/>`;
+    }).join('');
 
-    // Mountain ridge lines
+    // Mountain ridge lines — more visible, give topographic variety
     const ridges = `
-      <polyline points="${cx - 55},${cy + 5} ${cx - 45},${cy - 5} ${cx - 35},${cy + 2} ${cx - 25},${cy - 8} ${cx - 18},${cy + 3}"
-                fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-linecap="round"/>
-      <polyline points="${cx + 30},${cy - 35} ${cx + 38},${cy - 45} ${cx + 48},${cy - 38} ${cx + 55},${cy - 42}"
-                fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.8" stroke-linecap="round"/>`;
+      <polyline points="${cx - 55},${cy + 5} ${cx - 45},${cy - 7} ${cx - 35},${cy + 3} ${cx - 22},${cy - 10} ${cx - 15},${cy + 4}"
+                fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="${cx + 28},${cy - 32} ${cx + 38},${cy - 44} ${cx + 50},${cy - 36} ${cx + 57},${cy - 41}"
+                fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round"/>`;
 
     return `<g class="planet__geometry planet__geometry--rocky">
       ${craterSVG}
