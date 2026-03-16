@@ -23,6 +23,20 @@
 
 ## Next up
 
+Planet expansion unlocks (interleaved — exciting faults alternating with content expansions):
+
+| Tier | Type | Unlock |
+|------|------|--------|
+| 75 | new fault | Ocean cleanup (animated oil spill, wash mechanic) |
+| 80 | expansion | Terraforming (expands forest → plant trees, water reserves, animals) |
+| 85 | new fault | Asteroid defence (tap incoming meteors, whack-a-mole) |
+| 90 | expansion | City expansion (new city stickers / placement zones) |
+| 95 | new fault | Satellite network (repair broken orbiting satellites) |
+| 98 | expansion | Satellite styles (picker of different satellite types) |
+| 100 | new fault | Tectonic repair (seal magma fault-line cracks) |
+
+Other:
+
 1. **Multi-zone sticker placement** — let the user choose among multiple placement areas (e.g. different continents on the planet, bumper vs door on cars)
 2. **People doctor** — new vehicle type post-refactor
 

@@ -47,7 +47,7 @@ const Planet = (() => {
    * "Cloud city" on an artificial rim built around the planet.
    */
   function _constructionBandSVG(cx, cy, r) {
-    const bandY = cy + 25;
+    const bandY = cy + 42;
     const dy = bandY - cy;
     const halfW = Math.sqrt(Math.max(0, r * r - dy * dy));
     // Rivet dots along the band
@@ -239,9 +239,9 @@ const Planet = (() => {
 
   /* ─── Fault zone builders ─── */
 
-  /** Fire patches — upper-right quadrant with smoke, embers, scorch, flames */
+  /** Fire patches — upper-right quadrant, anchored over island/archipelago */
   function _fireZoneSVG(cx, cy) {
-    const fx = cx + 20, fy = cy - 20;
+    const fx = cx + 25, fy = cy - 30;
 
     // Fire cluster data: [dx, dy, rx, ry, opacity]
     const patches = [
@@ -311,9 +311,9 @@ const Planet = (() => {
     return svg;
   }
 
-  /** Forest patches — left side of sphere */
+  /** Forest patches — upper-left quadrant, anchored over northern landmass */
   function _forestZoneSVG(cx, cy) {
-    const fx = cx - 30, fy = cy - 5;
+    const fx = cx - 45, fy = cy - 30;
     return `<g class="planet__forests" data-role="interactive">
       <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="rgba(0,0,0,0.001)"/>
       <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
@@ -338,14 +338,16 @@ const Planet = (() => {
    */
   function _oceanZoneSVG(cx, cy, shape) {
     const isGas = shape === 'gas';
-    // Oil spill clusters — each has a main blob + tendrils + sheen
+    // Oil spill clusters — each has a main blob + tendrils + sheen.
+    // Compact offsets keep the zone in the lower-left quadrant so it
+    // doesn't visually overlap fire (upper-right) or forest (upper-left).
     // [dx, dy, rx, ry, angle, delay]
     const spills = [
-      [25, -20, 16, 9, -15, 0],
-      [-15, -35, 12, 7, 20, 0.4],
-      [40, 10, 14, 8, -8, 0.8],
-      [-40, -10, 11, 6, 30, 1.2],
-      [5, -5, 18, 10, 5, 0.6],
+      [0,  -12, 14, 8, -10, 0  ],
+      [-18,  -2, 10, 6,  20, 0.4],
+      [ 15,   8, 12, 7,  -5, 0.8],
+      [ -8,  18, 10, 5,  15, 1.2],
+      [  6, -25,  8, 5,   5, 0.6],
     ];
 
     const darkFill = isGas ? 'rgba(120,80,20,0.5)' : 'rgba(20,20,30,0.55)';
@@ -353,13 +355,14 @@ const Planet = (() => {
     const sheenFill = isGas ? 'rgba(180,140,60,0.2)' : 'rgba(80,40,120,0.2)';
     const tendrilStroke = isGas ? 'rgba(100,70,15,0.4)' : 'rgba(15,15,25,0.45)';
 
-    const fx = cx, fy = cy;
+    // Lower-left quadrant — anchored on the southern continent's western coast
+    const fx = cx - 30, fy = cy + 20;
     /* The hit-area rect uses near-zero opacity (not fill="transparent") so it
        registers as a valid painted target with SVG visiblePainted semantics.
        Animated children carry explicit pointer-events="none" to prevent
        compositing-layer quirks from intercepting clicks meant for zones below. */
     let svg = `<g class="planet__ocean-spill" data-role="wash-target">
-      <rect x="${fx - 60}" y="${fy - 55}" width="120" height="90" fill="rgba(0,0,0,0.001)"/>`;
+      <rect x="${fx - 35}" y="${fy - 40}" width="70" height="70" fill="rgba(0,0,0,0.001)"/>`;
 
     spills.forEach(([dx, dy, rx, ry, angle, delay]) => {
       const sx = fx + dx, sy = fy + dy;
@@ -406,8 +409,8 @@ const Planet = (() => {
     const yBias = isGas ? 20 : 0;
 
     const cracks = [
-      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 6 + yBias} L${cx + 35},${cy - 1 + yBias} L${cx + 50},${cy + 4 + yBias}`,
-      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy - 8 + yBias} L${cx + 30},${cy + 5 + yBias}`,
+      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 6 + yBias} L${cx + 35},${cy - 1 + yBias} L${cx + 50},${cy + 12 + yBias}`,
+      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy - 8 + yBias} L${cx + 30},${cy + 20 + yBias}`,
       `M${cx - 30},${cy + 25 + yBias} L${cx - 15},${cy + 18 + yBias} L${cx + 5},${cy + 30 + yBias} L${cx + 22},${cy + 22 + yBias} L${cx + 40},${cy + 28 + yBias}`,
     ];
 
@@ -431,10 +434,11 @@ const Planet = (() => {
       </g>`;
     });
 
-    // 2 volcanoes at crack endpoints
+    // 2 volcanoes at crack endpoints — right-centre equatorial band,
+    // shifted down from fire (upper-right) and clear of city (lower-right)
     const volcanoPositions = [
-      { x: cx + 50, y: cy + 4 + yBias },
-      { x: cx + 30, y: cy + 5 + yBias },
+      { x: cx + 50, y: cy + 12 + yBias },
+      { x: cx + 30, y: cy + 20 + yBias },
     ];
 
     volcanoPositions.forEach((pos, i) => {
@@ -513,9 +517,9 @@ const Planet = (() => {
     </g>`;
   }
 
-  /** City zone — large continent on lower half of sphere for building */
+  /** City zone — lower-right quadrant, anchored on southern continent */
   function _cityZoneSVG(cx, cy) {
-    const fx = cx + 5, fy = cy + 15;
+    const fx = cx + 25, fy = cy + 32;
     return `<g class="planet__cities" data-role="sticker-zone">
       <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
