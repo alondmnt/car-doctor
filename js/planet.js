@@ -250,7 +250,7 @@ const Planet = (() => {
     ];
 
     let svg = `<g class="planet__fires" data-role="wash-target">
-      <rect x="${fx - 45}" y="${fy - 35}" width="90" height="70" fill="transparent"/>`;
+      <rect x="${fx - 45}" y="${fy - 35}" width="90" height="70" fill="rgba(0,0,0,0.001)"/>`;
 
     patches.forEach(([dx, dy, rx, ry, op], i) => {
       const px = fx + dx, py = fy + dy;
@@ -315,7 +315,7 @@ const Planet = (() => {
   function _forestZoneSVG(cx, cy) {
     const fx = cx - 30, fy = cy - 5;
     return `<g class="planet__forests" data-role="interactive">
-      <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="transparent"/>
+      <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="rgba(0,0,0,0.001)"/>
       <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
                fill="rgba(120,90,50,0.5)" class="planet__barren-patch"/>
       <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
@@ -354,8 +354,12 @@ const Planet = (() => {
     const tendrilStroke = isGas ? 'rgba(100,70,15,0.4)' : 'rgba(15,15,25,0.45)';
 
     const fx = cx, fy = cy;
+    /* The hit-area rect uses near-zero opacity (not fill="transparent") so it
+       registers as a valid painted target with SVG visiblePainted semantics.
+       Animated children carry explicit pointer-events="none" to prevent
+       compositing-layer quirks from intercepting clicks meant for zones below. */
     let svg = `<g class="planet__ocean-spill" data-role="wash-target">
-      <rect x="${fx - 60}" y="${fy - 55}" width="120" height="90" fill="transparent"/>`;
+      <rect x="${fx - 60}" y="${fy - 55}" width="120" height="90" fill="rgba(0,0,0,0.001)"/>`;
 
     spills.forEach(([dx, dy, rx, ry, angle, delay]) => {
       const sx = fx + dx, sy = fy + dy;
@@ -363,17 +367,17 @@ const Planet = (() => {
       // Spreading edge — larger, lighter, animated outward
       svg += `
       <ellipse cx="${sx}" cy="${sy}" rx="${rx * 1.4}" ry="${ry * 1.3}"
-               fill="${edgeFill}" class="planet__oil-edge"
+               fill="${edgeFill}" class="planet__oil-edge" pointer-events="none"
                transform="${rot}" style="animation-delay: ${delay.toFixed(1)}s"/>`;
       // Main slick body
       svg += `
       <ellipse cx="${sx}" cy="${sy}" rx="${rx}" ry="${ry}"
-               fill="${darkFill}" class="planet__oil-slick"
+               fill="${darkFill}" class="planet__oil-slick" pointer-events="none"
                transform="${rot}" style="animation-delay: ${delay.toFixed(1)}s"/>`;
       // Iridescent sheen — offset highlight
       svg += `
       <ellipse cx="${sx - rx * 0.2}" cy="${sy - ry * 0.25}" rx="${rx * 0.5}" ry="${ry * 0.4}"
-               fill="${sheenFill}" class="planet__oil-sheen"
+               fill="${sheenFill}" class="planet__oil-sheen" pointer-events="none"
                transform="${rot}" style="animation-delay: ${(delay + 0.3).toFixed(1)}s"/>`;
       // Tendrils — 2-3 curved fingers spreading outward
       const t1 = `M${sx + rx * 0.6},${sy} Q${sx + rx * 1.3},${sy + ry * 0.5} ${sx + rx * 1.6},${sy + ry * 0.2}`;
@@ -381,11 +385,14 @@ const Planet = (() => {
       const t3 = `M${sx},${sy - ry * 0.5} Q${sx + rx * 0.4},${sy - ry * 1.2} ${sx + rx * 0.8},${sy - ry * 1.0}`;
       svg += `
       <path d="${t1}" fill="none" stroke="${tendrilStroke}" stroke-width="2.5" stroke-linecap="round"
-            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.2).toFixed(1)}s"/>
+            class="planet__oil-tendril" pointer-events="none"
+            transform="${rot}" style="animation-delay: ${(delay + 0.2).toFixed(1)}s"/>
       <path d="${t2}" fill="none" stroke="${tendrilStroke}" stroke-width="2" stroke-linecap="round"
-            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.5).toFixed(1)}s"/>
+            class="planet__oil-tendril" pointer-events="none"
+            transform="${rot}" style="animation-delay: ${(delay + 0.5).toFixed(1)}s"/>
       <path d="${t3}" fill="none" stroke="${tendrilStroke}" stroke-width="1.5" stroke-linecap="round"
-            class="planet__oil-tendril" transform="${rot}" style="animation-delay: ${(delay + 0.8).toFixed(1)}s"/>`;
+            class="planet__oil-tendril" pointer-events="none"
+            transform="${rot}" style="animation-delay: ${(delay + 0.8).toFixed(1)}s"/>`;
     });
 
     svg += `
@@ -405,14 +412,14 @@ const Planet = (() => {
     ];
 
     let svg = `<g class="planet__tectonic-zone" data-role="interactive">
-      <rect x="${cx - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" fill="transparent"/>`;
+      <rect x="${cx - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" fill="rgba(0,0,0,0.001)"/>`;
 
     cracks.forEach((d, i) => {
       svg += `
       <g class="planet__magma-crack planet__magma-crack--${i}">
-        <!-- Transparent wide stroke for easy tapping -->
+        <!-- Wide near-zero-opacity stroke — hit area; visiblePainted needs painted stroke -->
         <path d="${d}" fill="none"
-              stroke="transparent" stroke-width="16" stroke-linecap="round"/>
+              stroke="rgba(0,0,0,0.001)" stroke-width="16" stroke-linecap="round"/>
         <!-- Wider glowing stroke underneath -->
         <path d="${d}" fill="none"
               stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
@@ -438,11 +445,11 @@ const Planet = (() => {
 
       svg += `
       <g class="planet__eruption planet__eruption--${i}">
-        <!-- Transparent hit area for easy tapping -->
-        <rect x="${vx - halfW - 5}" y="${vy - coneH - 20}" width="${halfW * 2 + 10}" height="${coneH + 25}" fill="transparent"/>
+        <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
+        <rect x="${vx - halfW - 5}" y="${vy - coneH - 20}" width="${halfW * 2 + 10}" height="${coneH + 25}" fill="rgba(0,0,0,0.001)"/>
         <polygon class="planet__volcano" points="${conePoints}"
-                 fill="rgba(80,50,30,0.8)" stroke="rgba(60,30,10,0.6)" stroke-width="1"/>
-        <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.6)" stroke-width="2.5" stroke-linecap="round"/>`;
+                 fill="rgba(80,50,30,0.8)" stroke="rgba(60,30,10,0.6)" stroke-width="1" pointer-events="none"/>
+        <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.6)" stroke-width="2.5" stroke-linecap="round" pointer-events="none"/>`;
 
       const particles = [
         { dx: 0,  dy: -3,  r: 2.5 },
@@ -454,7 +461,7 @@ const Planet = (() => {
       particles.forEach((p, j) => {
         svg += `
         <circle class="planet__lava-particle" cx="${vx + p.dx}" cy="${vy - coneH + p.dy}" r="${p.r}"
-                fill="rgba(255,${120 + j * 20},20,0.7)"
+                fill="rgba(255,${120 + j * 20},20,0.7)" pointer-events="none"
                 style="animation-delay: ${(j * 0.15).toFixed(2)}s"/>`;
       });
 
@@ -488,19 +495,20 @@ const Planet = (() => {
       const tip = { x: -nx * tailLen, y: -ny * tailLen };
       const tailPath = `M0,0 L${(px + tip.x).toFixed(1)},${(py + tip.y).toFixed(1)} L${(-px + tip.x).toFixed(1)},${(-py + tip.y).toFixed(1)} Z`;
 
-      return `<g class="planet__meteor-group planet__meteor-group--${label}"
+      return `<g class="planet__meteor-group planet__meteor-group--${label}" data-role="interactive"
                  transform="translate(${x}, ${y})"
                  style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${label * 0.6}s">
-        <!-- Transparent hit area for easy tapping -->
-        <circle r="20" fill="transparent"/>
-        <circle r="8" fill="rgba(255,200,50,0.3)"/>
-        <circle class="planet__meteor" r="6" fill="rgba(255,120,30,0.8)"/>
-        <path class="planet__meteor-tail" d="${tailPath}" fill="rgba(255,80,20,0.4)"/>
+        <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
+        <circle r="20" fill="rgba(0,0,0,0.001)"/>
+        <circle r="8" fill="rgba(255,200,50,0.3)" pointer-events="none"/>
+        <circle class="planet__meteor" r="6" fill="rgba(255,120,30,0.8)" pointer-events="none"/>
+        <path class="planet__meteor-tail" d="${tailPath}" fill="rgba(255,80,20,0.4)" pointer-events="none"/>
       </g>`;
     });
 
     return `<g class="planet__asteroid-zone" data-role="interactive">
-      <rect x="0" y="0" width="400" height="240" fill="transparent"/>
+      <!-- Full-viewbox rect kept for layout; must never intercept clicks -->
+      <rect x="0" y="0" width="400" height="240" fill="transparent" pointer-events="none"/>
       ${groups.join('\n      ')}
     </g>`;
   }
@@ -672,14 +680,14 @@ const Planet = (() => {
       <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
          data-tilt="${tilts[i]}"
          transform="translate(${sx}, ${sy}) rotate(${tilts[i]})">
-        <!-- Transparent hit area for easy tapping -->
-        <rect x="-28" y="-16" width="56" height="28" fill="transparent"/>
-        <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>
-        <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
-        <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
-        <line x1="0" y1="-4" x2="0" y2="-8" stroke="#999" stroke-width="1"/>
-        <circle cx="0" cy="-9" r="1.5" fill="#999"/>
-        <circle class="planet__sat-spark" cx="0" cy="0" r="3" fill="rgba(255,200,50,0.7)"/>
+        <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
+        <rect x="-28" y="-16" width="56" height="28" fill="rgba(0,0,0,0.001)"/>
+        <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>
+        <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
+        <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
+        <line x1="0" y1="-4" x2="0" y2="-8" stroke="#999" stroke-width="1" pointer-events="none"/>
+        <circle cx="0" cy="-9" r="1.5" fill="#999" pointer-events="none"/>
+        <circle class="planet__sat-spark" cx="0" cy="0" r="3" fill="rgba(255,200,50,0.7)" pointer-events="none"/>
       </g>`;
     });
 

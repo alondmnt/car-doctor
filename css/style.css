@@ -2390,6 +2390,18 @@ html, body {
   pointer-events: none;
 }
 
+/* Inactive fault zones must not intercept clicks meant for the active zone.
+   picker.js sets pointer-events: auto on the active step's target. */
+.planet__fires,
+.planet__forests,
+.planet__cities,
+.planet__ocean-spill,
+.planet__asteroid-zone,
+.planet__satellite-zone,
+.planet__tectonic-zone {
+  pointer-events: none;
+}
+
 /* ===== Fire fault zone ===== */
 .planet__fires--hidden { display: none; }
 .planet__fires--washing .planet__fire-patch,
@@ -2605,9 +2617,12 @@ html, body {
   opacity: 0;
   pointer-events: none;
 }
+/* pointer-events intentionally omitted: picker.js sets it inline on the active
+   step target. The old explicit `auto` here had higher specificity (0,2,0) than
+   the parent zone's `pointer-events: none` (0,1,0), causing meteor groups to
+   intercept clicks meant for lower fault zones even when asteroid was inactive. */
 .planet__asteroid-zone .planet__meteor-group {
   opacity: 1;
-  pointer-events: auto;
   animation: meteor-approach 2.5s linear forwards;
   transform-box: fill-box;
   transform-origin: center;
