@@ -2403,6 +2403,7 @@ html, body {
 }
 
 /* ===== Fire fault zone ===== */
+.planet__fires { cursor: pointer; }
 .planet__fires--hidden { display: none; }
 .planet__fires--washing .planet__fire-patch,
 .planet__fires--washing .planet__ember-glow,
@@ -2593,6 +2594,7 @@ html, body {
 }
 
 /* ===== Forest fault zone ===== */
+.planet__forests { cursor: pointer; }
 .planet__barren-patch {
   transition: opacity 0.6s, fill 0.6s;
 }
@@ -2623,6 +2625,7 @@ html, body {
    intercept clicks meant for lower fault zones even when asteroid was inactive. */
 .planet__asteroid-zone .planet__meteor-group {
   opacity: 1;
+  cursor: pointer;
   animation: meteor-approach 2.5s linear forwards;
   transform-box: fill-box;
   transform-origin: center;
@@ -2649,6 +2652,7 @@ html, body {
 .planet__asteroid-zone--hidden { display: none; }
 
 /* ===== City fault zone ===== */
+.planet__cities { cursor: pointer; }
 
 /* ===== Satellite network fault zone ===== */
 .planet__satellite--broken {
