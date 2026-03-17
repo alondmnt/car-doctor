@@ -2651,6 +2651,22 @@ html, body {
 }
 .planet__asteroid-zone--hidden { display: none; }
 
+/* Laser zap — planet fires a beam to destroy the meteor */
+.planet__laser {
+  opacity: 0;
+  stroke: rgba(100,220,255,0.9);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.planet__laser--active {
+  animation: laser-zap 0.35s ease-out forwards;
+}
+@keyframes laser-zap {
+  0%   { opacity: 0;   stroke-width: 1; filter: none; }
+  10%  { opacity: 1;   stroke-width: 5; filter: brightness(3) drop-shadow(0 0 4px #6df); }
+  100% { opacity: 0;   stroke-width: 1; filter: none; }
+}
+
 /* Meteor impact — lands on surface, flares, then vanishes */
 @keyframes meteor-impact {
   0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(1);

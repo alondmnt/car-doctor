@@ -94,7 +94,9 @@ const PlanetRepair = (() => {
                  ?.classList.add('planet__meteor-group--impact');
             missCount++;
           } else {
-            // Destroyed by player
+            // Destroyed by player — flash laser beam then explode
+            carEl.querySelector(`.planet__laser--${i}`)
+                 ?.classList.add('planet__laser--active');
             el.classList.add('planet__meteor-group--destroyed');
           }
           if (i === count - 1) {

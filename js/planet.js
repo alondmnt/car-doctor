@@ -545,6 +545,9 @@ const Planet = (() => {
       const delay = delays[i].toFixed(2);
 
       return `${_impactSiteSVG(impactX, impactY, i)}
+      <line class="planet__laser planet__laser--${i}"
+            x1="${cx}" y1="${cy}" x2="${sx.toFixed(1)}" y2="${sy.toFixed(1)}"
+            pointer-events="none"/>
       <g class="planet__meteor-group planet__meteor-group--${i}" data-role="interactive"
          transform="translate(${sx.toFixed(1)}, ${sy.toFixed(1)})"
          style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${delay}s"
