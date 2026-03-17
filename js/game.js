@@ -8,6 +8,7 @@ const Game = (() => {
   let steps = [];
   let stepIndex = 0;
   let busy = false;
+  let stepTimeout = null;
   let coins = 0;
   let generation = 0;  // incremented on reset/new car to cancel stale callbacks
   const seenFaults = new Set();  // auto-toggle hints based on seen vs active faults
@@ -193,6 +194,17 @@ const Game = (() => {
         busy = false;
         Picker.highlightStep(currentCar, steps, stepIndex);
         Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+        const tapStep = steps[stepIndex];
+        if (tapStep?.timeout) {
+          stepTimeout = setTimeout(() => {
+            stepTimeout = null;
+            if (generation !== gen || busy) return;
+            busy = true;
+            Picker.cleanup();
+            Picker.clearHighlights(currentCar);
+            onStepComplete(tapStep, null, null);   // null targetEl = missed
+          }, tapStep.timeout);
+        }
       }, 600 / CONFIG.gameSpeed);
     });
   }
@@ -214,6 +226,7 @@ const Game = (() => {
 
   /** Handle step completion */
   function onStepComplete(step, targetEl, picked) {
+    if (stepTimeout) { clearTimeout(stepTimeout); stepTimeout = null; }
     busy = true;
     const gen = generation;
     Picker.clearHighlights(currentCar);
@@ -241,6 +254,17 @@ const Game = (() => {
           busy = false;
           Picker.highlightStep(currentCar, steps, stepIndex);
           Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+          const nextFaultStep = steps[stepIndex];
+          if (nextFaultStep?.timeout) {
+            stepTimeout = setTimeout(() => {
+              stepTimeout = null;
+              if (generation !== gen || busy) return;
+              busy = true;
+              Picker.cleanup();
+              Picker.clearHighlights(currentCar);
+              onStepComplete(nextFaultStep, null, null);
+            }, nextFaultStep.timeout);
+          }
         }, 400 / CONFIG.gameSpeed);
       } else {
         // All faults fixed — track seen types and auto-disable hints
@@ -255,7 +279,9 @@ const Game = (() => {
           document.getElementById('hint-btn').classList.add('hint-btn--off');
         }
 
-        addCoins(currentCar.faults.length);
+        if (!currentCar.el.dataset.asteroidFailed) {
+          addCoins(currentCar.faults.length);
+        }
         setTimeout(() => {
           if (generation !== gen) return;
           Audio.play('success');
@@ -276,6 +302,17 @@ const Game = (() => {
         busy = false;
         Picker.highlightStep(currentCar, steps, stepIndex);
         Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+        const nextStep = steps[stepIndex];
+        if (nextStep?.timeout) {
+          stepTimeout = setTimeout(() => {
+            stepTimeout = null;
+            if (generation !== gen || busy) return;
+            busy = true;
+            Picker.cleanup();
+            Picker.clearHighlights(currentCar);
+            onStepComplete(nextStep, null, null);
+          }, nextStep.timeout);
+        }
       }, 250 / CONFIG.gameSpeed);
     }
   }
@@ -300,6 +337,7 @@ const Game = (() => {
   function resetCar() {
     if (!currentCar) return;
     generation++;
+    if (stepTimeout) { clearTimeout(stepTimeout); stepTimeout = null; }
     Picker.cleanup();
     Picker.clearHighlights(currentCar);
     Picker.hideToolbox();

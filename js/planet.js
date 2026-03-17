@@ -489,30 +489,66 @@ const Planet = (() => {
     return svg;
   }
 
-  /** Asteroid defence — 4 meteors approaching from outer viewbox edges */
-  function _asteroidZoneSVG(cx, cy, r) {
-    const meteors = [
-      { x: cx - 180, y: cy - 100, label: 0 },
-      { x: cx + 180, y: cy - 90,  label: 1 },
-      { x: cx - 190, y: cy + 60,  label: 2 },
-      { x: cx + 170, y: cy + 80,  label: 3 },
-    ];
+  /**
+   * Hidden impact site at planet surface — revealed as crater + fire on meteor miss.
+   * Uses existing fire patch/ember classes so no new CSS is needed for the elements themselves.
+   */
+  function _impactSiteSVG(x, y, i) {
+    const rx = x.toFixed(1), ry = y.toFixed(1);
+    return `<g class="planet__impact-site planet__impact-site--${i}" pointer-events="none">
+      <!-- Crater floor — dark scorch ellipse -->
+      <ellipse cx="${rx}" cy="${ry}" rx="8" ry="5"
+               fill="rgba(0,0,0,0.35)" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+      <!-- Sunlit rim crescent -->
+      <ellipse cx="${(x - 0.8).toFixed(1)}" cy="${(y - 0.9).toFixed(1)}" rx="6.5" ry="2"
+               fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="0.9"/>
+      <!-- Fire patch -->
+      <ellipse cx="${rx}" cy="${ry}" rx="7" ry="5"
+               fill="rgba(230,80,30,0.6)" class="planet__fire-patch"/>
+      <!-- Ember glow -->
+      <ellipse cx="${rx}" cy="${ry}" rx="3.5" ry="2.5"
+               fill="rgba(255,100,20,0.7)" class="planet__ember-glow"/>
+    </g>`;
+  }
 
-    const groups = meteors.map(({ x, y, label }) => {
-      const dx = cx - x, dy = cy - y;
+  /**
+   * Asteroid defence — 4 meteors at random angles around the planet orbit.
+   * Spawn at r*1.5 distance; random sorted delays [0, 1.5s] stored as data-delay
+   * so planet-repair.js can compute per-meteor step timeouts.
+   */
+  function _asteroidZoneSVG(cx, cy, r) {
+    const spawnDist = r * 1.5;
+    const angles = Array.from({length: 4}, () => Math.random() * 2 * Math.PI);
+    const delays = Array.from({length: 4}, () => Math.random() * 1.5).sort((a, b) => a - b);
+
+    const groups = angles.map((angle, i) => {
+      // Spawn at orbit distance
+      const sx = cx + spawnDist * Math.cos(angle);
+      const sy = cy + spawnDist * Math.sin(angle);
+      // Surface impact point
+      const impactX = cx + (r - 4) * Math.cos(angle);
+      const impactY = cy + (r - 4) * Math.sin(angle);
+
+      // Direction vector toward planet centre
+      const dx = cx - sx, dy = cy - sy;
       const len = Math.sqrt(dx * dx + dy * dy);
       const nx = dx / len, ny = dy / len;
-      const travel = len - r - 10;
+      const travel = spawnDist - r - 2;
       const mdx = Math.round(nx * travel), mdy = Math.round(ny * travel);
+
       // Tail: triangular path trailing behind
       const tailLen = 18, tailSpread = 5;
       const px = -ny * tailSpread, py = nx * tailSpread;
       const tip = { x: -nx * tailLen, y: -ny * tailLen };
       const tailPath = `M0,0 L${(px + tip.x).toFixed(1)},${(py + tip.y).toFixed(1)} L${(-px + tip.x).toFixed(1)},${(-py + tip.y).toFixed(1)} Z`;
 
-      return `<g class="planet__meteor-group planet__meteor-group--${label}" data-role="interactive"
-                 transform="translate(${x}, ${y})"
-                 style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${label * 0.6}s">
+      const delay = delays[i].toFixed(2);
+
+      return `${_impactSiteSVG(impactX, impactY, i)}
+      <g class="planet__meteor-group planet__meteor-group--${i}" data-role="interactive"
+         transform="translate(${sx.toFixed(1)}, ${sy.toFixed(1)})"
+         style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${delay}s"
+         data-delay="${delay}">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <circle r="20" fill="rgba(0,0,0,0.001)"/>
         <circle r="8" fill="rgba(255,200,50,0.3)" pointer-events="none"/>

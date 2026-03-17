@@ -2651,6 +2651,35 @@ html, body {
 }
 .planet__asteroid-zone--hidden { display: none; }
 
+/* Meteor impact — lands on surface, flares, then vanishes */
+@keyframes meteor-impact {
+  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(1);
+         opacity: 1; }
+  35%  { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(2);
+         opacity: 1; filter: brightness(4); }
+  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(0.2);
+         opacity: 0; }
+}
+.planet__meteor-group--impact {
+  animation: meteor-impact 0.7s ease-out forwards !important;
+  pointer-events: none;
+}
+
+/* Impact site — hidden until a meteor is missed, then revealed with flash */
+.planet__impact-site {
+  opacity: 0;
+  pointer-events: none;
+}
+.planet__impact-site--active {
+  opacity: 1;
+  animation: impact-site-appear 0.8s ease-out;
+}
+@keyframes impact-site-appear {
+  0%   { opacity: 0; filter: brightness(4) saturate(2); transform: scale(2); }
+  30%  { opacity: 1; filter: brightness(2); transform: scale(1.3); }
+  100% { opacity: 1; filter: none; transform: scale(1); }
+}
+
 /* ===== City fault zone ===== */
 .planet__cities { cursor: pointer; }
 
