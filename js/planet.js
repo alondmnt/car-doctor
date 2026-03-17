@@ -469,7 +469,8 @@ const Planet = (() => {
     ];
 
     let svg = `<g class="planet__tectonic-zone" data-role="interactive">
-      <rect x="${cx - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" fill="rgba(0,0,0,0.001)"/>`;
+      <!-- No background hit rect — cracks use wide strokes, eruptions use per-element
+           rects. A full-disk rect here would block clicks on underlying fault zones. -->`;
 
     cracks.forEach((d, i) => {
       svg += `
