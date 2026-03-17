@@ -158,6 +158,26 @@ const Game = (() => {
     return Math.max(50, step.timeout - elapsed);
   }
 
+  /**
+   * Handle a step with a concurrent setup() hook (e.g. asteroid defence).
+   * Calls step.setup(carEl, done) which installs its own timers and listeners;
+   * done() fires once all sub-interactions are resolved, then advances the step.
+   */
+  function _handleSetupStep(step, gen) {
+    const carEl = currentCar.el;
+    // Unpause timed approach animation and record start time
+    if (!carEl.dataset.animFaultStart) {
+      carEl.dataset.animFaultStart = Date.now();
+      carEl.querySelector('.planet__asteroid-zone')
+        ?.classList.add('planet__asteroid-zone--active');
+    }
+    step.setup(carEl, () => {
+      if (generation !== gen || !currentCar) return;
+      busy = true;
+      onStepComplete(step, carEl, null);
+    });
+  }
+
   /** Bring in a new car, robot, or spaceship with 1–2 random faults */
   function nextCar() {
     generation++;
@@ -210,19 +230,23 @@ const Game = (() => {
       setTimeout(() => {
         if (generation !== gen) return;
         busy = false;
-        Picker.highlightStep(currentCar, steps, stepIndex);
-        Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
         const tapStep = steps[stepIndex];
-        const tapTimeout = _syncedTimeout(tapStep);
-        if (tapTimeout !== null) {
-          stepTimeout = setTimeout(() => {
-            stepTimeout = null;
-            if (generation !== gen || busy) return;
-            busy = true;
-            Picker.cleanup();
-            Picker.clearHighlights(currentCar);
-            onStepComplete(tapStep, null, null);   // null targetEl = missed
-          }, tapTimeout);
+        if (tapStep?.setup) {
+          _handleSetupStep(tapStep, gen);
+        } else {
+          Picker.highlightStep(currentCar, steps, stepIndex);
+          Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+          const tapTimeout = _syncedTimeout(tapStep);
+          if (tapTimeout !== null) {
+            stepTimeout = setTimeout(() => {
+              stepTimeout = null;
+              if (generation !== gen || busy) return;
+              busy = true;
+              Picker.cleanup();
+              Picker.clearHighlights(currentCar);
+              onStepComplete(tapStep, null, null);   // null targetEl = missed
+            }, tapTimeout);
+          }
         }
       }, 600 / CONFIG.gameSpeed);
     });
@@ -271,19 +295,23 @@ const Game = (() => {
         setTimeout(() => {
           if (generation !== gen) return;
           busy = false;
-          Picker.highlightStep(currentCar, steps, stepIndex);
-          Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
           const nextFaultStep = steps[stepIndex];
-          const nextFaultTimeout = _syncedTimeout(nextFaultStep);
-          if (nextFaultTimeout !== null) {
-            stepTimeout = setTimeout(() => {
-              stepTimeout = null;
-              if (generation !== gen || busy) return;
-              busy = true;
-              Picker.cleanup();
-              Picker.clearHighlights(currentCar);
-              onStepComplete(nextFaultStep, null, null);
-            }, nextFaultTimeout);
+          if (nextFaultStep?.setup) {
+            _handleSetupStep(nextFaultStep, gen);
+          } else {
+            Picker.highlightStep(currentCar, steps, stepIndex);
+            Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+            const nextFaultTimeout = _syncedTimeout(nextFaultStep);
+            if (nextFaultTimeout !== null) {
+              stepTimeout = setTimeout(() => {
+                stepTimeout = null;
+                if (generation !== gen || busy) return;
+                busy = true;
+                Picker.cleanup();
+                Picker.clearHighlights(currentCar);
+                onStepComplete(nextFaultStep, null, null);
+              }, nextFaultTimeout);
+            }
           }
         }, 400 / CONFIG.gameSpeed);
       } else {
@@ -320,19 +348,23 @@ const Game = (() => {
       setTimeout(() => {
         if (generation !== gen) return;
         busy = false;
-        Picker.highlightStep(currentCar, steps, stepIndex);
-        Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
         const nextStep = steps[stepIndex];
-        const nextStepTimeout = _syncedTimeout(nextStep);
-        if (nextStepTimeout !== null) {
-          stepTimeout = setTimeout(() => {
-            stepTimeout = null;
-            if (generation !== gen || busy) return;
-            busy = true;
-            Picker.cleanup();
-            Picker.clearHighlights(currentCar);
-            onStepComplete(nextStep, null, null);
-          }, nextStepTimeout);
+        if (nextStep?.setup) {
+          _handleSetupStep(nextStep, gen);
+        } else {
+          Picker.highlightStep(currentCar, steps, stepIndex);
+          Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
+          const nextStepTimeout = _syncedTimeout(nextStep);
+          if (nextStepTimeout !== null) {
+            stepTimeout = setTimeout(() => {
+              stepTimeout = null;
+              if (generation !== gen || busy) return;
+              busy = true;
+              Picker.cleanup();
+              Picker.clearHighlights(currentCar);
+              onStepComplete(nextStep, null, null);
+            }, nextStepTimeout);
+          }
         }
       }, 250 / CONFIG.gameSpeed);
     }

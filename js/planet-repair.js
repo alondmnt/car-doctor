@@ -65,48 +65,83 @@ const PlanetRepair = (() => {
 
   /**
    * Asteroid defence — tap 4 approaching meteors before they hit.
-   * Each step has a timeout derived from its CSS animation delay + travel duration.
-   * Missed meteors reveal a crater + fire at the impact site (visual only — no new
-   * fault steps). If any meteor is missed, asteroidFailed is set on the car element
-   * and no coins are awarded at round end.
+   * Returns a single step with a setup() hook so all meteors are tappable
+   * concurrently in any order.  Each meteor gets its own timeout derived from
+   * its CSS animation delay + travel duration.  Missed meteors reveal a crater +
+   * fire at the impact site (visual only — no new fault steps).  If any meteor is
+   * missed, asteroidFailed is set on the car element and no coins are awarded.
    */
-  function asteroidDefence(car) {
-    let missCount = 0;
+  function asteroidDefence(_car) {
     const count = 4;
-    return Array.from({ length: count }, (_, i) => {
-      // Read delay stored in SVG data attribute; computed at step-build time so the
-      // element is already in the DOM when asteroidDefence() is called.
-      const meteorEl = car.el.querySelector(`.planet__meteor-group--${i}`);
-      const delay = parseFloat(meteorEl?.dataset.delay || 0);
-      const timeout = Math.round((delay + 2.5 + 0.3) * 1000); // approach + buffer
+    return [{
+      id: 'asteroid-defence',
+      sound: null,
+      action: () => {},
+      /**
+       * @param {HTMLElement} carEl
+       * @param {Function} done — called once all meteors are resolved
+       */
+      setup: (carEl, done) => {
+        let resolved = 0;
+        let missCount = 0;
 
-      return {
-        id: `tap-meteor-${i}`,
-        target: `.planet__meteor-group--${i}`,
-        sound: 'tap',
-        timeout,
-        action: (el, carEl) => {
-          if (!el) {
-            // Missed — reveal crater + fire visuals (drama only, no new fault steps)
-            carEl.querySelector(`.planet__impact-site--${i}`)
-                 ?.classList.add('planet__impact-site--active');
-            carEl.querySelector(`.planet__meteor-group--${i}`)
-                 ?.classList.add('planet__meteor-group--impact');
-            missCount++;
+        // Mark one meteor resolved; fire done() when all are settled.
+        const handleMeteor = (i, hit) => {
+          const meteorEl = carEl.querySelector(`.planet__meteor-group--${i}`);
+          if (meteorEl?.dataset.resolved) return;
+          if (meteorEl) meteorEl.dataset.resolved = '1';
+
+          if (hit) {
+            Audio.play('tap');
+            carEl.querySelector(`.planet__laser--${i}`)?.classList.add('planet__laser--active');
+            // Freeze the approach animation at its current position before
+            // switching to the explode animation, so the meteor doesn't jump
+            // to the planet surface (--meteor-dx/dy) mid-flight.
+            if (meteorEl) {
+              const frozen = getComputedStyle(meteorEl).transform;
+              meteorEl.style.animation = 'none';
+              meteorEl.style.transform = frozen;
+              meteorEl.offsetWidth; // force reflow
+            }
+            meteorEl?.classList.add('planet__meteor-group--destroyed');
           } else {
-            // Destroyed by player — flash laser beam then explode
-            carEl.querySelector(`.planet__laser--${i}`)
-                 ?.classList.add('planet__laser--active');
-            el.classList.add('planet__meteor-group--destroyed');
+            carEl.querySelector(`.planet__impact-site--${i}`)?.classList.add('planet__impact-site--active');
+            meteorEl?.classList.add('planet__meteor-group--impact');
+            missCount++;
           }
-          if (i === count - 1) {
+
+          resolved++;
+          if (resolved === count) {
             if (missCount > 0) carEl.dataset.asteroidFailed = '1';
             const zone = carEl.querySelector('.planet__asteroid-zone');
             if (zone) setTimeout(() => zone.classList.add('planet__asteroid-zone--hidden'), 500);
+            done();
           }
-        },
-      };
-    });
+        };
+
+        for (let i = 0; i < count; i++) {
+          const meteorEl = carEl.querySelector(`.planet__meteor-group--${i}`);
+          if (!meteorEl) { handleMeteor(i, true); continue; }  // missing = auto-hit
+
+          const delay = parseFloat(meteorEl.dataset.delay || 0);
+          const timeout = Math.round((delay + 4 + 0.5) * 1000);
+
+          // Per-meteor miss timeout
+          const timer = setTimeout(() => {
+            if (!carEl.isConnected) return;
+            handleMeteor(i, false);
+          }, timeout);
+
+          // Direct tap — bypasses Picker; removes listener after first hit
+          meteorEl.addEventListener('pointerdown', function onTap() {
+            clearTimeout(timer);
+            meteorEl.removeEventListener('pointerdown', onTap);
+            if (!carEl.isConnected) return;
+            handleMeteor(i, true);
+          });
+        }
+      },
+    }];
   }
 
   /**
