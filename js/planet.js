@@ -365,9 +365,13 @@ const Planet = (() => {
     return svg;
   }
 
+  /* ─── Zone position helpers (single source of truth) ─── */
+  function _forestPos(cx, cy) { return [cx - 45, cy - 30]; }
+  function _cityPos(cx, cy)   { return [cx + 25, cy + 32]; }
+
   /** Forest patches — upper-left quadrant, anchored over northern landmass */
   function _forestZoneSVG(cx, cy) {
-    const fx = cx - 45, fy = cy - 30;
+    const [fx, fy] = _forestPos(cx, cy);
     return `<g class="planet__forests" data-role="interactive">
       <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="rgba(0,0,0,0.001)"/>
       <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
@@ -609,7 +613,7 @@ const Planet = (() => {
 
   /** City zone — lower-right quadrant, anchored on southern continent */
   function _cityZoneSVG(cx, cy) {
-    const fx = cx + 25, fy = cy + 32;
+    const [fx, fy] = _cityPos(cx, cy);
     return `<g class="planet__cities" data-role="sticker-zone">
       <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
@@ -627,7 +631,7 @@ const Planet = (() => {
    * Shown as civilisation background when a more advanced fault is active.
    */
   function _forestDecorationSVG(cx, cy) {
-    const fx = cx - 45, fy = cy - 30;
+    const [fx, fy] = _forestPos(cx, cy);
     return `<g class="planet__forest-decoration" pointer-events="none">
       <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
                fill="rgba(60,140,60,0.5)"/>
@@ -645,14 +649,32 @@ const Planet = (() => {
   }
 
   /**
-   * Completed city decoration — city sticker pre-applied at zone position,
-   * non-interactive. Shown as civilisation background when a more advanced fault is active.
+   * Completed city decoration — multiple stickers spread across the zone, showing a
+   * developed cityscape. Non-interactive. Shown when asteroid/satellite fault is active.
+   * Gas planets also include the construction band.
    */
-  function _cityDecorationSVG(cx, cy) {
-    const fx = cx + 25, fy = cy + 32;
+  function _cityDecorationSVG(cx, cy, r, shape) {
+    const [fx, fy] = _cityPos(cx, cy);
+    const isGas = shape === 'gas';
+    // Pick 3 distinct stickers at random from the pool
+    const pool = [...CONFIG.planetStickers];
+    const picks = [];
+    while (picks.length < 3) {
+      picks.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+    }
+    // Three positions within the zone rect, varied sizes to suggest depth
+    const slots = [
+      [fx - 18, fy + 2,  28],
+      [fx + 16, fy - 5,  24],
+      [fx +  2, fy + 14, 22],
+    ];
+    const stickers = slots.map(([x, y, size], i) =>
+      `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central"
+             font-size="${size}">${picks[i]}</text>`
+    ).join('\n      ');
     return `<g class="planet__city-decoration" pointer-events="none">
-      <text x="${fx}" y="${fy}"
-            text-anchor="middle" dominant-baseline="central" font-size="40">🏙️</text>
+      ${isGas ? _constructionBandSVG(cx, cy, r) : ''}
+      ${stickers}
     </g>`;
   }
 
@@ -721,7 +743,7 @@ const Planet = (() => {
       <!-- Forest shown when city/asteroid/satellite fault is active (but not if forest itself is active) -->
       <!-- City shown when asteroid/satellite fault is active (but not if city itself is active) -->
       ${(hasCity || hasAsteroid || hasSatellite) && !hasForest ? _forestDecorationSVG(cx, cy) : ''}
-      ${(hasAsteroid || hasSatellite) && !hasCity ? _cityDecorationSVG(cx, cy) : ''}
+      ${(hasAsteroid || hasSatellite) && !hasCity ? _cityDecorationSVG(cx, cy, r, shape) : ''}
 
       <!-- Fault zones (shown per active faults) -->
       <!-- fire/ocean/asteroid/satellite/tectonic first, then forest/city on top -->
