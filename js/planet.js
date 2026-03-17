@@ -529,14 +529,10 @@ const Planet = (() => {
       const impactX = cx + (r - 4) * Math.cos(angle);
       const impactY = cy + (r - 4) * Math.sin(angle);
 
-      // Direction vector toward planet centre
-      const dx = cx - sx, dy = cy - sy;
-      const len = Math.sqrt(dx * dx + dy * dy);
-      const nx = dx / len, ny = dy / len;
-      const travel = spawnDist - r - 2;
-      const mdx = Math.round(nx * travel), mdy = Math.round(ny * travel);
+      // Unit vector pointing from spawn toward planet centre
+      const nx = -Math.cos(angle), ny = -Math.sin(angle);
 
-      // Tail: triangular path trailing behind
+      // Tail: triangular path trailing behind (points away from planet)
       const tailLen = 18, tailSpread = 5;
       const px = -ny * tailSpread, py = nx * tailSpread;
       const tip = { x: -nx * tailLen, y: -ny * tailLen };
@@ -549,8 +545,7 @@ const Planet = (() => {
             x1="${cx}" y1="${cy}" x2="${sx.toFixed(1)}" y2="${sy.toFixed(1)}"
             pointer-events="none"/>
       <g class="planet__meteor-group planet__meteor-group--${i}" data-role="interactive"
-         transform="translate(${sx.toFixed(1)}, ${sy.toFixed(1)})"
-         style="--meteor-dx: ${mdx}px; --meteor-dy: ${mdy}px; animation-delay: ${delay}s"
+         style="--spawn-x: ${sx.toFixed(1)}px; --spawn-y: ${sy.toFixed(1)}px; --meteor-dx: ${impactX.toFixed(1)}px; --meteor-dy: ${impactY.toFixed(1)}px; animation-delay: ${delay}s"
          data-delay="${delay}">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <circle r="20" fill="rgba(0,0,0,0.001)"/>

@@ -2631,7 +2631,7 @@ html, body {
   transform-origin: center;
 }
 @keyframes meteor-approach {
-  0%   { transform: translate(0, 0); opacity: 0.9; }
+  0%   { transform: translate(var(--spawn-x), var(--spawn-y)); opacity: 0.9; }
   100% { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 1; }
 }
 .planet__meteor-group--destroyed {
