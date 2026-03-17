@@ -525,9 +525,10 @@ const Planet = (() => {
       // Spawn at orbit distance
       const sx = cx + spawnDist * Math.cos(angle);
       const sy = cy + spawnDist * Math.sin(angle);
-      // Surface impact point
-      const impactX = cx + (r - 4) * Math.cos(angle);
-      const impactY = cy + (r - 4) * Math.sin(angle);
+      // Impact point — inside the planet disk (r*0.75), not on the edge
+      const impactDist = r * 0.75;
+      const impactX = cx + impactDist * Math.cos(angle);
+      const impactY = cy + impactDist * Math.sin(angle);
 
       // Unit vector pointing from spawn toward planet centre
       const nx = -Math.cos(angle), ny = -Math.sin(angle);
@@ -545,7 +546,7 @@ const Planet = (() => {
             x1="${cx}" y1="${cy}" x2="${sx.toFixed(1)}" y2="${sy.toFixed(1)}"
             pointer-events="none"/>
       <g class="planet__meteor-group planet__meteor-group--${i}" data-role="interactive"
-         style="--spawn-x: ${sx.toFixed(1)}px; --spawn-y: ${sy.toFixed(1)}px; --meteor-dx: ${impactX.toFixed(1)}px; --meteor-dy: ${impactY.toFixed(1)}px; animation-delay: ${delay}s"
+         style="--spawn-x: ${(sx / 400 * 100).toFixed(2)}%; --spawn-y: ${(sy / 240 * 100).toFixed(2)}%; --meteor-dx: ${(impactX / 400 * 100).toFixed(2)}%; --meteor-dy: ${(impactY / 240 * 100).toFixed(2)}%; animation-delay: ${delay}s"
          data-delay="${delay}">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <circle r="20" fill="rgba(0,0,0,0.001)"/>

@@ -2627,7 +2627,9 @@ html, body {
   opacity: 1;
   cursor: pointer;
   animation: meteor-approach 2.5s linear forwards;
-  transform-box: fill-box;
+  /* view-box resolves % translate values against SVG user units,
+     keeping positions correct regardless of the SVG's CSS display size. */
+  transform-box: view-box;
   transform-origin: center;
 }
 @keyframes meteor-approach {
@@ -2638,9 +2640,11 @@ html, body {
   animation: meteor-explode 0.4s ease-out forwards !important;
 }
 @keyframes meteor-explode {
-  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(1); opacity: 1; }
-  50%  { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(1.8); opacity: 0.6; filter: brightness(2); }
-  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(0); opacity: 0; }
+  /* scale() removed: with view-box transform-origin:center, scale drifts toward
+     viewport centre. Brightness flash gives sufficient visual feedback. */
+  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 1; filter: brightness(5); }
+  40%  { opacity: 1; filter: brightness(2); }
+  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 0; }
 }
 .planet__meteor-tail {
   animation: tail-flicker 0.3s ease-in-out infinite alternate;
@@ -2667,14 +2671,11 @@ html, body {
   100% { opacity: 0;   stroke-width: 1; filter: none; }
 }
 
-/* Meteor impact — lands on surface, flares, then vanishes */
+/* Meteor impact — lands on surface, flares, then vanishes (no scale — see explode comment) */
 @keyframes meteor-impact {
-  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(1);
-         opacity: 1; }
-  35%  { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(2);
-         opacity: 1; filter: brightness(4); }
-  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)) scale(0.2);
-         opacity: 0; }
+  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 1; filter: brightness(5); }
+  30%  { opacity: 1; filter: brightness(3); }
+  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 0; }
 }
 .planet__meteor-group--impact {
   animation: meteor-impact 0.7s ease-out forwards !important;
@@ -2691,9 +2692,10 @@ html, body {
   animation: impact-site-appear 0.8s ease-out;
 }
 @keyframes impact-site-appear {
-  0%   { opacity: 0; filter: brightness(4) saturate(2); transform: scale(2); }
-  30%  { opacity: 1; filter: brightness(2); transform: scale(1.3); }
-  100% { opacity: 1; filter: none; transform: scale(1); }
+  /* No scale — impact sites sit at absolute SVG coords; scale would misplace them */
+  0%   { opacity: 0; filter: brightness(4) saturate(2); }
+  30%  { opacity: 1; filter: brightness(2); }
+  100% { opacity: 1; filter: none; }
 }
 
 /* ===== City fault zone ===== */
