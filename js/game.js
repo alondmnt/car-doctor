@@ -286,6 +286,9 @@ const Game = (() => {
         indicator.classList.add('car__indicator--ok');
       }
 
+      // Asteroid strike — skip remaining faults and jump straight to exit
+      if (currentCar.el.dataset.asteroidFailed) faultQueue.length = 0;
+
       if (faultQueue.length > 0) {
         Audio.play('tap');
         startNextFault();
