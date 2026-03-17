@@ -621,6 +621,41 @@ const Planet = (() => {
     </g>`;
   }
 
+  /**
+   * Completed forest decoration — same geometry as _forestZoneSVG but non-interactive,
+   * rendered in fully-repaired state (green patches, visible trees) with no animation.
+   * Shown as civilisation background when a more advanced fault is active.
+   */
+  function _forestDecorationSVG(cx, cy) {
+    const fx = cx - 45, fy = cy - 30;
+    return `<g class="planet__forest-decoration" pointer-events="none">
+      <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
+               fill="rgba(60,140,60,0.5)"/>
+      <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
+               fill="rgba(60,140,60,0.5)"/>
+      <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
+               fill="rgba(60,140,60,0.5)"/>
+      <text x="${fx - 10}" y="${fy - 12}"
+            text-anchor="middle" font-size="14" opacity="1">🌲</text>
+      <text x="${fx + 10}" y="${fy + 15}"
+            text-anchor="middle" font-size="16" opacity="1">🌳</text>
+      <text x="${fx - 5}" y="${fy - 29}"
+            text-anchor="middle" font-size="12" opacity="1">🌲</text>
+    </g>`;
+  }
+
+  /**
+   * Completed city decoration — city sticker pre-applied at zone position,
+   * non-interactive. Shown as civilisation background when a more advanced fault is active.
+   */
+  function _cityDecorationSVG(cx, cy) {
+    const fx = cx + 25, fy = cy + 32;
+    return `<g class="planet__city-decoration" pointer-events="none">
+      <text x="${fx}" y="${fy}"
+            text-anchor="middle" dominant-baseline="central" font-size="40">🏙️</text>
+    </g>`;
+  }
+
   /* ─── Main SVG template ─── */
 
   /**
@@ -628,7 +663,8 @@ const Planet = (() => {
    * shadow → atmosphere (outer + inner) → ring-back (ringed only)
    * → body circle → ocean shimmer → continents → terminator shading
    * → geometry overlay (craters/bands) → ice caps → specular highlights
-   * → fault zones (fire/ocean/asteroid/satellite/tectonic → forest/city on top) → ring-front (ringed only)
+   * → civilisation decorations (forest/city background) → fault zones
+   *   (fire/ocean/asteroid/satellite/tectonic → forest/city on top) → ring-front (ringed only)
    */
   function _planetSVG(opts) {
     const { shape, colour, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic } = opts;
@@ -680,6 +716,12 @@ const Planet = (() => {
       <ellipse class="planet__highlight" cx="${cx - 30}" cy="${cy - 35}"
                rx="12" ry="8" fill="rgba(255,255,255,0.22)"
                transform="rotate(-20 ${cx - 30} ${cy - 35})"/>
+
+      <!-- Civilisation decorations — repaired-state background, below active fault zones -->
+      <!-- Forest shown when city/asteroid/satellite fault is active (but not if forest itself is active) -->
+      <!-- City shown when asteroid/satellite fault is active (but not if city itself is active) -->
+      ${(hasCity || hasAsteroid || hasSatellite) && !hasForest ? _forestDecorationSVG(cx, cy) : ''}
+      ${(hasAsteroid || hasSatellite) && !hasCity ? _cityDecorationSVG(cx, cy) : ''}
 
       <!-- Fault zones (shown per active faults) -->
       <!-- fire/ocean/asteroid/satellite/tectonic first, then forest/city on top -->
