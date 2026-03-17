@@ -2627,13 +2627,21 @@ html, body {
   opacity: 1;
   cursor: pointer;
   animation: meteor-approach 2.5s linear forwards;
+  /* Paused until game.js adds --active; animation is unpaused and the JS timeout
+     are started on the same tick so they stay in sync. */
+  animation-play-state: paused;
   /* view-box resolves % translate values against SVG user units,
      keeping positions correct regardless of the SVG's CSS display size. */
   transform-box: view-box;
   transform-origin: center;
 }
+.planet__asteroid-zone--active .planet__meteor-group {
+  animation-play-state: running;
+}
 @keyframes meteor-approach {
-  0%   { transform: translate(var(--spawn-x), var(--spawn-y)); opacity: 0.9; }
+  /* 0% opacity:0 keeps meteors invisible while paused (before fault activates) */
+  0%   { transform: translate(var(--spawn-x), var(--spawn-y)); opacity: 0; }
+  8%   { opacity: 0.9; }
   100% { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 1; }
 }
 .planet__meteor-group--destroyed {

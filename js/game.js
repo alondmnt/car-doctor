@@ -140,6 +140,24 @@ const Game = (() => {
     nextCar();
   }
 
+  /**
+   * Start timed-approach fault animations (e.g. asteroid defence) in sync with the
+   * JS step timeout.  First call unpauses the CSS animation and records the start
+   * time; subsequent calls (steps 1–3) subtract elapsed time so the JS timer stays
+   * locked to the already-running animation.
+   * Returns the adjusted timeout in ms, or null if the step has no timeout.
+   */
+  function _syncedTimeout(step) {
+    if (!step?.timeout) return null;
+    if (!currentCar.el.dataset.animFaultStart) {
+      currentCar.el.dataset.animFaultStart = Date.now();
+      currentCar.el.querySelector('.planet__asteroid-zone')
+        ?.classList.add('planet__asteroid-zone--active');
+    }
+    const elapsed = Date.now() - parseInt(currentCar.el.dataset.animFaultStart);
+    return Math.max(50, step.timeout - elapsed);
+  }
+
   /** Bring in a new car, robot, or spaceship with 1–2 random faults */
   function nextCar() {
     generation++;
@@ -195,7 +213,8 @@ const Game = (() => {
         Picker.highlightStep(currentCar, steps, stepIndex);
         Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
         const tapStep = steps[stepIndex];
-        if (tapStep?.timeout) {
+        const tapTimeout = _syncedTimeout(tapStep);
+        if (tapTimeout !== null) {
           stepTimeout = setTimeout(() => {
             stepTimeout = null;
             if (generation !== gen || busy) return;
@@ -203,7 +222,7 @@ const Game = (() => {
             Picker.cleanup();
             Picker.clearHighlights(currentCar);
             onStepComplete(tapStep, null, null);   // null targetEl = missed
-          }, tapStep.timeout);
+          }, tapTimeout);
         }
       }, 600 / CONFIG.gameSpeed);
     });
@@ -255,7 +274,8 @@ const Game = (() => {
           Picker.highlightStep(currentCar, steps, stepIndex);
           Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
           const nextFaultStep = steps[stepIndex];
-          if (nextFaultStep?.timeout) {
+          const nextFaultTimeout = _syncedTimeout(nextFaultStep);
+          if (nextFaultTimeout !== null) {
             stepTimeout = setTimeout(() => {
               stepTimeout = null;
               if (generation !== gen || busy) return;
@@ -263,7 +283,7 @@ const Game = (() => {
               Picker.cleanup();
               Picker.clearHighlights(currentCar);
               onStepComplete(nextFaultStep, null, null);
-            }, nextFaultStep.timeout);
+            }, nextFaultTimeout);
           }
         }, 400 / CONFIG.gameSpeed);
       } else {
@@ -303,7 +323,8 @@ const Game = (() => {
         Picker.highlightStep(currentCar, steps, stepIndex);
         Picker.listenForTap(currentCar, steps, stepIndex, () => busy, onStepComplete);
         const nextStep = steps[stepIndex];
-        if (nextStep?.timeout) {
+        const nextStepTimeout = _syncedTimeout(nextStep);
+        if (nextStepTimeout !== null) {
           stepTimeout = setTimeout(() => {
             stepTimeout = null;
             if (generation !== gen || busy) return;
@@ -311,7 +332,7 @@ const Game = (() => {
             Picker.cleanup();
             Picker.clearHighlights(currentCar);
             onStepComplete(nextStep, null, null);
-          }, nextStep.timeout);
+          }, nextStepTimeout);
         }
       }, 250 / CONFIG.gameSpeed);
     }
