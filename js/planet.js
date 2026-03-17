@@ -8,6 +8,45 @@ const Planet = (() => {
 
   function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+  /**
+   * Return rgba() of the complementary hue (hue + 180°) of a hex colour.
+   * Saturation and lightness are nudged into a visible mid-range so the
+   * complement reads clearly over the planet body without looking garish.
+   */
+  function _complementRGBA(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0, s = 0;
+    const l = (max + min) / 2;
+    if (d) {
+      s = d / (1 - Math.abs(2 * l - 1));
+      if (max === r) h = ((g - b) / d + 6) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h /= 6;
+    }
+    const hc = (h + 0.5) % 1;  // complementary hue
+    // Use fixed vivid s/l so the complement is clearly coloured regardless of
+    // how muted the input planet colour is — only the hue is derived from it.
+    const cs = 0.60;
+    const cl = 0.62;
+    const q = cl < 0.5 ? cl * (1 + cs) : cl + cs - cl * cs;
+    const p = 2 * cl - q;
+    const hue2rgb = (t) => {
+      if (t < 0) t += 1; if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    };
+    const cr = Math.round(hue2rgb(hc + 1/3) * 255);
+    const cg = Math.round(hue2rgb(hc)       * 255);
+    const cb = Math.round(hue2rgb(hc - 1/3) * 255);
+    return `rgba(${cr},${cg},${cb},${alpha})`;
+  }
+
   /* ─── Environmental detail builders ─── */
 
   /** Ocean shimmer — subtle gradient overlay on sphere body */
@@ -22,7 +61,11 @@ const Planet = (() => {
    * Large southern continent (city zone sits here), smaller northern
    * landmass, and a small island/archipelago.
    */
-  function _continentsSVG(cx, cy, r) {
+  function _continentsSVG(cx, cy, r, colour) {
+    const fA = _complementRGBA(colour, 0.82);   // main continent fill
+    const fB = _complementRGBA(colour, 0.68);   // smaller landmass fill
+    const fC = _complementRGBA(colour, 0.52);   // tiny islet fill
+    const st = _complementRGBA(colour, 0.95);   // coastline stroke
     // Southern continent — large temperate landmass with a notched bay on the west coast
     const sc = `M${cx - 45},${cy + 15} C${cx - 52},${cy + 22} ${cx - 48},${cy + 35} ${cx - 38},${cy + 42}
                 C${cx - 30},${cy + 48} ${cx - 18},${cy + 55} ${cx},${cy + 58}
@@ -41,14 +84,14 @@ const Planet = (() => {
     const islet  = `M${cx + 30},${cy - 24} C${cx + 34},${cy - 28} ${cx + 40},${cy - 26} ${cx + 38},${cy - 21}
                     C${cx + 36},${cy - 17} ${cx + 28},${cy - 19} ${cx + 30},${cy - 24} Z`;
     return `<g class="planet__continents" pointer-events="none">
-      <!-- Southern continent — light patch, faint white coastline -->
-      <path d="${sc}" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
+      <!-- Southern continent -->
+      <path d="${sc}" fill="${fA}" stroke="${st}" stroke-width="0.8"/>
       <!-- Northern landmass -->
-      <path d="${nc}" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>
+      <path d="${nc}" fill="${fB}" stroke="${st}" stroke-width="0.7"/>
       <!-- Island -->
-      <path d="${island}" fill="rgba(255,255,255,0.09)" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
+      <path d="${island}" fill="${fB}" stroke="${st}" stroke-width="0.6"/>
       <!-- Islet -->
-      <path d="${islet}"  fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.14)" stroke-width="0.5"/>
+      <path d="${islet}"  fill="${fC}" stroke="${st}" stroke-width="0.5"/>
     </g>`;
   }
 
@@ -587,7 +630,7 @@ const Planet = (() => {
    * → fault zones → ring-front (ringed only)
    */
   function _planetSVG(opts) {
-    const { shape, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic } = opts;
+    const { shape, colour, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic } = opts;
     const cx = 200, cy = 110, r = 90;
 
     const geometryFn = GEOMETRY[shape] || GEOMETRY.rocky;
@@ -614,7 +657,7 @@ const Planet = (() => {
       ${_oceanShimmerSVG(cx, cy, r)}
 
       <!-- Continents (rocky/ringed) -->
-      ${hasLand ? _continentsSVG(cx, cy, r) : ''}
+      ${hasLand ? _continentsSVG(cx, cy, r, colour) : ''}
 
       <!-- Terminator shading (day/night edge) -->
       ${_terminatorSVG(cx, cy, r)}
@@ -697,7 +740,7 @@ const Planet = (() => {
 
     el.innerHTML = `
       <div class="car__dashboard">${dashboardHTML}</div>
-      ${_planetSVG({ shape, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic })}
+      ${_planetSVG({ shape, colour, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic })}
     `;
 
     garage.appendChild(el);
