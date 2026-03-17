@@ -628,7 +628,7 @@ const Planet = (() => {
    * shadow → atmosphere (outer + inner) → ring-back (ringed only)
    * → body circle → ocean shimmer → continents → terminator shading
    * → geometry overlay (craters/bands) → ice caps → specular highlights
-   * → fault zones → ring-front (ringed only)
+   * → fault zones (fire/ocean/asteroid/satellite/tectonic → forest/city on top) → ring-front (ringed only)
    */
   function _planetSVG(opts) {
     const { shape, colour, hasFire, hasForest, hasCity, hasOcean, hasAsteroid, hasSatellite, hasTectonic } = opts;
@@ -682,13 +682,14 @@ const Planet = (() => {
                transform="rotate(-20 ${cx - 30} ${cy - 35})"/>
 
       <!-- Fault zones (shown per active faults) -->
+      <!-- fire/ocean/asteroid/satellite/tectonic first, then forest/city on top -->
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
-      ${hasForest ? _forestZoneSVG(cx, cy) : ''}
-      ${hasCity ? _cityZoneSVG(cx, cy) : ''}
       ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
       ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
+      ${hasForest ? _forestZoneSVG(cx, cy) : ''}
+      ${hasCity ? _cityZoneSVG(cx, cy) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
       ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}
