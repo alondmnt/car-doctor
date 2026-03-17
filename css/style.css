@@ -2619,14 +2619,12 @@ html, body {
   opacity: 0;
   pointer-events: none;
 }
-/* pointer-events intentionally omitted: picker.js sets it inline on the active
-   step target. The old explicit `auto` here had higher specificity (0,2,0) than
-   the parent zone's `pointer-events: none` (0,1,0), causing meteor groups to
-   intercept clicks meant for lower fault zones even when asteroid was inactive. */
+/* pointer-events: none by default — enabled only on the --active zone (below),
+   so inactive/paused meteors never intercept taps meant for other fault zones. */
 .planet__asteroid-zone .planet__meteor-group {
   opacity: 1;
   cursor: pointer;
-  animation: meteor-approach 2.5s linear forwards;
+  animation: meteor-approach 4s linear both;
   /* Paused until game.js adds --active; animation is unpaused and the JS timeout
      are started on the same tick so they stay in sync. */
   animation-play-state: paused;
@@ -2637,6 +2635,11 @@ html, body {
 }
 .planet__asteroid-zone--active .planet__meteor-group {
   animation-play-state: running;
+  pointer-events: auto;
+}
+.planet__meteor-group--destroyed,
+.planet__meteor-group--impact {
+  pointer-events: none;
 }
 @keyframes meteor-approach {
   /* 0% opacity:0 keeps meteors invisible while paused (before fault activates) */
@@ -2648,11 +2651,11 @@ html, body {
   animation: meteor-explode 0.4s ease-out forwards !important;
 }
 @keyframes meteor-explode {
-  /* scale() removed: with view-box transform-origin:center, scale drifts toward
-     viewport centre. Brightness flash gives sufficient visual feedback. */
-  0%   { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 1; filter: brightness(5); }
+  /* No transform — position is frozen in JS by capturing the computed transform
+     before cancelling the approach animation. Only opacity+filter animate here. */
+  0%   { opacity: 1; filter: brightness(5); }
   40%  { opacity: 1; filter: brightness(2); }
-  100% { transform: translate(var(--meteor-dx), var(--meteor-dy)); opacity: 0; }
+  100% { opacity: 0; filter: none; }
 }
 .planet__meteor-tail {
   animation: tail-flicker 0.3s ease-in-out infinite alternate;
@@ -2661,7 +2664,9 @@ html, body {
   0%   { opacity: 0.3; }
   100% { opacity: 0.6; }
 }
-.planet__asteroid-zone--hidden { display: none; }
+/* Hide meteors + lasers when zone resolves, but keep impact-site craters visible */
+.planet__asteroid-zone--hidden .planet__meteor-group,
+.planet__asteroid-zone--hidden .planet__laser { display: none; }
 
 /* Laser zap — planet fires a beam to destroy the meteor */
 .planet__laser {
