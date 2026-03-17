@@ -147,13 +147,16 @@ const Game = (() => {
    * locked to the already-running animation.
    * Returns the adjusted timeout in ms, or null if the step has no timeout.
    */
+  /** Unpause the asteroid zone CSS animation and record wall-clock start for timeout sync. */
+  function _unpauseAsteroidZone(carEl) {
+    if (carEl.dataset.animFaultStart) return;
+    carEl.dataset.animFaultStart = Date.now();
+    carEl.querySelector('.planet__asteroid-zone')?.classList.add('planet__asteroid-zone--active');
+  }
+
   function _syncedTimeout(step) {
     if (!step?.timeout) return null;
-    if (!currentCar.el.dataset.animFaultStart) {
-      currentCar.el.dataset.animFaultStart = Date.now();
-      currentCar.el.querySelector('.planet__asteroid-zone')
-        ?.classList.add('planet__asteroid-zone--active');
-    }
+    _unpauseAsteroidZone(currentCar.el);
     const elapsed = Date.now() - parseInt(currentCar.el.dataset.animFaultStart);
     return Math.max(50, step.timeout - elapsed);
   }
@@ -165,12 +168,7 @@ const Game = (() => {
    */
   function _handleSetupStep(step, gen) {
     const carEl = currentCar.el;
-    // Unpause timed approach animation and record start time
-    if (!carEl.dataset.animFaultStart) {
-      carEl.dataset.animFaultStart = Date.now();
-      carEl.querySelector('.planet__asteroid-zone')
-        ?.classList.add('planet__asteroid-zone--active');
-    }
+    _unpauseAsteroidZone(carEl);
     step.setup(carEl, () => {
       if (generation !== gen || !currentCar) return;
       busy = true;

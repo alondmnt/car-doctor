@@ -84,12 +84,20 @@ const PlanetRepair = (() => {
       setup: (carEl, done) => {
         let resolved = 0;
         let missCount = 0;
+        const zone = carEl.querySelector('.planet__asteroid-zone');  // cached once
+        const tapListeners = new Array(count).fill(null);            // for miss-path cleanup
 
         // Mark one meteor resolved; fire done() when all are settled.
         const handleMeteor = (i, hit) => {
           const meteorEl = carEl.querySelector(`.planet__meteor-group--${i}`);
           if (meteorEl?.dataset.resolved) return;
           if (meteorEl) meteorEl.dataset.resolved = '1';
+
+          // Clean up tap listener regardless of hit/miss (miss path won't self-remove)
+          if (tapListeners[i]) {
+            meteorEl?.removeEventListener('pointerdown', tapListeners[i]);
+            tapListeners[i] = null;
+          }
 
           if (hit) {
             Audio.play('tap');
@@ -113,7 +121,6 @@ const PlanetRepair = (() => {
           resolved++;
           if (resolved === count) {
             if (missCount > 0) carEl.dataset.asteroidFailed = '1';
-            const zone = carEl.querySelector('.planet__asteroid-zone');
             if (zone) setTimeout(() => zone.classList.add('planet__asteroid-zone--hidden'), 500);
             done();
           }
@@ -124,6 +131,7 @@ const PlanetRepair = (() => {
           if (!meteorEl) { handleMeteor(i, true); continue; }  // missing = auto-hit
 
           const delay = parseFloat(meteorEl.dataset.delay || 0);
+          // 4s = CSS meteor-approach animation duration; 0.5s = grace window after landing
           const timeout = Math.round((delay + 4 + 0.5) * 1000);
 
           // Per-meteor miss timeout
@@ -132,13 +140,15 @@ const PlanetRepair = (() => {
             handleMeteor(i, false);
           }, timeout);
 
-          // Direct tap — bypasses Picker; removes listener after first hit
-          meteorEl.addEventListener('pointerdown', function onTap() {
+          // Direct tap — bypasses Picker; named fn stored so miss path can remove it too
+          tapListeners[i] = function onTap() {
             clearTimeout(timer);
             meteorEl.removeEventListener('pointerdown', onTap);
+            tapListeners[i] = null;
             if (!carEl.isConnected) return;
             handleMeteor(i, true);
-          });
+          };
+          meteorEl.addEventListener('pointerdown', tapListeners[i]);
         }
       },
     }];
