@@ -140,13 +140,6 @@ const Game = (() => {
     nextCar();
   }
 
-  /**
-   * Start timed-approach fault animations (e.g. asteroid defence) in sync with the
-   * JS step timeout.  First call unpauses the CSS animation and records the start
-   * time; subsequent calls (steps 1–3) subtract elapsed time so the JS timer stays
-   * locked to the already-running animation.
-   * Returns the adjusted timeout in ms, or null if the step has no timeout.
-   */
   /** Unpause the asteroid zone CSS animation and record wall-clock start for timeout sync. */
   function _unpauseAsteroidZone(carEl) {
     if (carEl.dataset.animFaultStart) return;
@@ -154,6 +147,12 @@ const Game = (() => {
     carEl.querySelector('.planet__asteroid-zone')?.classList.add('planet__asteroid-zone--active');
   }
 
+  /**
+   * Start timed-approach fault animations in sync with the JS step timeout.
+   * Unpauses the CSS animation and returns the elapsed-adjusted timeout in ms,
+   * so sequential steps stay locked to the already-running animation.
+   * Returns null if the step has no timeout.
+   */
   function _syncedTimeout(step) {
     if (!step?.timeout) return null;
     _unpauseAsteroidZone(currentCar.el);
