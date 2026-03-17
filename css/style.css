@@ -711,6 +711,16 @@ html, body {
   --ind-colour: 244, 162, 97;
   background: #f4a261;
 }
+/* Cosmetic planet fault — orange (same as paint tier) */
+.car__indicator--forest.car__indicator--fault {
+  --ind-colour: 244, 162, 97;
+  background: #f4a261;
+}
+/* Upgrade planet fault — teal (same as sticker/jetpack tier) */
+.car__indicator--city.car__indicator--fault {
+  --ind-colour: 42, 157, 143;
+  background: #2a9d8f;
+}
 /* Upgrade faults — teal (same as sticker) */
 .car__indicator--jetpack.car__indicator--fault,
 .car__indicator--laser.car__indicator--fault,

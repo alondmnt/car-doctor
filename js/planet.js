@@ -682,13 +682,13 @@ const Planet = (() => {
     // Dashboard indicators — base faults always shown, upgrades shown when unlocked
     const planetWeights = GameState.get('planetFaultWeights');
     const indicators = [
+      ...('asteroidDefence' in planetWeights ? [{ cls: 'asteroidDefence',  fault: hasAsteroid }]  : []),
+      ...('tectonicVolcanic' in planetWeights ? [{ cls: 'tectonicVolcanic', fault: hasTectonic }]  : []),
       { cls: 'fire',             fault: hasFire },
+      ...('oceanCleanup'    in planetWeights ? [{ cls: 'oceanCleanup',     fault: hasOcean }]     : []),
+      ...('satelliteNetwork' in planetWeights ? [{ cls: 'satelliteNetwork', fault: hasSatellite }] : []),
       { cls: 'forest',          fault: hasForest },
       { cls: 'city',             fault: hasCity },
-      ...('oceanCleanup'    in planetWeights ? [{ cls: 'oceanCleanup',     fault: hasOcean }]     : []),
-      ...('asteroidDefence' in planetWeights ? [{ cls: 'asteroidDefence',  fault: hasAsteroid }]  : []),
-      ...('satelliteNetwork' in planetWeights ? [{ cls: 'satelliteNetwork', fault: hasSatellite }] : []),
-      ...('tectonicVolcanic' in planetWeights ? [{ cls: 'tectonicVolcanic', fault: hasTectonic }]  : []),
     ];
 
     const dashboardHTML = indicators.map(ind =>
