@@ -7,6 +7,7 @@ const FaultRegistry = (() => {
   /** Fault metadata — array index determines repair order.
    *  Each entry maps a fault key to its dashboard indicator and per-vehicle repair function. */
   const REGISTRY = [
+    { key: 'asteroidDefence', indicator: '.car__indicator--asteroidDefence', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.asteroidDefence(c) },
     { key: 'flatTyre',    indicator: '.car__indicator--tyre',        car: (c) => Repair.flatTyre(c),          robot: (c) => RobotRepair.brokenBoot(c),   spaceship: (c) => SpaceshipRepair.brokenWing(c) },
     { key: 'engine',      indicator: '.car__indicator--engine',      car: (c) => Repair.engine(c),            robot: (c) => RobotRepair.powerCore(c),    spaceship: (c) => SpaceshipRepair.booster(c) },
     { key: 'armJoint',    indicator: '.car__indicator--armJoint',    car: null,                                robot: (c) => RobotRepair.armJoint(c) },
@@ -20,7 +21,6 @@ const FaultRegistry = (() => {
     { key: 'forest',     indicator: '.car__indicator--forest',     car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.plantForests(c) },
     { key: 'city',            indicator: '.car__indicator--city',            car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.buildCities(c) },
     { key: 'oceanCleanup',    indicator: '.car__indicator--oceanCleanup',    car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.cleanOcean(c) },
-    { key: 'asteroidDefence', indicator: '.car__indicator--asteroidDefence', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.asteroidDefence(c) },
     { key: 'satelliteNetwork', indicator: '.car__indicator--satelliteNetwork', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.satelliteNetwork(c) },
     { key: 'tectonicVolcanic', indicator: '.car__indicator--tectonicVolcanic', car: null, robot: null, spaceship: null, planet: (c) => PlanetRepair.tectonicRepair(c) },
     { key: 'wash',        indicator: '.car__indicator--wash',        car: (c) => Repair.wash(c),              robot: (c) => RobotRepair.oilGrime(c),     spaceship: (c) => SpaceshipRepair.spaceDust(c) },
