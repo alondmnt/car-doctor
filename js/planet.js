@@ -756,21 +756,57 @@ const Planet = (() => {
    * rendered in fully-repaired state (green patches, visible trees) with no animation.
    * Shown as civilisation background when a more advanced fault is active.
    */
-  function _forestDecorationSVG(cx, cy) {
-    const [fx, fy] = _forestPos(cx, cy);
+  function _forestDecorationSVG(cx, cy, expanded, shape) {
+    if (!expanded) {
+      // Classic single-zone forest decoration
+      const [fx, fy] = _forestPos(cx, cy);
+      return `<g class="planet__forest-decoration" pointer-events="none">
+        <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
+                 fill="rgba(60,140,60,0.5)"/>
+        <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
+                 fill="rgba(60,140,60,0.5)"/>
+        <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
+                 fill="rgba(60,140,60,0.5)"/>
+        <text x="${fx - 10}" y="${fy - 12}"
+              text-anchor="middle" font-size="14" opacity="1">🌲</text>
+        <text x="${fx + 10}" y="${fy + 15}"
+              text-anchor="middle" font-size="16" opacity="1">🌳</text>
+        <text x="${fx - 5}" y="${fy - 29}"
+              text-anchor="middle" font-size="12" opacity="1">🌲</text>
+      </g>`;
+    }
+    // Expanded: all 3 terraform categories as non-interactive scatter decorations
+    const isGas = shape === 'gas';
+    const positions = isGas ? _terraformZonesForGas(cx, cy) : _terraformZonesForLand(cx, cy);
+    const fills = [
+      'rgba(40,140,180,0.35)',
+      'rgba(60,140,60,0.4)',
+      'rgba(140,110,60,0.35)',
+    ];
+    const pools = [
+      CONFIG.terraformWaterStickers,
+      CONFIG.terraformPlantsStickers,
+      CONFIG.terraformAnimalsStickers,
+    ];
+    const slots = [
+      { dx:  0, dy: -2,  size: 16 },
+      { dx: -18, dy: -10, size: 13 },
+      { dx:  16, dy:  8,  size: 11 },
+      { dx: -8,  dy:  14, size: 10 },
+    ];
     return `<g class="planet__forest-decoration" pointer-events="none">
-      <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
-               fill="rgba(60,140,60,0.5)"/>
-      <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
-               fill="rgba(60,140,60,0.5)"/>
-      <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
-               fill="rgba(60,140,60,0.5)"/>
-      <text x="${fx - 10}" y="${fy - 12}"
-            text-anchor="middle" font-size="14" opacity="1">🌲</text>
-      <text x="${fx + 10}" y="${fy + 15}"
-            text-anchor="middle" font-size="16" opacity="1">🌳</text>
-      <text x="${fx - 5}" y="${fy - 29}"
-            text-anchor="middle" font-size="12" opacity="1">🌲</text>
+      ${positions.map(([fx, fy], idx) => {
+        const pool = pools[idx];
+        const fill = fills[idx];
+        const picks = slots.map((_, i) => pool[i % pool.length]);
+        return `
+        <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
+        <ellipse cx="${fx + 6}" cy="${fy + 8}" rx="18" ry="12" fill="${fill}"/>
+        ${slots.map((s, i) =>
+          `<text x="${fx + s.dx}" y="${fy + s.dy}" text-anchor="middle"
+                 dominant-baseline="central" font-size="${s.size}">${picks[i]}</text>`
+        ).join('\n        ')}`;
+      }).join('\n      ')}
     </g>`;
   }
 
@@ -868,7 +904,7 @@ const Planet = (() => {
       <!-- Civilisation decorations — repaired-state background, below active fault zones -->
       <!-- Forest shown when city/asteroid/satellite fault is active (but not if forest itself is active) -->
       <!-- City shown when asteroid/satellite fault is active (but not if city itself is active) -->
-      ${(hasCity || hasAsteroid || hasSatellite) && !hasForest ? _forestDecorationSVG(cx, cy) : ''}
+      ${(hasCity || hasAsteroid || hasSatellite) && !hasForest ? _forestDecorationSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
       ${(hasAsteroid || hasSatellite) && !hasCity ? _cityDecorationSVG(cx, cy, r, shape) : ''}
 
       <!-- Fault zones (shown per active faults) -->
