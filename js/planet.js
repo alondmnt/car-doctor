@@ -427,11 +427,13 @@ const Planet = (() => {
    */
   function _scatterZoneSVG(fx, fy, id, prefix) {
     const fill = TERRAFORM_FILLS[id] || TERRAFORM_FILLS[0];
-    const texts = SCATTER_SLOTS.map(s =>
-      `<text class="${prefix}-text" x="${fx + s.dx}" y="${fy + s.dy}"
+    const texts = SCATTER_SLOTS.map(s => {
+      const angle = Math.round(Math.random() * 30 - 15);  // -15° to +15°
+      return `<text class="${prefix}-text" x="${fx + s.dx}" y="${fy + s.dy}"
             text-anchor="middle" dominant-baseline="central"
-            style="font-size:${s.size}px"></text>`
-    ).join('\n      ');
+            transform="rotate(${angle} ${fx + s.dx} ${fy + s.dy})"
+            style="font-size:${s.size}px"></text>`;
+    }).join('\n      ');
     return `
     <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone" pointer-events="none">
       <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
@@ -796,10 +798,12 @@ const Planet = (() => {
         return `
         <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
         <ellipse cx="${fx + 6}" cy="${fy + 8}" rx="18" ry="12" fill="${fill}"/>
-        ${SCATTER_SLOTS.map(s =>
-          `<text x="${fx + s.dx}" y="${fy + s.dy}" text-anchor="middle"
-                 dominant-baseline="central" font-size="${s.size}">${pick}</text>`
-        ).join('\n        ')}`;
+        ${SCATTER_SLOTS.map(s => {
+          const angle = Math.round(Math.random() * 30 - 15);
+          return `<text x="${fx + s.dx}" y="${fy + s.dy}" text-anchor="middle"
+                 dominant-baseline="central" font-size="${s.size}"
+                 transform="rotate(${angle} ${fx + s.dx} ${fy + s.dy})">${pick}</text>`;
+        }).join('\n        ')}`;
       }).join('\n      ')}
     </g>`;
   }
