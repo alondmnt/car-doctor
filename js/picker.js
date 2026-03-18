@@ -118,25 +118,12 @@ const Picker = (() => {
 
   /* ─── Sticker / badge helper ─── */
 
-  /**
-   * Apply a sticker/badge emoji to the zone and hide the dashed border.
-   * When `companions` is provided and the zone has multiple <text> slots,
-   * slot 0 gets the picked emoji and slots 1-3 get random companions.
-   */
-  function applyStickerOrBadge(car, emoji, zoneSelector, companions) {
+  /** Apply a sticker/badge emoji to the zone and hide the dashed border.
+   *  Fills all <text> slots with the same emoji (scatter zones get duplicates). */
+  function applyStickerOrBadge(car, emoji, zoneSelector) {
     const zone = car.el.querySelector(zoneSelector || '[data-role="sticker-zone"]');
     if (!zone) return;
-    const textEls = zone.querySelectorAll('text');
-    if (companions && companions.length && textEls.length > 1) {
-      textEls[0].textContent = emoji;
-      const pool = companions.filter(e => e !== emoji);
-      for (let i = 1; i < textEls.length; i++) {
-        textEls[i].textContent = pool[Math.floor(Math.random() * pool.length)];
-      }
-    } else {
-      const textEl = textEls[0] || zone;
-      textEl.textContent = emoji;
-    }
+    zone.querySelectorAll('text').forEach(t => { t.textContent = emoji; });
     zone.classList.add('sticker-zone--applied');
   }
 
@@ -241,7 +228,7 @@ const Picker = (() => {
         containerClass: 'picker-row',
         items: step.pickerItems,
         renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
-        onPick: (emoji) => { applyStickerOrBadge(car, emoji, step.target, step.pickerItems); onPick(emoji); },
+        onPick: (emoji) => { applyStickerOrBadge(car, emoji, step.target); onPick(emoji); },
       });
       return;
     }

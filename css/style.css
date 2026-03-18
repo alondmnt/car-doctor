@@ -1129,8 +1129,6 @@ html, body {
 .ship__emblem-zone.sticker-zone--applied text {
   font-size: 34px;
 }
-/* Terraform scatter zones keep individual inline font-sizes */
-.planet__terraform-zone.sticker-zone--applied text { font-size: 12px; }
 .sticker-zone--applied rect[stroke] {
   display: none;
 }
@@ -2607,6 +2605,7 @@ html, body {
 
 /* ===== Forest fault zone ===== */
 .planet__forests { cursor: pointer; }
+.planet__terraform-zone { cursor: pointer; }
 .planet__barren-patch {
   transition: opacity 0.6s, fill 0.6s;
 }

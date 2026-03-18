@@ -404,30 +404,33 @@ const Planet = (() => {
     </g>`;
   }
 
+  /** Backdrop fills per terraform zone: 0=water(teal), 1=plants(green), 2=animals(earth) */
+  const TERRAFORM_FILLS = [
+    'rgba(40,140,180,0.35)',
+    'rgba(60,140,60,0.4)',
+    'rgba(140,110,60,0.35)',
+  ];
+
+  /** Jittered scatter-slot layout — primary (16px) + 3 smaller duplicates */
+  const SCATTER_SLOTS = [
+    { dx:  0, dy: -2,  size: 16 },
+    { dx: -18, dy: -10, size: 13 },
+    { dx:  16, dy:  8,  size: 11 },
+    { dx: -8,  dy:  14, size: 10 },
+  ];
+
   /**
    * Multi-scatter terraform zone — renders a zone with:
    * - 2 tinted backdrop ellipses (category-coloured)
-   * - 4 <text> slots at jittered positions: primary (16px) + 3 companions (10-13px)
+   * - 4 <text> slots at jittered positions (all hidden until applied)
    * - Dashed border rects + hit rect (same pattern as _zoneSVG)
    */
   function _scatterZoneSVG(fx, fy, id, prefix) {
-    // Backdrop fills per zone index: 0=water(teal), 1=plants(green), 2=animals(earth)
-    const fills = [
-      'rgba(40,140,180,0.35)',
-      'rgba(60,140,60,0.4)',
-      'rgba(140,110,60,0.35)',
-    ];
-    const fill = fills[id] || fills[0];
-    // Jittered text positions — primary + 3 companions
-    const slots = [
-      { dx:  0, dy: -2,  size: 16 },  // primary
-      { dx: -18, dy: -10, size: 13 },  // companion
-      { dx:  16, dy:  8,  size: 11 },  // companion
-      { dx: -8,  dy:  14, size: 10 },  // companion
-    ];
-    const texts = slots.map((s, i) =>
+    const fill = TERRAFORM_FILLS[id] || TERRAFORM_FILLS[0];
+    const texts = SCATTER_SLOTS.map(s =>
       `<text class="${prefix}-text" x="${fx + s.dx}" y="${fy + s.dy}"
-            text-anchor="middle" dominant-baseline="central" font-size="${i === 0 ? 0 : s.size}" style="font-size:${s.size}px"></text>`
+            text-anchor="middle" dominant-baseline="central"
+            style="font-size:${s.size}px"></text>`
     ).join('\n      ');
     return `
     <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone" pointer-events="none">
@@ -444,12 +447,14 @@ const Planet = (() => {
     </g>`;
   }
 
-  /** Terraform zone positions for rocky/ringed — ocean, landmass, island */
+  /** Terraform zone positions for rocky/ringed — ocean, landmass, island.
+   *  Shifted to avoid overlap with expanded city zones
+   *  (city: +25/+32, -22/-32, +26/-26). */
   function _terraformZonesForLand(cx, cy) {
     return [
-      [cx - 20, cy + 45],   // water — southern ocean
-      [cx - 45, cy - 30],   // plants — northern landmass (= _forestPos)
-      [cx + 28, cy - 26],   // animals — island/archipelago
+      [cx - 25, cy + 42],   // water — southern ocean (away from city +25/+32)
+      [cx - 45, cy - 10],   // plants — western landmass (away from city -22/-32)
+      [cx + 40, cy + 5],    // animals — eastern coast (away from city +26/-26)
     ];
   }
 
@@ -778,33 +783,22 @@ const Planet = (() => {
     // Expanded: all 3 terraform categories as non-interactive scatter decorations
     const isGas = shape === 'gas';
     const positions = isGas ? _terraformZonesForGas(cx, cy) : _terraformZonesForLand(cx, cy);
-    const fills = [
-      'rgba(40,140,180,0.35)',
-      'rgba(60,140,60,0.4)',
-      'rgba(140,110,60,0.35)',
-    ];
     const pools = [
       CONFIG.terraformWaterStickers,
       CONFIG.terraformPlantsStickers,
       CONFIG.terraformAnimalsStickers,
     ];
-    const slots = [
-      { dx:  0, dy: -2,  size: 16 },
-      { dx: -18, dy: -10, size: 13 },
-      { dx:  16, dy:  8,  size: 11 },
-      { dx: -8,  dy:  14, size: 10 },
-    ];
     return `<g class="planet__forest-decoration" pointer-events="none">
       ${positions.map(([fx, fy], idx) => {
         const pool = pools[idx];
-        const fill = fills[idx];
-        const picks = slots.map((_, i) => pool[i % pool.length]);
+        const fill = TERRAFORM_FILLS[idx];
+        const pick = pool[0];  // deterministic representative emoji
         return `
         <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
         <ellipse cx="${fx + 6}" cy="${fy + 8}" rx="18" ry="12" fill="${fill}"/>
-        ${slots.map((s, i) =>
+        ${SCATTER_SLOTS.map(s =>
           `<text x="${fx + s.dx}" y="${fy + s.dy}" text-anchor="middle"
-                 dominant-baseline="central" font-size="${s.size}">${picks[i]}</text>`
+                 dominant-baseline="central" font-size="${s.size}">${pick}</text>`
         ).join('\n        ')}`;
       }).join('\n      ')}
     </g>`;
