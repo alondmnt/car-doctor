@@ -600,9 +600,9 @@ const Planet = (() => {
     const yBias = isGas ? 20 : 0;
 
     const cracks = [
-      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 6 + yBias} L${cx + 35},${cy - 1 + yBias} L${cx + 50},${cy + 12 + yBias}`,
-      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy - 8 + yBias} L${cx + 30},${cy + 20 + yBias}`,
-      `M${cx - 30},${cy + 25 + yBias} L${cx - 15},${cy + 18 + yBias} L${cx + 5},${cy + 30 + yBias} L${cx + 22},${cy + 22 + yBias} L${cx + 40},${cy + 28 + yBias}`,
+      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 12 + yBias} L${cx + 35},${cy + 25 + yBias} L${cx + 55},${cy + 35 + yBias}`,
+      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy + 5 + yBias} L${cx + 35},${cy + 45 + yBias}`,
+      `M${cx - 30},${cy + 25 + yBias} L${cx - 15},${cy + 18 + yBias} L${cx + 5},${cy + 30 + yBias} L${cx + 22},${cy + 35 + yBias} L${cx + 40},${cy + 42 + yBias}`,
     ];
 
     let svg = `<g class="planet__tectonic-zone" data-role="interactive">
@@ -626,11 +626,11 @@ const Planet = (() => {
       </g>`;
     });
 
-    // 2 volcanoes at crack endpoints — right-centre equatorial band,
-    // shifted down from fire (upper-right) and clear of city (lower-right)
+    // 2 volcanoes at crack endpoints — south-east, clear of terraform
+    // animals (cx+40, cy+5) and city (cx+25, cy+32)
     const volcanoPositions = [
-      { x: cx + 50, y: cy + 12 + yBias },
-      { x: cx + 30, y: cy + 20 + yBias },
+      { x: cx + 55, y: cy + 35 + yBias },
+      { x: cx + 35, y: cy + 45 + yBias },
     ];
 
     volcanoPositions.forEach((pos, i) => {
