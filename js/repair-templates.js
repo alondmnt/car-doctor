@@ -238,5 +238,29 @@ const RepairTemplates = (() => {
     }];
   }
 
-  return { boltSwap, panelSwap, spray, stickerApply, hoseWash };
+  /**
+   * 1-step zone choice: present N zones simultaneously; player taps one to place a picker item.
+   * Unchosen zones are hidden on selection. Reusable for city zones, car sticker spots,
+   * forest biomes, and any future multi-zone placement.
+   * @param {object} d
+   * @param {string} d.id             - step id
+   * @param {string} d.description    - step description
+   * @param {string[]} d.zones        - selectors for each zone element
+   * @param {string} [d.tool]         - required tool before tapping (optional)
+   * @param {string} d.picker         - picker type ('sticker', 'planetCity', etc.)
+   * @param {string} [d.sound='tap']  - sound on pick
+   */
+  function zoneChoice(d) {
+    return [{
+      id: d.id,
+      description: d.description,
+      zoneChoice: d.zones,
+      tool: d.tool,
+      picker: d.picker,
+      sound: d.sound || 'tap',
+      action: () => {},
+    }];
+  }
+
+  return { boltSwap, panelSwap, spray, stickerApply, hoseWash, zoneChoice };
 })();

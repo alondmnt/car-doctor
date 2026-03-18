@@ -96,15 +96,24 @@ const Picker = (() => {
   function highlightStep(car, steps, stepIndex) {
     if (stepIndex >= steps.length) return;
     const step = steps[stepIndex];
+
+    // Highlight all zones for a zone-choice step, or the single target otherwise
+    const doHint = () => {
+      if (!GameState.hintsOn()) return;
+      if (step.zoneChoice) {
+        step.zoneChoice.forEach(sel => highlightCarTarget(car, { ...step, target: sel }));
+      } else {
+        highlightCarTarget(car, step);
+      }
+    };
+
     if (step.tool) {
       showToolbox(step.tool);
-      if (activeTool === step.tool) {
-        if (GameState.hintsOn()) highlightCarTarget(car, step);
-      }
+      if (activeTool === step.tool) doHint();
       return;
     }
     if (activeTool) hideToolbox();
-    if (GameState.hintsOn()) highlightCarTarget(car, step);
+    doHint();
   }
 
   /* ─── Sticker / badge helper ─── */
@@ -242,6 +251,86 @@ const Picker = (() => {
 
   /* ─── Interaction wiring ─── */
 
+  /**
+   * Enable all zones concurrently; first tap wins.
+   * Dispatches picker for the chosen zone, hides the rest, then calls onComplete.
+   */
+  function _listenForZoneChoice(car, step, isBusy, onComplete) {
+    const zones = step.zoneChoice
+      .map(sel => ({ sel, el: car.el.querySelector(sel) }))
+      .filter(z => z.el);
+
+    let chosen = false;
+    const handlers = [];
+
+    zones.forEach(({ el, sel }, i) => {
+      el.style.pointerEvents = 'auto';
+
+      function handler(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isBusy() || chosen) return;
+        chosen = true;
+        zones.forEach(z => { z.el.style.pointerEvents = 'none'; });
+        clearVisualHints(car);
+        dispatchPicker(car, { ...step, target: sel }, (picked) => {
+          zones.forEach((z, j) => { if (j !== i) z.el.style.display = 'none'; });
+          onComplete(step, el, picked);
+        });
+      }
+
+      handlers.push({ el, handler });
+      el.addEventListener('click', handler);
+      el.addEventListener('touchend', handler);
+    });
+
+    activeCleanup = () => {
+      handlers.forEach(({ el, handler }) => {
+        el.style.pointerEvents = '';
+        el.removeEventListener('click', handler);
+        el.removeEventListener('touchend', handler);
+      });
+    };
+  }
+
+  /**
+   * Wait for the required tool, then open zone choice.
+   * Mirrors _waitForToolSelection but routes to _listenForZoneChoice after selection.
+   */
+  function _waitForToolThenZoneChoice(car, step, isBusy, onComplete) {
+    const toolbox = document.getElementById('toolbox');
+
+    function onToolClick(e) {
+      const toolEl = e.target.closest('.toolbox__tool');
+      if (!toolEl) return;
+      e.preventDefault();
+
+      if (toolEl.dataset.tool === step.tool) {
+        Audio.play('tap');
+        // Explicitly remove before _listenForZoneChoice overwrites activeCleanup
+        toolbox.removeEventListener('click', onToolClick);
+        toolbox.removeEventListener('touchend', onToolClick);
+        activeTool = step.tool;
+        toolEl.classList.add('toolbox__tool--selected');
+        if (GameState.hintsOn()) {
+          step.zoneChoice.forEach(sel => highlightCarTarget(car, { ...step, target: sel }));
+        }
+        _listenForZoneChoice(car, step, isBusy, onComplete);
+      } else {
+        toolEl.classList.add('toolbox__tool--wrong');
+        setTimeout(() => toolEl.classList.remove('toolbox__tool--wrong'), 400);
+      }
+    }
+
+    toolbox.addEventListener('click', onToolClick);
+    toolbox.addEventListener('touchend', onToolClick);
+
+    activeCleanup = () => {
+      toolbox.removeEventListener('click', onToolClick);
+      toolbox.removeEventListener('touchend', onToolClick);
+    };
+  }
+
   /** Wait for the player to pick the right tool, then activate the car target */
   function _waitForToolSelection(car, step, target, isBusy, onComplete) {
     const toolbox = document.getElementById('toolbox');
@@ -301,6 +390,17 @@ const Picker = (() => {
   function listenForTap(car, steps, stepIndex, isBusy, onComplete) {
     if (stepIndex >= steps.length) return;
     const step = steps[stepIndex];
+
+    // Zone-choice steps — multiple concurrent targets, player picks one
+    if (step.zoneChoice) {
+      if (step.tool && activeTool !== step.tool) {
+        _waitForToolThenZoneChoice(car, step, isBusy, onComplete);
+      } else {
+        _listenForZoneChoice(car, step, isBusy, onComplete);
+      }
+      return;
+    }
+
     const target = car.el.querySelector(step.target);
     if (!target) return;
 
