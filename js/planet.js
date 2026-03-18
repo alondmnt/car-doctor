@@ -404,6 +404,46 @@ const Planet = (() => {
     </g>`;
   }
 
+  /**
+   * Multi-scatter terraform zone — renders a zone with:
+   * - 2 tinted backdrop ellipses (category-coloured)
+   * - 4 <text> slots at jittered positions: primary (16px) + 3 companions (10-13px)
+   * - Dashed border rects + hit rect (same pattern as _zoneSVG)
+   */
+  function _scatterZoneSVG(fx, fy, id, prefix) {
+    // Backdrop fills per zone index: 0=water(teal), 1=plants(green), 2=animals(earth)
+    const fills = [
+      'rgba(40,140,180,0.35)',
+      'rgba(60,140,60,0.4)',
+      'rgba(140,110,60,0.35)',
+    ];
+    const fill = fills[id] || fills[0];
+    // Jittered text positions — primary + 3 companions
+    const slots = [
+      { dx:  0, dy: -2,  size: 16 },  // primary
+      { dx: -18, dy: -10, size: 13 },  // companion
+      { dx:  16, dy:  8,  size: 11 },  // companion
+      { dx: -8,  dy:  14, size: 10 },  // companion
+    ];
+    const texts = slots.map((s, i) =>
+      `<text class="${prefix}-text" x="${fx + s.dx}" y="${fy + s.dy}"
+            text-anchor="middle" dominant-baseline="central" font-size="${i === 0 ? 0 : s.size}" style="font-size:${s.size}px"></text>`
+    ).join('\n      ');
+    return `
+    <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone" pointer-events="none">
+      <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
+      <ellipse cx="${fx + 6}" cy="${fy + 8}" rx="18" ry="12" fill="${fill}"/>
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+            fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"
+            pointer-events="none"/>
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+            fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"
+            pointer-events="none"/>
+      ${texts}
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="rgba(0,0,0,0.001)"/>
+    </g>`;
+  }
+
   /** Terraform zone positions for rocky/ringed — ocean, landmass, island */
   function _terraformZonesForLand(cx, cy) {
     return [
@@ -473,7 +513,7 @@ const Planet = (() => {
     const positions = isGas
       ? _terraformZonesForGas(cx, cy)
       : _terraformZonesForLand(cx, cy);
-    return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__terraform-zone')).join('');
+    return positions.map(([fx, fy], id) => _scatterZoneSVG(fx, fy, id, 'planet__terraform-zone')).join('');
   }
 
   /**
