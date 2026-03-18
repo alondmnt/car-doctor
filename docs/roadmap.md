@@ -20,24 +20,24 @@
   - Shield generator relocated to mid-fuselage to fix engine/shield overlap on multi-fault spawns
 
 - **Planet doctor** — new vehicle type (build cities, plant forests, put down fires); deep space theme with sun/satellite; 3 geometry types (rocky, gas, ringed); zoom-in entry, orbital exit; tier 70 unlock
-- Planet faults — ocean cleanup (tier 75), asteroid defence (tier 85), satellite network (tier 90)
-- **City expansion** (tier 95) — 3 shape-aware city zones (continent positions for rocky/ringed, construction band for gas); zone-choice interaction: all zones shown simultaneously, player taps one to place a building sticker, others dismiss
+- Planet faults — tectonic repair (tier 75), ocean cleanup (tier 80), asteroid defence (tier 90), satellite network (tier 95)
+- **City expansion** (tier 95 → now tier 90 per reorder) — 3 shape-aware city zones (continent positions for rocky/ringed, construction band for gas); zone-choice interaction: all zones shown simultaneously, player taps one to place a building sticker, others dismiss
 - **Zone-choice infrastructure** — `RepairTemplates.zoneChoice()` factory + `_listenForZoneChoice` / `_waitForToolThenZoneChoice` in Picker; reusable for car sticker spots, forest biomes, and future multi-zone placement
-- **Terraforming** (tier 80) — expands forest fault to 3 sequential zones (water → plants → animals) with shape-aware positions (ocean/landmass/island for rocky/ringed; atmosphere/band for gas); generic `pickerItems` step field for custom emoji pools
+- **Terraforming** (tier 85) — expands forest fault to 3 sequential zones (water → plants → animals) with shape-aware positions (ocean/landmass/island for rocky/ringed; atmosphere/band for gas); generic `pickerItems` step field for custom emoji pools
 
 ## Next up
 
-Planet expansion unlocks (interleaved — exciting faults alternating with content expansions):
+Planet expansion unlocks (narrative arc: geology → water → life → civilisation → defence → advanced tech):
 
 | Tier | Type | Unlock |
 |------|------|--------|
-| 75 | new fault | ✅ Ocean cleanup (animated oil spill, wash mechanic) |
-| 80 | expansion | ✅ Terraforming (expands forest → water reserves, plants, animals) |
-| 85 | new fault | ✅ Asteroid defence (tap incoming meteors, whack-a-mole) |
-| 90 | new fault | ✅ Satellite network (repair broken orbiting satellites) |
-| 95 | expansion | ✅ City expansion (new city stickers / placement zones) |
-| 98 | expansion | Satellite styles (picker of different satellite types) |
-| 100 | new fault | ✅ Tectonic repair (seal magma fault-line cracks) |
+| 75 | new fault | ✅ Tectonic repair (seal magma fault-line cracks; primordial geology) |
+| 80 | new fault | ✅ Ocean cleanup (animated oil spill, wash mechanic) |
+| 85 | expansion | ✅ Terraforming (expands forest → water reserves, plants, animals) |
+| 90 | expansion | ✅ City expansion (new city stickers / placement zones) |
+| 95 | new fault | ✅ Satellite network (repair broken orbiting satellites) |
+| 100 | new fault | ✅ Asteroid defence (tap incoming meteors; satellites enable tracking) |
+| 105 | expansion | Satellite expansion (picker of different satellite types/styles) |
 
 ### Game feel
 
