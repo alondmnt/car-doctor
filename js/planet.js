@@ -894,23 +894,48 @@ const Planet = (() => {
     return controller;
   }
 
-  /** Satellite orbit with 3 broken satellites around the planet */
+  /**
+   * Satellite orbit — 3 broken satellites at random angles around the planet.
+   * Near-circular orbit (orbitRy ≈ 0.75r) allows vertical scatter so satellites
+   * aren't all bunched at the equator.  Random angles follow the same pattern as
+   * _asteroidZoneSVG.  Each satellite uses a double-layer contrast technique:
+   * dark shadow stroke + white halo stroke drawn behind the coloured shapes so
+   * the satellite reads clearly on any planet colour.
+   */
   function _satelliteZoneSVG(cx, cy, r) {
-    const orbitRx = r + 25, orbitRy = 20;
-    const angles = [0, 120, 240];
+    const orbitRx = r + 28;
+    const orbitRy = Math.round(r * 0.75);  // near-circular — ~67 for r=90
+
+    // Random scatter around the full orbit
+    const angles = Array.from({length: 3}, () => Math.random() * 2 * Math.PI);
+    const tilts  = angles.map(() => Math.round((Math.random() - 0.5) * 60));  // –30° to +30°
 
     let sats = '';
-    const tilts = [25, -30, 18];
-    angles.forEach((deg, i) => {
-      const rad = deg * Math.PI / 180;
-      const sx = cx + orbitRx * Math.cos(rad);
-      const sy = cy + orbitRy * Math.sin(rad);
+    angles.forEach((angle, i) => {
+      const sx = (cx + orbitRx * Math.cos(angle)).toFixed(1);
+      const sy = (cy + orbitRy * Math.sin(angle)).toFixed(1);
+      const tilt = tilts[i];
       sats += `
       <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
-         data-tilt="${tilts[i]}"
-         transform="translate(${sx}, ${sy}) rotate(${tilts[i]})">
+         data-tilt="${tilt}"
+         transform="translate(${sx}, ${sy}) rotate(${tilt})">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <rect x="-28" y="-16" width="56" height="28" fill="rgba(0,0,0,0.001)"/>
+        <!-- Shadow layer (dark outline) — readable on light planet colours -->
+        <rect x="-6" y="-4" width="12" height="8" rx="2"
+              fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
+        <rect x="-22" y="-2" width="16" height="4" rx="1"
+              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+        <rect x="6" y="-2" width="16" height="4" rx="1"
+              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+        <!-- Halo layer (white outline) — readable on dark planet colours -->
+        <rect x="-6" y="-4" width="12" height="8" rx="2"
+              fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
+        <rect x="-22" y="-2" width="16" height="4" rx="1"
+              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+        <rect x="6" y="-2" width="16" height="4" rx="1"
+              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+        <!-- Coloured satellite body -->
         <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>
         <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
         <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
