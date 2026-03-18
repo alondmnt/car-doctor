@@ -460,12 +460,13 @@ const Planet = (() => {
     ];
   }
 
-  /** Terraform zone positions for gas — atmosphere, band left, band right */
+  /** Terraform zone positions for gas — spread across upper hemisphere,
+   *  clear of city zones which occupy the cy+44 band. */
   function _terraformZonesForGas(cx, cy) {
     return [
-      [cx,      cy - 50],   // water — upper atmosphere cloud layer
-      [cx - 42, cy + 44],   // plants — band left (floating algae)
-      [cx + 42, cy + 44],   // animals — band right
+      [cx,      cy - 55],   // water — upper atmosphere
+      [cx - 40, cy - 15],   // plants — mid-left band
+      [cx + 40, cy - 15],   // animals — mid-right band
     ];
   }
 
