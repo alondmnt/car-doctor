@@ -181,8 +181,11 @@ const PlanetRepair = (() => {
   }
 
   /**
-   * Satellite network — pick a satellite style, then tap 3 broken
-   * satellites to repair them. Orbit glows on completion.
+   * Satellite network — optional warehouse + style picker, then select the
+   * wrench and tap all 3 broken satellites in any order.  Concurrent setup()
+   * hook mirrors asteroidDefence: tool selection and per-satellite listeners
+   * are managed inside setup() because setup steps bypass Picker's normal
+   * tool-wait flow.  Orbit glows once all three are fixed.
    */
   function satelliteNetwork(_car) {
     const styles = GameState.get('satelliteStyles') || ['standard'];
@@ -201,40 +204,102 @@ const PlanetRepair = (() => {
       });
     }
 
-    for (let i = 0; i < 3; i++) {
-      steps.push({
-        id: `fix-sat-${i}`,
-        description: `Tap satellite ${i + 1} to repair it`,
-        target: `.planet__satellite--${i}`,
-        ...(i === 0 ? { tool: 'wrench' } : {}),
-        sound: 'ratchet',
-        action: (el, carEl) => {
+    const count = 3;
+
+    steps.push({
+      id: 'fix-satellites',
+      description: 'Select the wrench and tap all 3 satellites to repair them',
+      sound: null,
+      action: () => {},
+      setup: (carEl, done) => {
+        let fixed = 0;
+
+        /** Animate tilt to 0, mark fixed, check completion */
+        function fixSat(el) {
           el.classList.remove('planet__satellite--broken');
           el.classList.add('planet__satellite--fixed');
-          // Align satellite — animate tilt back to 0
+          el.classList.remove('hint-glow');
           const tilt = parseFloat(el.dataset.tilt) || 0;
           if (tilt) {
             const base = el.getAttribute('transform').replace(/\s*rotate\([^)]*\)/, '');
             let start = null;
             const duration = 600;
-            function step(ts) {
+            function animStep(ts) {
               if (!start) start = ts;
               const t = Math.min((ts - start) / duration, 1);
-              const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
+              const ease = 1 - Math.pow(1 - t, 3);
               el.setAttribute('transform', `${base} rotate(${tilt * (1 - ease)})`);
-              if (t < 1) requestAnimationFrame(step);
+              if (t < 1) requestAnimationFrame(animStep);
             }
-            requestAnimationFrame(step);
+            requestAnimationFrame(animStep);
           }
           const spark = el.querySelector('.planet__sat-spark');
           if (spark) spark.style.display = 'none';
-          if (i === 2) {
-            const orbit = carEl.querySelector('.planet__sat-orbit');
-            if (orbit) orbit.classList.add('planet__sat-orbit--complete');
+          fixed++;
+          if (fixed === count) {
+            carEl.querySelector('.planet__sat-orbit')?.classList.add('planet__sat-orbit--complete');
+            done();
           }
-        },
-      });
-    }
+        }
+
+        /** Enable all satellite tap targets simultaneously */
+        function enableSatellites() {
+          for (let i = 0; i < count; i++) {
+            const satEl = carEl.querySelector(`.planet__satellite--${i}`);
+            if (!satEl) {
+              // Missing element — auto-resolve this slot
+              fixed++;
+              if (fixed === count) {
+                carEl.querySelector('.planet__sat-orbit')?.classList.add('planet__sat-orbit--complete');
+                done();
+              }
+              continue;
+            }
+            if (GameState.hintsOn()) satEl.classList.add('hint-glow');
+            satEl.style.pointerEvents = 'auto';
+            // Named function so the listener cleans itself up on tap
+            (function attach(el) {
+              function handler(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!carEl.isConnected) return;
+                el.removeEventListener('click', handler);
+                el.removeEventListener('touchend', handler);
+                el.style.pointerEvents = 'none';
+                Audio.play('ratchet');
+                fixSat(el);
+              }
+              el.addEventListener('click', handler);
+              el.addEventListener('touchend', handler);
+            })(satEl);
+          }
+        }
+
+        // Show toolbox with wrench hint; wait for correct tool before enabling satellites
+        Picker.showToolbox('wrench');
+        const toolbox = document.getElementById('toolbox');
+
+        function onToolClick(e) {
+          const toolEl = e.target.closest('.toolbox__tool');
+          if (!toolEl) return;
+          e.preventDefault();
+          if (toolEl.dataset.tool === 'wrench') {
+            Audio.play('tap');
+            toolbox.removeEventListener('click', onToolClick);
+            toolbox.removeEventListener('touchend', onToolClick);
+            toolEl.classList.remove('toolbox__tool--hint');
+            toolEl.classList.add('toolbox__tool--selected');
+            enableSatellites();
+          } else {
+            toolEl.classList.add('toolbox__tool--wrong');
+            setTimeout(() => toolEl.classList.remove('toolbox__tool--wrong'), 400);
+          }
+        }
+
+        toolbox.addEventListener('click', onToolClick);
+        toolbox.addEventListener('touchend', onToolClick);
+      },
+    });
 
     return steps;
   }
