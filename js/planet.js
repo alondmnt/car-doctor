@@ -369,6 +369,43 @@ const Planet = (() => {
   function _forestPos(cx, cy) { return [cx - 45, cy - 30]; }
   function _cityPos(cx, cy)   { return [cx + 25, cy + 32]; }
 
+  /**
+   * Render one dashed placement zone box at (fx, fy) with a CSS class prefix and
+   * numeric index. Structurally identical to the city-zone boxes so that
+   * applyStickerOrBadge, sticker-zone--applied, and highlightCarTarget all work
+   * the same way for both zone types.
+   */
+  function _zoneSVG(fx, fy, id, prefix) {
+    return `
+    <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone">
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+            fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+            fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+      <text class="${prefix}-text" x="${fx}" y="${fy}"
+            text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="transparent"/>
+    </g>`;
+  }
+
+  /** Terraform zone positions for rocky/ringed — ocean, landmass, island */
+  function _terraformZonesForLand(cx, cy) {
+    return [
+      [cx - 20, cy + 45],   // water — southern ocean
+      [cx - 45, cy - 30],   // plants — northern landmass (= _forestPos)
+      [cx + 28, cy - 26],   // animals — island/archipelago
+    ];
+  }
+
+  /** Terraform zone positions for gas — atmosphere, band left, band right */
+  function _terraformZonesForGas(cx, cy) {
+    return [
+      [cx,      cy - 50],   // water — upper atmosphere cloud layer
+      [cx - 42, cy + 44],   // plants — band left (floating algae)
+      [cx + 42, cy + 44],   // animals — band right
+    ];
+  }
+
   /** Rocky/ringed expanded zones — southern continent, northern landmass, island */
   function _cityZonesForLand(cx, cy) {
     return [
@@ -387,25 +424,40 @@ const Planet = (() => {
     ];
   }
 
-  /** Forest patches — upper-left quadrant, anchored over northern landmass */
-  function _forestZoneSVG(cx, cy) {
-    const [fx, fy] = _forestPos(cx, cy);
-    return `<g class="planet__forests" data-role="interactive">
-      <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="rgba(0,0,0,0.001)"/>
-      <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
-               fill="rgba(120,90,50,0.5)" class="planet__barren-patch"/>
-      <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
-               fill="rgba(120,90,50,0.45)" class="planet__barren-patch"/>
-      <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
-               fill="rgba(120,90,50,0.4)" class="planet__barren-patch"/>
-      <!-- Tree icons (hidden until planted) -->
-      <text class="planet__tree" x="${fx - 10}" y="${fy - 12}"
-            text-anchor="middle" font-size="14" opacity="0">🌲</text>
-      <text class="planet__tree" x="${fx + 10}" y="${fy + 15}"
-            text-anchor="middle" font-size="16" opacity="0">🌳</text>
-      <text class="planet__tree" x="${fx - 5}" y="${fy - 29}"
-            text-anchor="middle" font-size="12" opacity="0">🌲</text>
-    </g>`;
+  /**
+   * Forest fault zone SVG.
+   * - Not expanded: single interactive zone with barren patches + hidden tree icons
+   *   (unchanged from original behaviour).
+   * - Expanded (terraforming unlocked): 3 dashed placement zones at shape-appropriate
+   *   positions; no barren patches — stickers tell the ecological story.
+   */
+  function _forestZoneSVG(cx, cy, expanded, shape) {
+    if (!expanded) {
+      const [fx, fy] = _forestPos(cx, cy);
+      return `<g class="planet__forests" data-role="interactive">
+        <rect x="${fx - 40}" y="${fy - 40}" width="80" height="80" fill="rgba(0,0,0,0.001)"/>
+        <ellipse cx="${fx - 10}" cy="${fy - 15}" rx="15" ry="10"
+                 fill="rgba(120,90,50,0.5)" class="planet__barren-patch"/>
+        <ellipse cx="${fx + 10}" cy="${fy + 12}" rx="18" ry="11"
+                 fill="rgba(120,90,50,0.45)" class="planet__barren-patch"/>
+        <ellipse cx="${fx - 5}" cy="${fy - 32}" rx="12" ry="8"
+                 fill="rgba(120,90,50,0.4)" class="planet__barren-patch"/>
+        <!-- Tree icons (hidden until planted) -->
+        <text class="planet__tree" x="${fx - 10}" y="${fy - 12}"
+              text-anchor="middle" font-size="14" opacity="0">🌲</text>
+        <text class="planet__tree" x="${fx + 10}" y="${fy + 15}"
+              text-anchor="middle" font-size="16" opacity="0">🌳</text>
+        <text class="planet__tree" x="${fx - 5}" y="${fy - 29}"
+              text-anchor="middle" font-size="12" opacity="0">🌲</text>
+      </g>`;
+    }
+
+    // Expanded: 3 sticker placement zones — water, plants, animals
+    const isGas = shape === 'gas';
+    const positions = isGas
+      ? _terraformZonesForGas(cx, cy)
+      : _terraformZonesForLand(cx, cy);
+    return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__terraform-zone')).join('');
   }
 
   /**
@@ -640,16 +692,7 @@ const Planet = (() => {
       ? (isGas ? _cityZonesForGas(cx, cy) : _cityZonesForLand(cx, cy))
       : [_cityPos(cx, cy)];
 
-    return positions.map(([fx, fy], id) => `
-    <g class="planet__city-zone planet__city-zone--${id}" data-role="sticker-zone">
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
-            fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
-            fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-      <text class="planet__city-text" x="${fx}" y="${fy}"
-            text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="transparent"/>
-    </g>`).join('');
+    return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__city-zone')).join('');
   }
 
   /**
@@ -779,7 +822,7 @@ const Planet = (() => {
       ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
-      ${hasForest ? _forestZoneSVG(cx, cy) : ''}
+      ${hasForest ? _forestZoneSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy, GameState.get('cityExpanded'), shape) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
