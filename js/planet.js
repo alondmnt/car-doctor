@@ -408,7 +408,7 @@ const Planet = (() => {
   const TERRAFORM_FILLS = [
     'rgba(40,140,180,0.35)',
     'rgba(60,140,60,0.4)',
-    'rgba(140,110,60,0.35)',
+    'rgba(160,120,60,0.45)',
   ];
 
   /** Jittered scatter-slot layout — primary (16px) + 3 smaller duplicates */
@@ -452,9 +452,9 @@ const Planet = (() => {
    *  (city: +25/+32, -22/-32, +26/-26). */
   function _terraformZonesForLand(cx, cy) {
     return [
-      [cx - 25, cy + 42],   // water — southern ocean (away from city +25/+32)
-      [cx - 45, cy - 10],   // plants — western landmass (away from city -22/-32)
-      [cx + 40, cy + 5],    // animals — eastern coast (away from city +26/-26)
+      [cx - 10, cy + 55],   // water — deep southern ocean (clear of city +25/+32)
+      [cx - 45, cy - 10],   // plants — western landmass (clear of city -22/-32)
+      [cx + 40, cy + 5],    // animals — eastern coast (clear of city +26/-26)
     ];
   }
 
@@ -792,7 +792,7 @@ const Planet = (() => {
       ${positions.map(([fx, fy], idx) => {
         const pool = pools[idx];
         const fill = TERRAFORM_FILLS[idx];
-        const pick = pool[0];  // deterministic representative emoji
+        const pick = pool[Math.floor(Math.random() * pool.length)];
         return `
         <ellipse cx="${fx - 8}" cy="${fy - 6}" rx="22" ry="14" fill="${fill}"/>
         <ellipse cx="${fx + 6}" cy="${fy + 8}" rx="18" ry="12" fill="${fill}"/>
