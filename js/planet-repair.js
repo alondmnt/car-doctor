@@ -38,19 +38,19 @@ const PlanetRepair = (() => {
     }];
   }
 
-  /** Build cities — jack (crane) tool + city sticker picker, 1 or 3 zones */
+  /** Build cities — jack (crane) tool + zone-choice picker, tap any zone to place a city */
   function buildCities(_car) {
     const expanded = GameState.get('cityExpanded');
-    const count = expanded ? 3 : 1;
-    return Array.from({ length: count }, (_, i) => ({
-      id: `pick-city-${i}`,
+    const zones = expanded
+      ? ['.planet__city-zone--0', '.planet__city-zone--1', '.planet__city-zone--2']
+      : ['.planet__city-zone--0'];
+    return RepairTemplates.zoneChoice({
+      id: 'pick-city',
       description: 'Select the crane and tap a building zone',
-      target: `.planet__city-zone--${i}`,
+      zones,
       tool: 'jack',
-      sound: 'tap',
       picker: 'planetCity',
-      action: () => {},
-    }));
+    });
   }
 
   /** Clean ocean — hose tool washes away oil-slick patches */
