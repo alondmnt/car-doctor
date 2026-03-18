@@ -222,6 +222,16 @@ const Picker = (() => {
   /** Dispatch the appropriate picker for a step, then callback with picked value */
   function dispatchPicker(car, step, onPick) {
     if (!step.picker) { onPick(); return; }
+    // Generic per-step item pool — used by terraforming and any future custom pickers
+    if (step.pickerItems) {
+      _showPicker({
+        containerClass: 'picker-row',
+        items: step.pickerItems,
+        renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
+        onPick: (emoji) => { applyStickerOrBadge(car, emoji, step.target); onPick(emoji); },
+      });
+      return;
+    }
     if (FaultRegistry.PARTS[step.picker]) {
       showPartPicker(step.picker, onPick);
     } else if (step.picker === 'colour') {
