@@ -616,13 +616,17 @@ const Planet = (() => {
         <!-- Wide near-zero-opacity stroke — hit area; visiblePainted needs painted stroke -->
         <path d="${d}" fill="none"
               stroke="rgba(0,0,0,0.001)" stroke-width="16" stroke-linecap="round"/>
-        <!-- Wider glowing stroke underneath -->
+        <!-- Dark outline — visible on light surfaces -->
         <path d="${d}" fill="none"
-              stroke="rgba(255,200,50,0.4)" stroke-width="4" stroke-linecap="round"
+              stroke="rgba(0,0,0,0.45)" stroke-width="6" stroke-linecap="round"
+              pointer-events="none"/>
+        <!-- Wider glowing stroke -->
+        <path d="${d}" fill="none"
+              stroke="rgba(255,200,50,0.5)" stroke-width="4" stroke-linecap="round"
               pointer-events="none"/>
         <!-- Narrower bright crack on top -->
         <path d="${d}" fill="none"
-              stroke="rgba(255,80,20,0.7)" stroke-width="2" stroke-linecap="round"
+              stroke="rgba(255,80,20,0.8)" stroke-width="2" stroke-linecap="round"
               pointer-events="none"/>
       </g>`;
     });
@@ -645,8 +649,8 @@ const Planet = (() => {
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <rect x="${vx - halfW - 5}" y="${vy - coneH - 20}" width="${halfW * 2 + 10}" height="${coneH + 25}" fill="rgba(0,0,0,0.001)"/>
         <polygon class="planet__volcano" points="${conePoints}"
-                 fill="rgba(80,50,30,0.8)" stroke="rgba(60,30,10,0.6)" stroke-width="1" pointer-events="none"/>
-        <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.6)" stroke-width="2.5" stroke-linecap="round" pointer-events="none"/>`;
+                 fill="rgba(80,50,30,0.85)" stroke="rgba(0,0,0,0.5)" stroke-width="2" pointer-events="none"/>
+        <path d="${lavaPath}" fill="none" stroke="rgba(255,100,20,0.7)" stroke-width="2.5" stroke-linecap="round" pointer-events="none"/>`;
 
       const particles = [
         { dx: 0,  dy: -3,  r: 2.5 },
