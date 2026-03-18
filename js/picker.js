@@ -110,8 +110,8 @@ const Picker = (() => {
   /* ─── Sticker / badge helper ─── */
 
   /** Apply a sticker/badge emoji to the zone and hide the dashed border */
-  function applyStickerOrBadge(car, emoji) {
-    const zone = car.el.querySelector('[data-role="sticker-zone"]');
+  function applyStickerOrBadge(car, emoji, zoneSelector) {
+    const zone = car.el.querySelector(zoneSelector || '[data-role="sticker-zone"]');
     if (!zone) return;
     const textEl = zone.querySelector('text') || zone;
     textEl.textContent = emoji;
@@ -222,7 +222,7 @@ const Picker = (() => {
       });
     } else if (step.picker === 'sticker') {
       showStickerPicker((emoji) => {
-        applyStickerOrBadge(car, emoji);
+        applyStickerOrBadge(car, emoji, step.target);
         onPick(emoji);
       });
     } else if (step.picker === 'planetCity') {
@@ -231,7 +231,7 @@ const Picker = (() => {
         items: CONFIG.planetStickers,
         renderItem: (btn, emoji) => { btn.className = 'sticker-picker__option'; btn.textContent = emoji; },
         onPick: (emoji) => {
-          applyStickerOrBadge(car, emoji);
+          applyStickerOrBadge(car, emoji, step.target);
           onPick(emoji);
         },
       });
