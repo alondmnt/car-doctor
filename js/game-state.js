@@ -20,6 +20,7 @@ const GameState = (() => {
     spaceshipLaser:   () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), laser: 3 }; },
     spaceshipShield:  () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), shield: 3 }; },
     spaceshipAntenna: () => { _objects.spaceshipFaultWeights = { ...(_objects.spaceshipFaultWeights || {}), antenna: 3 }; },
+    planetTerraforming:  () => { _objects.terraformExpanded = true; },
     planetCityExpansion: () => { _objects.cityExpanded = true; },
     planetOcean:     () => { _objects.planetFaultWeights = { ...(_objects.planetFaultWeights || {}), oceanCleanup: 3 }; },
     planetAsteroid:  () => { _objects.planetFaultWeights = { ...(_objects.planetFaultWeights || {}), asteroidDefence: 3 }; },

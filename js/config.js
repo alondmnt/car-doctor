@@ -54,6 +54,11 @@ const CONFIG = {
   planetFaultWeights: { fire: 3, forest: 3, city: 3 },
   satelliteStyles: ['standard'],
   planetStickers: ['🏙️', '🏗️', '🏰', '🗼', '🌆', '🏛️'],
+
+  /* Terraforming sticker pools — one per ecological category */
+  terraformWaterStickers:   ['💧', '🌊', '🏞️', '🧊', '🌧️', '🌀'],
+  terraformPlantsStickers:  ['🌿', '🌻', '🌴', '🍀', '🌵', '🌾'],
+  terraformAnimalsStickers: ['🐘', '🦋', '🐸', '🦜', '🐢', '🦁'],
 };
 
 /** Progression tiers — earn coins to unlock new content */
@@ -105,13 +110,15 @@ const UNLOCK_TIERS = [
     showcase: { vehicle: 'planet' } },
   { coins: 75, key: 'planetOcean', label: 'Ocean cleanup!', icon: '🌊', items: [],
     showcase: { vehicle: 'planet', fault: 'oceanCleanup' } },
-  { coins: 80, key: 'planetAsteroid', label: 'Asteroid defence!', icon: '☄️', items: [],
+  { coins: 80, key: 'planetTerraforming', label: 'Terraforming!', icon: '🌱', items: [],
+    showcase: { vehicle: 'planet', fault: 'forest' } },
+  { coins: 85, key: 'planetAsteroid', label: 'Asteroid defence!', icon: '☄️', items: [],
     showcase: { vehicle: 'planet', fault: 'asteroidDefence' } },
-  { coins: 85, key: 'planetSatellite', label: 'Satellite network!', icon: '📡', items: [],
+  { coins: 90, key: 'planetSatellite', label: 'Satellite network!', icon: '📡', items: [],
     showcase: { vehicle: 'planet', fault: 'satelliteNetwork' } },
-  { coins: 90, key: 'planetCityExpansion', label: 'City expansion!', icon: '🏙️', items: [],
+  { coins: 95, key: 'planetCityExpansion', label: 'City expansion!', icon: '🏙️', items: [],
     showcase: { vehicle: 'planet', fault: 'city' } },
-  { coins: 95, key: 'planetTectonic', label: 'Tectonic repair!', icon: '🌋', items: [],
+  { coins: 100, key: 'planetTectonic', label: 'Tectonic repair!', icon: '🌋', items: [],
     showcase: { vehicle: 'planet', fault: 'tectonicVolcanic' } },
 ];
 
