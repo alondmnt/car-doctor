@@ -27,17 +27,21 @@
 
 ## Next up
 
-Planet expansion unlocks (narrative arc: geology → water → life → civilisation → defence → advanced tech):
+Planet expansion unlocks (colonisation arc: survey orbit → secure orbit → stabilise surface → make habitable → seed life → settle):
 
 | Tier | Type | Unlock |
 |------|------|--------|
-| 75 | new fault | ✅ Tectonic repair (seal magma fault-line cracks; primordial geology) |
-| 80 | new fault | ✅ Ocean cleanup (animated oil spill, wash mechanic) |
-| 85 | expansion | ✅ Terraforming (expands forest → water reserves, plants, animals) |
-| 90 | expansion | ✅ City expansion (new city stickers / placement zones) |
-| 95 | new fault | ✅ Satellite network (repair broken orbiting satellites) |
-| 100 | new fault | ✅ Asteroid defence (tap incoming meteors; satellites enable tracking) |
-| 105 | expansion | Satellite expansion (picker of different satellite types/styles) |
+| 75 | new fault | ✅ Satellite network (survey from orbit) |
+| 80 | new fault | ✅ Asteroid defence (secure the orbit; could be more dramatic if city decoration is already present when meteors approach — stakes are visible) |
+| 85 | new fault | ✅ Tectonic repair (stabilise the surface before building) |
+| 90 | new fault | ✅ Ocean cleanup (make it habitable) |
+| 95 | expansion | ✅ Terraforming (seed life) |
+| 100 | expansion | ✅ City expansion (settle) |
+| 105 | expansion | Satellite expansion (expand orbital infrastructure) |
+
+**TODO (code changes required):**
+- **Tiers** — update `UNLOCK_TIERS` in `config.js` to match the table above
+- **Overlays** — update `_planetSVG` in `planet.js` to show earlier-completed work as background decoration per colonisation order Each fault shows earlier completed work as background decoration. Current overlay logic (`_forestDecorationSVG`, `_cityDecorationSVG` in `planet.js`) was designed for the old order and needs to be revised: e.g. tectonic decoration should appear behind ocean/terraform/city; satellite decoration behind asteroid; terraform decoration behind city.
 
 ### Game feel
 
