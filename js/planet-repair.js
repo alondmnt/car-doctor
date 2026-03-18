@@ -18,24 +18,48 @@ const PlanetRepair = (() => {
     });
   }
 
-  /** Plant forests — hand tool tap turns barren patches green */
+  /**
+   * Plant forests — single tap when terraforming not yet unlocked;
+   * sequential water→plants→animals zone placement once expanded.
+   * Prior zone stickers persist visually while subsequent zones are filled —
+   * clearHighlights only resets pointer-events, not text content or
+   * sticker-zone--applied, so no extra persistence code is needed.
+   */
   function plantForests(_car) {
-    return [{
-      id: 'plant-trees',
-      description: 'Tap the barren patches to plant forests',
-      target: '.planet__forests',
-      tool: 'hand',
+    if (!GameState.get('terraformExpanded')) {
+      return [{
+        id: 'plant-trees',
+        description: 'Tap the barren patches to plant forests',
+        target: '.planet__forests',
+        tool: 'hand',
+        sound: 'tap',
+        action: (_el, carEl) => {
+          carEl.querySelectorAll('.planet__barren-patch').forEach(p => {
+            p.classList.add('planet__barren-patch--planted');
+          });
+          carEl.querySelectorAll('.planet__tree').forEach(t => {
+            t.classList.add('planet__tree--grown');
+          });
+        },
+      }];
+    }
+
+    // Expanded: 3 sequential ecological restoration zones
+    const categories = [
+      { id: 'terraform-water',   target: '.planet__terraform-zone--0', pickerItems: CONFIG.terraformWaterStickers,   desc: 'Tap the ocean zone to fill it with water' },
+      { id: 'terraform-plants',  target: '.planet__terraform-zone--1', pickerItems: CONFIG.terraformPlantsStickers,  desc: 'Tap the land zone to seed plant life' },
+      { id: 'terraform-animals', target: '.planet__terraform-zone--2', pickerItems: CONFIG.terraformAnimalsStickers, desc: 'Tap the wildlife zone to introduce animals' },
+    ];
+    return categories.map(({ id, target, pickerItems, desc }, i) => ({
+      id,
+      description: desc,
+      target,
+      ...(i === 0 ? { tool: 'hand' } : {}),  // tool required on step 0 only (satellite pattern)
       sound: 'tap',
-      action: (_el, carEl) => {
-        // Hide barren patches, reveal trees
-        carEl.querySelectorAll('.planet__barren-patch').forEach(p => {
-          p.classList.add('planet__barren-patch--planted');
-        });
-        carEl.querySelectorAll('.planet__tree').forEach(t => {
-          t.classList.add('planet__tree--grown');
-        });
-      },
-    }];
+      picker: 'terraform',
+      pickerItems,
+      action: () => {},  // applyStickerOrBadge in dispatchPicker handles sticker placement
+    }));
   }
 
   /** Build cities — jack (crane) tool + zone-choice picker, tap any zone to place a city */
