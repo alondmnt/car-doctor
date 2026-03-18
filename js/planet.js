@@ -100,7 +100,7 @@ const Planet = (() => {
    * "Cloud city" on an artificial rim built around the planet.
    */
   function _constructionBandSVG(cx, cy, r) {
-    const bandY = cy + 42;
+    const bandY = cy + 48;
     const dy = bandY - cy;
     const halfW = Math.sqrt(Math.max(0, r * r - dy * dy));
     // Rivet dots along the band
@@ -479,7 +479,7 @@ const Planet = (() => {
     ];
   }
 
-  /** Gas expanded zones — spread along construction band at cy + 44 */
+  /** Gas expanded zones — spread along construction band */
   function _cityZonesForGas(cx, cy) {
     return [
       [cx + 42, cy + 44],   // band right
@@ -548,7 +548,7 @@ const Planet = (() => {
     const tendrilStroke = isGas ? 'rgba(100,70,15,0.4)' : 'rgba(15,15,25,0.45)';
 
     // Lower-left quadrant — anchored on the southern continent's western coast
-    const fx = cx - 30, fy = cy + 20;
+    const fx = cx - 50, fy = cy + 20;
     /* The hit-area rect uses near-zero opacity (not fill="transparent") so it
        registers as a valid painted target with SVG visiblePainted semantics.
        Animated children carry explicit pointer-events="none" to prevent
