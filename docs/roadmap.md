@@ -20,6 +20,10 @@
   - Shield generator relocated to mid-fuselage to fix engine/shield overlap on multi-fault spawns
 
 - **Planet doctor** — new vehicle type (build cities, plant forests, put down fires); deep space theme with sun/satellite; 3 geometry types (rocky, gas, ringed); zoom-in entry, orbital exit; tier 70 unlock
+- Planet faults — ocean cleanup (tier 75), asteroid defence (tier 85), satellite network (tier 90)
+- **City expansion** (tier 95) — 3 shape-aware city zones (continent positions for rocky/ringed, construction band for gas); zone-choice interaction: all zones shown simultaneously, player taps one to place a building sticker, others dismiss
+- **Zone-choice infrastructure** — `RepairTemplates.zoneChoice()` factory + `_listenForZoneChoice` / `_waitForToolThenZoneChoice` in Picker; reusable for car sticker spots, forest biomes, and future multi-zone placement
+- **Terraforming** (tier 80) — expands forest fault to 3 sequential zones (water → plants → animals) with shape-aware positions (ocean/landmass/island for rocky/ringed; atmosphere/band for gas); generic `pickerItems` step field for custom emoji pools
 
 ## Next up
 
@@ -27,19 +31,31 @@ Planet expansion unlocks (interleaved — exciting faults alternating with conte
 
 | Tier | Type | Unlock |
 |------|------|--------|
-| 75 | new fault | Ocean cleanup (animated oil spill, wash mechanic) |
-| 80 | expansion | Terraforming (expands forest → plant trees, water reserves, animals) |
-| 85 | new fault | Asteroid defence (tap incoming meteors, whack-a-mole) |
-| 90 | expansion | City expansion (new city stickers / placement zones) |
-| 95 | new fault | Satellite network (repair broken orbiting satellites) |
+| 75 | new fault | ✅ Ocean cleanup (animated oil spill, wash mechanic) |
+| 80 | expansion | ✅ Terraforming (expands forest → water reserves, plants, animals) |
+| 85 | new fault | ✅ Asteroid defence (tap incoming meteors, whack-a-mole) |
+| 90 | new fault | ✅ Satellite network (repair broken orbiting satellites) |
+| 95 | expansion | ✅ City expansion (new city stickers / placement zones) |
 | 98 | expansion | Satellite styles (picker of different satellite types) |
-| 100 | new fault | Tectonic repair (seal magma fault-line cracks) |
+| 100 | new fault | ✅ Tectonic repair (seal magma fault-line cracks) |
 
-Other:
+### Game feel
 
-1. **Multi-zone sticker placement** — let the user choose among multiple placement areas (e.g. different continents on the planet, bumper vs door on cars)
-2. **People doctor** — new vehicle type post-refactor
+1. **Character reactions** — blink (opacity pulse on eyes), happy wiggle (transform on head group) on repair completion, surprise (scale pupils) on fault spawn. Cars/robots/spaceships have SVG eye/mouth elements ready for CSS transitions. Planets: aurora shimmer effect on successful repair (no face).
+2. **Sensory richness** — three layers, all zero-dependency:
+   - Haptics: `navigator.vibrate()` on bolt tighten, jack lift, spray, drill
+   - Richer audio: longer envelopes, filtered noise, more harmonics (chunky ratchet, whooshy spray, splashy hose)
+   - CSS particles: sparks (drill), bubbles (hose), splatter (spray) — absolute-positioned divs with `@keyframes`
+3. ✅ **Multi-zone placement** — `RepairTemplates.zoneChoice()` + Picker routing; zones shown simultaneously, player picks one, others dismiss. `applyStickerOrBadge()` accepts zone selector. Applied to city zones; pending: car sticker spots (bumper vs door), forest biomes.
+4. **Fault choice** — on multi-fault vehicles, let the player tap a dashboard indicator to pick which fault to fix first. Small change: replace `FaultRegistry.ORDER` sort in `game.js` with a picker UI before `startNextFault()`.
+5. **Difficulty scaling** — config-driven: increase max faults per vehicle as coins grow, tighten meteor timing, shorten hint auto-disable window. Tunable via `config.js` thresholds.
+
+### New content
+
+1. **People doctor** — new vehicle type post-refactor
+2. **Ultimate level** — unlocks after all tiers complete. Uniform spawn probability across all vehicle types; max faults (3–4) from all unlocked types. No new systems — just a spawn rule in `pickVehicle()`.
 
 ## On hold
 
 - **Car queue** (#3) — soft pressure may not suit a 6yo audience
+- **Vehicle combinations** (e.g., robot-spaceship hybrid) — cool but high complexity for uncertain payoff; revisit after people doctor ships
