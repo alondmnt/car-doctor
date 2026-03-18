@@ -369,6 +369,24 @@ const Planet = (() => {
   function _forestPos(cx, cy) { return [cx - 45, cy - 30]; }
   function _cityPos(cx, cy)   { return [cx + 25, cy + 32]; }
 
+  /** Rocky/ringed expanded zones — southern continent, northern landmass, island */
+  function _cityZonesForLand(cx, cy) {
+    return [
+      [cx + 25, cy + 32],   // southern continent (same as _cityPos)
+      [cx - 22, cy - 32],   // northern landmass
+      [cx + 26, cy - 26],   // island/archipelago
+    ];
+  }
+
+  /** Gas expanded zones — spread along construction band at cy + 44 */
+  function _cityZonesForGas(cx, cy) {
+    return [
+      [cx + 42, cy + 44],   // band right
+      [cx,      cy + 44],   // band centre
+      [cx - 42, cy + 44],   // band left
+    ];
+  }
+
   /** Forest patches — upper-left quadrant, anchored over northern landmass */
   function _forestZoneSVG(cx, cy) {
     const [fx, fy] = _forestPos(cx, cy);
@@ -611,18 +629,27 @@ const Planet = (() => {
     </g>`;
   }
 
-  /** City zone — lower-right quadrant, anchored on southern continent */
-  function _cityZoneSVG(cx, cy) {
-    const [fx, fy] = _cityPos(cx, cy);
-    return `<g class="planet__cities" data-role="sticker-zone">
-      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
+  /**
+   * City zone(s) — lower-right quadrant by default.
+   * When expanded, 3 zones spread across shape-appropriate positions;
+   * zone boxes shrink from 80×50 to 60×40 to avoid crowding.
+   */
+  function _cityZoneSVG(cx, cy, expanded, shape) {
+    const isGas = shape === 'gas';
+    const positions = expanded
+      ? (isGas ? _cityZonesForGas(cx, cy) : _cityZonesForLand(cx, cy))
+      : [_cityPos(cx, cy)];
+
+    return positions.map(([fx, fy], id) => `
+    <g class="planet__city-zone planet__city-zone--${id}" data-role="sticker-zone">
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" rx="5"
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
             fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
       <text class="planet__city-text" x="${fx}" y="${fy}"
             text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-      <rect x="${fx - 40}" y="${fy - 25}" width="80" height="50" fill="transparent"/>
-    </g>`;
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="transparent"/>
+    </g>`).join('');
   }
 
   /**
@@ -753,7 +780,7 @@ const Planet = (() => {
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy) : ''}
-      ${hasCity ? _cityZoneSVG(cx, cy) : ''}
+      ${hasCity ? _cityZoneSVG(cx, cy, GameState.get('cityExpanded'), shape) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
       ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}

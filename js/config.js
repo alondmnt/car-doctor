@@ -109,7 +109,9 @@ const UNLOCK_TIERS = [
     showcase: { vehicle: 'planet', fault: 'asteroidDefence' } },
   { coins: 85, key: 'planetSatellite', label: 'Satellite network!', icon: '📡', items: [],
     showcase: { vehicle: 'planet', fault: 'satelliteNetwork' } },
-  { coins: 90, key: 'planetTectonic', label: 'Tectonic repair!', icon: '🌋', items: [],
+  { coins: 90, key: 'planetCityExpansion', label: 'City expansion!', icon: '🏙️', items: [],
+    showcase: { vehicle: 'planet', fault: 'city' } },
+  { coins: 95, key: 'planetTectonic', label: 'Tectonic repair!', icon: '🌋', items: [],
     showcase: { vehicle: 'planet', fault: 'tectonicVolcanic' } },
 ];
 
