@@ -375,16 +375,32 @@ const Planet = (() => {
    * applyStickerOrBadge, sticker-zone--applied, and highlightCarTarget all work
    * the same way for both zone types.
    */
+  /**
+   * Render one dashed placement zone box at (fx, fy) with a CSS class prefix and
+   * numeric index. Structurally identical to the city-zone boxes so that
+   * applyStickerOrBadge, sticker-zone--applied, and highlightCarTarget all work
+   * the same way for both zone types.
+   *
+   * The <g> starts with pointer-events="none" so the zone never blocks clicks on
+   * underlying fault zones (fire, ocean, etc.) when it is not the active step
+   * target.  Picker sets pointer-events to "auto" when the zone becomes active,
+   * then clears it back to "" (reverting to the SVG attribute) via clearHighlights.
+   * The decorative stroke rects carry explicit pointer-events="none" so they
+   * never intercept even when the group is enabled; only the near-zero-opacity
+   * hit rect captures events (visiblePainted semantics require non-zero alpha).
+   */
   function _zoneSVG(fx, fy, id, prefix) {
     return `
-    <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone">
+    <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone" pointer-events="none">
       <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
-            fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+            fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"
+            pointer-events="none"/>
       <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
-            fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+            fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"
+            pointer-events="none"/>
       <text class="${prefix}-text" x="${fx}" y="${fy}"
             text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="transparent"/>
+      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="rgba(0,0,0,0.001)"/>
     </g>`;
   }
 
