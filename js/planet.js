@@ -293,9 +293,9 @@ const Planet = (() => {
 
   /* ─── Fault zone builders ─── */
 
-  /** Fire patches — upper-right quadrant, anchored over island/archipelago */
+  /** Fire patches — upper quadrant, shifted north to clear terraform zones */
   function _fireZoneSVG(cx, cy) {
-    const fx = cx + 25, fy = cy - 30;
+    const fx = cx + 15, fy = cy - 45;
 
     // Fire cluster data: [dx, dy, rx, ry, opacity]
     const patches = [
