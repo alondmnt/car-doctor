@@ -56,9 +56,9 @@ const CONFIG = {
   planetStickers: ['🏙️', '🏗️', '🏰', '🗼', '🌆', '🏛️'],
 
   /* Terraforming sticker pools — one per ecological category */
-  terraformWaterStickers:   ['💧', '🌊', '🏞️', '🧊', '🌧️', '🌀'],
-  terraformPlantsStickers:  ['🌿', '🌻', '🌴', '🍀', '🌵', '🌾'],
-  terraformAnimalsStickers: ['🐘', '🦋', '🐸', '🦜', '🐢', '🦁'],
+  terraformWaterStickers:   ['💧', '🌊', '❄️', '💦', '🐚', '🐟'],
+  terraformPlantsStickers:  ['🌱', '🌿', '🌳', '🌲', '🌾', '🍄'],
+  terraformAnimalsStickers: ['🐜', '🪱', '🐝', '🦠', '🐛', '🐌'],
 };
 
 /** Progression tiers — earn coins to unlock new content */
