@@ -906,8 +906,10 @@ const Planet = (() => {
     const orbitRx = r + 28;
     const orbitRy = Math.round(r * 0.75);  // near-circular — ~67 for r=90
 
-    // Random scatter around the full orbit
-    const angles = Array.from({length: 3}, () => Math.random() * 2 * Math.PI);
+    // Jittered sectors — one satellite per 120° slice guarantees spread;
+    // random offset within each sector keeps positions looking natural
+    const sectorSize = (2 * Math.PI) / 3;
+    const angles = [0, 1, 2].map(i => i * sectorSize + Math.random() * sectorSize);
     const tilts  = angles.map(() => Math.round((Math.random() - 0.5) * 60));  // –30° to +30°
 
     let sats = '';
