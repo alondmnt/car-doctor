@@ -2724,6 +2724,7 @@ html, body {
 
 /* ===== City fault zone ===== */
 .planet__cities { cursor: pointer; }
+.planet__city-zone { cursor: pointer; }
 
 /* ===== Satellite network fault zone ===== */
 .planet__satellite--broken {
