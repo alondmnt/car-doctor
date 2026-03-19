@@ -2564,7 +2564,7 @@ html, body {
 /* Main slick — slow throb */
 .planet__oil-slick {
   animation: oil-pulse 2s ease-in-out infinite alternate;
-  transform-box: fill-box; transform-origin: center;
+  transform-box: view-box; transform-origin: center;
 }
 @keyframes oil-pulse {
   0%   { opacity: 0.4; transform: scale(1); }
@@ -2573,7 +2573,7 @@ html, body {
 /* Spreading edge — expands outward */
 .planet__oil-edge {
   animation: oil-spread 3s ease-in-out infinite alternate;
-  transform-box: fill-box; transform-origin: center;
+  transform-box: view-box; transform-origin: center;
 }
 @keyframes oil-spread {
   0%   { opacity: 0.2; transform: scale(1); }
@@ -2582,18 +2582,19 @@ html, body {
 /* Iridescent sheen — colour-shifting highlight */
 .planet__oil-sheen {
   animation: oil-sheen 2.5s ease-in-out infinite alternate;
-  transform-box: fill-box; transform-origin: center;
+  transform-box: view-box; transform-origin: center;
   mix-blend-mode: screen;
 }
 @keyframes oil-sheen {
-  0%   { opacity: 0.15; transform: translate(-1px, 0) scale(0.9); }
+  /* translate in SVG user units (not px) to avoid subpixel snapping on mobile */
+  0%   { opacity: 0.15; transform: translate(-1.5, 0) scale(0.9); }
   50%  { opacity: 0.35; }
-  100% { opacity: 0.2; transform: translate(1px, 0) scale(1.1); }
+  100% { opacity: 0.2;  transform: translate(1.5, 0)  scale(1.1); }
 }
 /* Tendrils — grow and recede */
 .planet__oil-tendril {
   animation: oil-tendril 3.5s ease-in-out infinite alternate;
-  transform-box: fill-box; transform-origin: 0% 50%;
+  transform-box: view-box; transform-origin: 0% 50%;
 }
 @keyframes oil-tendril {
   0%   { stroke-dasharray: 0 40; opacity: 0.3; }
