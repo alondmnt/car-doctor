@@ -102,13 +102,17 @@ const Progress = (() => {
       return;
     }
 
-    const pct = Math.min(coins / next.coins * 100, 100);
+    const prevTier = UNLOCK_TIERS.slice().reverse().find(t => unlocked.includes(t.coins));
+    const prevCoinsThreshold = prevTier ? prevTier.coins : 0;
+    const range = next.coins - prevCoinsThreshold;
+    const progress = coins - prevCoinsThreshold;
+    const pct = Math.min(progress / range * 100, 100);
     el.innerHTML = `
       <div class="unlock-preview__icon">${next.icon}</div>
       <div class="unlock-preview__bar">
         <div class="unlock-preview__fill" style="width:${pct}%"></div>
       </div>
-      <div class="unlock-preview__target">${coins}/${next.coins}</div>
+      <div class="unlock-preview__target">${progress}/${range}</div>
     `;
   }
 
