@@ -935,14 +935,15 @@ const Planet = (() => {
       ${!hasCity && hasSatellite && GameState.get('satelliteExpanded')
         ? _cityDecorationSVG(cx, cy, r, shape) : ''}
 
-      <!-- Fault zones (shown per active faults) -->
-      <!-- fire/ocean/asteroid/tectonic/forest/city first, satellite on top (visually above all) -->
+      <!-- Fault zones — surface faults first, then orbital faults on top -->
+      <!-- Surface (low→high): fire → ocean → tectonic → forest → city -->
+      <!-- Orbital (above surface): asteroid → satellite -->
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
       ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
-      ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy, GameState.get('cityExpanded'), shape) : ''}
+      ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
