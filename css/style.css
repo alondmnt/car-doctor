@@ -1124,10 +1124,11 @@ html, body {
 .sticker-zone--applied text {
   font-size: 40px;
 }
-/* Smaller text in compact zones (robot badge, ship emblem) */
+/* Smaller text in compact zones (robot badge, ship emblem, planet city) */
 .robot__badge-zone.sticker-zone--applied text,
-.ship__emblem-zone.sticker-zone--applied text {
-  font-size: 34px;
+.ship__emblem-zone.sticker-zone--applied text,
+.planet__city-zone.sticker-zone--applied text {
+  font-size: 32px;
 }
 .sticker-zone--applied rect[stroke] {
   display: none;

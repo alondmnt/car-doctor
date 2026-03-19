@@ -389,18 +389,18 @@ const Planet = (() => {
    * never intercept even when the group is enabled; only the near-zero-opacity
    * hit rect captures events (visiblePainted semantics require non-zero alpha).
    */
-  function _zoneSVG(fx, fy, id, prefix) {
+  function _zoneSVG(fx, fy, id, prefix, hw = 30, hh = 20) {
     return `
     <g class="${prefix} ${prefix}--${id}" data-role="sticker-zone" pointer-events="none">
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+      <rect x="${fx - hw}" y="${fy - hh}" width="${hw * 2}" height="${hh * 2}" rx="5"
             fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"
             pointer-events="none"/>
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" rx="5"
+      <rect x="${fx - hw}" y="${fy - hh}" width="${hw * 2}" height="${hh * 2}" rx="5"
             fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"
             pointer-events="none"/>
       <text class="${prefix}-text" x="${fx}" y="${fy}"
             text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-      <rect x="${fx - 30}" y="${fy - 20}" width="60" height="40" fill="rgba(0,0,0,0.001)"/>
+      <rect x="${fx - hw}" y="${fy - hh}" width="${hw * 2}" height="${hh * 2}" fill="rgba(0,0,0,0.001)"/>
     </g>`;
   }
 
@@ -770,7 +770,8 @@ const Planet = (() => {
       ? (isGas ? _cityZonesForGas(cx, cy) : _cityZonesForLand(cx, cy))
       : [_cityPos(cx, cy)];
 
-    return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__city-zone')).join('');
+    // 20% smaller than default (60×40 → 48×32) to sit within continent boundaries
+    return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__city-zone', 24, 16)).join('');
   }
 
   /**
