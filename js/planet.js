@@ -600,10 +600,20 @@ const Planet = (() => {
     const isGas = shape === 'gas';
     const yBias = isGas ? 20 : 0;
 
+    // Compute x distance from centre to planet edge at a given y offset from centre.
+    // Used to anchor crack endpoints on the circle boundary for a global-scale feel.
+    const edgeX = (dy) => Math.round(Math.sqrt(Math.max(0, r * r - dy * dy)));
+
+    // Edge x for downward points: dy = offset + yBias (positive)
+    // Edge x for upward points: dy = yBias - offset (may be negative) → use Math.abs
+    const b = yBias;
     const cracks = [
-      `M${cx - 55},${cy + 5 + yBias} L${cx - 40},${cy - 3 + yBias} L${cx - 22},${cy + 8 + yBias} L${cx - 5},${cy - 2 + yBias} L${cx + 15},${cy + 12 + yBias} L${cx + 35},${cy + 25 + yBias} L${cx + 55},${cy + 35 + yBias}`,
-      `M${cx - 40},${cy - 35 + yBias} L${cx - 28},${cy - 22 + yBias} L${cx - 15},${cy - 30 + yBias} L${cx + 2},${cy - 15 + yBias} L${cx + 18},${cy + 5 + yBias} L${cx + 35},${cy + 45 + yBias}`,
-      `M${cx - 30},${cy + 25 + yBias} L${cx - 15},${cy + 18 + yBias} L${cx + 5},${cy + 30 + yBias} L${cx + 22},${cy + 35 + yBias} L${cx + 40},${cy + 42 + yBias}`,
+      // Crack 1: upper-left to lower-right — passes through volcano 1
+      `M${cx - edgeX(5 + b)},${cy + 5 + b} L${cx - 40},${cy - 3 + b} L${cx - 22},${cy + 8 + b} L${cx - 5},${cy - 2 + b} L${cx + 15},${cy + 12 + b} L${cx + 55},${cy + 35 + b} L${cx + edgeX(42 + b)},${cy + 42 + b}`,
+      // Crack 2: upper-right to lower-left — opposite direction, crosses crack 1 and 3
+      `M${cx + edgeX(Math.abs(b - 45))},${cy - 45 + b} L${cx + 50},${cy - 18 + b} L${cx + 20},${cy + 5 + b} L${cx - 5},${cy + 20 + b} L${cx - 38},${cy + 40 + b} L${cx - edgeX(50 + b)},${cy + 50 + b}`,
+      // Crack 3: steep upper-left to lower-right — passes through volcano 2
+      `M${cx - edgeX(Math.abs(b - 50))},${cy - 50 + b} L${cx - 30},${cy - 20 + b} L${cx - 5},${cy + 5 + b} L${cx + 15},${cy + 25 + b} L${cx + 35},${cy + 45 + b} L${cx + edgeX(55 + b)},${cy + 55 + b}`,
     ];
 
     let svg = `<g class="planet__tectonic-zone" data-role="interactive">
