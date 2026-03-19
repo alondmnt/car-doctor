@@ -120,6 +120,8 @@ const UNLOCK_TIERS = [
     showcase: { vehicle: 'planet', fault: 'forest' } },
   { coins: 100, key: 'planetCityExpansion', label: 'City expansion!', icon: '🏙️', items: [],
     showcase: { vehicle: 'planet', fault: 'city' } },
+  { coins: 105, key: 'planetSatelliteExpansion', icon: '🛰️', label: 'Satellite upgrade!', items: [],
+    showcase: { vehicle: 'planet', fault: 'satelliteNetwork' } },
 ];
 
 /** Deep-freeze an object tree so accidental mutations fail loudly in strict mode */

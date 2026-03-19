@@ -26,6 +26,10 @@ const GameState = (() => {
     planetAsteroid:  () => { _objects.planetFaultWeights = { ...(_objects.planetFaultWeights || {}), asteroidDefence: 3 }; },
     planetSatellite: () => { _objects.planetFaultWeights = { ...(_objects.planetFaultWeights || {}), satelliteNetwork: 3 }; },
     planetTectonic:  () => { _objects.planetFaultWeights = { ...(_objects.planetFaultWeights || {}), tectonicVolcanic: 3 }; },
+    planetSatelliteExpansion: () => {
+      _booleans.satelliteExpanded = true;
+      _arrays.satelliteStyles = [...(_arrays.satelliteStyles || []), 'dish', 'solar'];
+    },
   };
 
   /**

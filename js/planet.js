@@ -990,6 +990,80 @@ const Planet = (() => {
   }
 
   /**
+   * Visual layers for a single satellite body (no hit area, no spark).
+   * Double-layer contrast: dark shadow → white halo → coloured fill.
+   * Three styles: 'standard' (box + symmetric panels + antenna),
+   *               'dish' (asymmetric parabolic bowl + small body + feed arm),
+   *               'solar' (wide flat panels + compact core, greenish tint).
+   */
+  function _satelliteBodySVG(style) {
+    if (style === 'dish') {
+      return `
+        <!-- Shadow layer -->
+        <ellipse cx="-6" cy="0" rx="9" ry="7"
+                 fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
+        <rect x="5" y="-3" width="10" height="6" rx="1"
+              fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
+        <!-- Halo layer -->
+        <ellipse cx="-6" cy="0" rx="9" ry="7"
+                 fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
+        <rect x="5" y="-3" width="10" height="6" rx="1"
+              fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
+        <!-- Coloured body: bowl exterior, bowl interior, feed arm, body -->
+        <ellipse cx="-6" cy="0" rx="9" ry="7" fill="#778" stroke="#99a" stroke-width="0.8" pointer-events="none"/>
+        <ellipse cx="-4" cy="0" rx="6" ry="5" fill="#334" pointer-events="none"/>
+        <ellipse cx="-3" cy="0" rx="3" ry="2.5" fill="#223" pointer-events="none"/>
+        <line x1="-1" y1="0" x2="5" y2="0" stroke="#bbb" stroke-width="1.2" pointer-events="none"/>
+        <rect x="5" y="-3" width="10" height="6" rx="1" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>`;
+    }
+    if (style === 'solar') {
+      return `
+        <!-- Shadow layer -->
+        <rect x="-24" y="-5" width="18" height="10"
+              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+        <rect x="6" y="-5" width="18" height="10"
+              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+        <rect x="-3" y="-3" width="6" height="6"
+              fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
+        <!-- Halo layer -->
+        <rect x="-24" y="-5" width="18" height="10"
+              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+        <rect x="6" y="-5" width="18" height="10"
+              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+        <rect x="-3" y="-3" width="6" height="6"
+              fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
+        <!-- Coloured body: left panel + divider, right panel + divider, core -->
+        <rect x="-24" y="-5" width="18" height="10" fill="#3a6" stroke="#4c7" stroke-width="0.5" pointer-events="none"/>
+        <line x1="-15" y1="-5" x2="-15" y2="5" stroke="rgba(0,0,0,0.3)" stroke-width="0.8" pointer-events="none"/>
+        <rect x="6" y="-5" width="18" height="10" fill="#3a6" stroke="#4c7" stroke-width="0.5" pointer-events="none"/>
+        <line x1="15" y1="-5" x2="15" y2="5" stroke="rgba(0,0,0,0.3)" stroke-width="0.8" pointer-events="none"/>
+        <rect x="-3" y="-3" width="6" height="6" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>`;
+    }
+    // standard
+    return `
+      <!-- Shadow layer (dark outline) — readable on light planet colours -->
+      <rect x="-6" y="-4" width="12" height="8" rx="2"
+            fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
+      <rect x="-22" y="-2" width="16" height="4" rx="1"
+            fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+      <rect x="6" y="-2" width="16" height="4" rx="1"
+            fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
+      <!-- Halo layer (white outline) — readable on dark planet colours -->
+      <rect x="-6" y="-4" width="12" height="8" rx="2"
+            fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
+      <rect x="-22" y="-2" width="16" height="4" rx="1"
+            fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+      <rect x="6" y="-2" width="16" height="4" rx="1"
+            fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
+      <!-- Coloured satellite body -->
+      <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>
+      <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
+      <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
+      <line x1="0" y1="-4" x2="0" y2="-8" stroke="#999" stroke-width="1" pointer-events="none"/>
+      <circle cx="0" cy="-9" r="1.5" fill="#999" pointer-events="none"/>`;
+  }
+
+  /**
    * Satellite orbit — 3 broken satellites at random angles around the planet.
    * Near-circular orbit (orbitRy ≈ 0.75r) allows vertical scatter so satellites
    * aren't all bunched at the equator.  Random angles follow the same pattern as
@@ -1018,26 +1092,9 @@ const Planet = (() => {
          transform="translate(${sx}, ${sy}) rotate(${tilt})">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <rect x="-28" y="-16" width="56" height="28" fill="rgba(0,0,0,0.001)"/>
-        <!-- Shadow layer (dark outline) — readable on light planet colours -->
-        <rect x="-6" y="-4" width="12" height="8" rx="2"
-              fill="none" stroke="rgba(0,0,0,0.55)" stroke-width="3.5" pointer-events="none"/>
-        <rect x="-22" y="-2" width="16" height="4" rx="1"
-              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
-        <rect x="6" y="-2" width="16" height="4" rx="1"
-              fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="3.5" pointer-events="none"/>
-        <!-- Halo layer (white outline) — readable on dark planet colours -->
-        <rect x="-6" y="-4" width="12" height="8" rx="2"
-              fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2" pointer-events="none"/>
-        <rect x="-22" y="-2" width="16" height="4" rx="1"
-              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
-        <rect x="6" y="-2" width="16" height="4" rx="1"
-              fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" pointer-events="none"/>
-        <!-- Coloured satellite body -->
-        <rect x="-6" y="-4" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8" pointer-events="none"/>
-        <rect x="-22" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
-        <rect x="6" y="-2" width="16" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5" pointer-events="none"/>
-        <line x1="0" y1="-4" x2="0" y2="-8" stroke="#999" stroke-width="1" pointer-events="none"/>
-        <circle cx="0" cy="-9" r="1.5" fill="#999" pointer-events="none"/>
+        <!-- Visual layers (style-swappable via applySatelliteStyle) -->
+        <g class="planet__sat-visual">${_satelliteBodySVG('standard')}
+        </g>
         <circle class="planet__sat-spark" cx="0" cy="0" r="3" fill="rgba(255,200,50,0.7)" pointer-events="none"/>
       </g>`;
     });
@@ -1051,8 +1108,30 @@ const Planet = (() => {
     </g>`;
   }
 
-  /** Satellite part preview SVG for the picker widget */
-  function satellitePreviewSVG(_style) {
+  /**
+   * Satellite part preview SVG for the picker widget.
+   * Each style renders a small representative silhouette in 40×30 viewBox.
+   */
+  function satellitePreviewSVG(style) {
+    if (style === 'dish') {
+      return `<svg viewBox="0 0 40 30" style="width:40px;height:30px">
+        <ellipse cx="14" cy="15" rx="9" ry="7" fill="#778" stroke="#99a" stroke-width="0.8"/>
+        <ellipse cx="16" cy="15" rx="6" ry="5" fill="#334"/>
+        <ellipse cx="17" cy="15" rx="3" ry="2.5" fill="#223"/>
+        <line x1="19" y1="15" x2="25" y2="15" stroke="#bbb" stroke-width="1.2"/>
+        <rect x="25" y="12" width="8" height="6" rx="1" fill="#667" stroke="#889" stroke-width="0.8"/>
+      </svg>`;
+    }
+    if (style === 'solar') {
+      return `<svg viewBox="0 0 40 30" style="width:40px;height:30px">
+        <rect x="2" y="10" width="14" height="10" fill="#3a6" stroke="#4c7" stroke-width="0.5"/>
+        <line x1="9" y1="10" x2="9" y2="20" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+        <rect x="24" y="10" width="14" height="10" fill="#3a6" stroke="#4c7" stroke-width="0.5"/>
+        <line x1="31" y1="10" x2="31" y2="20" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+        <rect x="17" y="12" width="6" height="6" fill="#667" stroke="#889" stroke-width="0.8"/>
+      </svg>`;
+    }
+    // standard
     return `<svg viewBox="0 0 40 30" style="width:40px;height:30px">
       <rect x="14" y="10" width="12" height="8" rx="2" fill="#667" stroke="#889" stroke-width="0.8"/>
       <rect x="2" y="12" width="12" height="4" rx="1" fill="#48a" stroke="#5ae" stroke-width="0.5"/>
@@ -1062,5 +1141,17 @@ const Planet = (() => {
     </svg>`;
   }
 
-  return { create, satellitePreviewSVG };
+  /**
+   * Replace the visual layers of a satellite element with a new style.
+   * Called by planet-repair after the player picks a style from the warehouse.
+   * @param {SVGElement} satEl - the planet__satellite group element
+   * @param {string} style - 'standard' | 'dish' | 'solar'
+   */
+  function applySatelliteStyle(satEl, style) {
+    const visual = satEl.querySelector('.planet__sat-visual');
+    if (!visual) return;
+    visual.innerHTML = _satelliteBodySVG(style);
+  }
+
+  return { create, satellitePreviewSVG, applySatelliteStyle };
 })();

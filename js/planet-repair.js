@@ -200,7 +200,15 @@ const PlanetRepair = (() => {
         picker: 'satellite',
         target: '.planet__satellite--0',
         sound: 'pop',
-        action: () => {},
+        action: (_targetEl, carEl, picked) => {
+          // Apply chosen style to all 3 satellite visuals before repair
+          if (picked && picked !== 'standard') {
+            for (let i = 0; i < 3; i++) {
+              const sat = carEl.querySelector(`.planet__satellite--${i}`);
+              if (sat) Planet.applySatelliteStyle(sat, picked);
+            }
+          }
+        },
       });
     }
 
