@@ -6,6 +6,16 @@
  */
 const Planet = (() => {
 
+  /** ViewBox for the planet SVG — used both in the attribute and for CSS % calculations.
+   *  SCALE > 1 zooms in (larger planet); viewBox crops from the centre of the original
+   *  400×240 coordinate space.  VB_X/VB_Y are derived so only SCALE needs changing. */
+  const SCALE = 1.18;
+  const SVG_W = 400, SVG_H = 240;
+  const VB_W  = Math.round(SVG_W / SCALE);
+  const VB_H  = Math.round(SVG_H / SCALE);
+  const VB_X  = Math.round((SVG_W - VB_W) / 2);
+  const VB_Y  = Math.round((SVG_H - VB_H) / 2);
+
   function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
   /**
@@ -742,7 +752,7 @@ const Planet = (() => {
             x1="${cx}" y1="${cy}" x2="${sx.toFixed(1)}" y2="${sy.toFixed(1)}"
             pointer-events="none"/>
       <g class="planet__meteor-group planet__meteor-group--${i}" data-role="interactive"
-         style="--spawn-x: ${(sx / 400 * 100).toFixed(2)}%; --spawn-y: ${(sy / 240 * 100).toFixed(2)}%; --meteor-dx: ${(impactX / 400 * 100).toFixed(2)}%; --meteor-dy: ${(impactY / 240 * 100).toFixed(2)}%; animation-delay: ${delay}s"
+         style="--spawn-x: ${(sx / VB_W * 100).toFixed(2)}%; --spawn-y: ${(sy / VB_H * 100).toFixed(2)}%; --meteor-dx: ${(impactX / VB_W * 100).toFixed(2)}%; --meteor-dy: ${(impactY / VB_H * 100).toFixed(2)}%; animation-delay: ${delay}s"
          data-delay="${delay}">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <circle r="20" fill="rgba(0,0,0,0.001)"/>
@@ -874,7 +884,7 @@ const Planet = (() => {
     const hasLand = !isGas; // Rocky and ringed have continents
 
     const tremorCls = hasTectonic ? ' planet__svg--tremor' : '';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="31 17 339 203" class="planet__svg${tremorCls}"
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${VB_X} ${VB_Y} ${VB_W} ${VB_H}" class="planet__svg${tremorCls}"
       <!-- Atmosphere glow — outer ring -->
       <circle class="planet__atmosphere planet__atmosphere--outer" cx="${cx}" cy="${cy}" r="${r + 14}"
               fill="none" stroke="rgba(100,180,255,0.06)" stroke-width="4"/>
