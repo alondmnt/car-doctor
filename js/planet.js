@@ -542,10 +542,10 @@ const Planet = (() => {
       [  6, -25,  8, 5,   5, 0.6],
     ];
 
-    const darkFill = isGas ? 'rgba(120,80,20,0.5)' : 'rgba(20,20,30,0.55)';
-    const edgeFill = isGas ? 'rgba(140,100,30,0.3)' : 'rgba(40,30,50,0.35)';
+    const darkFill = isGas ? 'rgba(70,45,8,0.75)' : 'rgba(10,10,18,0.75)';
+    const edgeFill = isGas ? 'rgba(90,60,12,0.55)' : 'rgba(25,18,35,0.55)';
     const sheenFill = isGas ? 'rgba(180,140,60,0.2)' : 'rgba(80,40,120,0.2)';
-    const tendrilStroke = isGas ? 'rgba(100,70,15,0.4)' : 'rgba(15,15,25,0.45)';
+    const tendrilStroke = isGas ? 'rgba(55,35,5,0.65)' : 'rgba(8,8,15,0.65)';
 
     // Lower-left quadrant — anchored on the southern continent's western coast
     const fx = cx - 50, fy = cy + 20;
@@ -764,35 +764,6 @@ const Planet = (() => {
   }
 
   /**
-   * Satellite orbit decoration — dim orbit ring with 3 simplified fixed satellites.
-   * Non-interactive background shown when a higher-tier planet fault is active.
-   * No broken filter, no animation, no hit areas.
-   */
-  function _satelliteDecorationSVG(cx, cy, r) {
-    const orbitRx = r + 28;
-    const orbitRy = Math.round(r * 0.75);
-    // Fixed angles at 60°, 180°, 300° for even visual spread
-    const angles = [Math.PI / 3, Math.PI, (5 * Math.PI) / 3];
-    const sats = angles.map(angle => {
-      const sx = (cx + orbitRx * Math.cos(angle)).toFixed(1);
-      const sy = (cy + orbitRy * Math.sin(angle)).toFixed(1);
-      // Simplified silhouette: core box + two small panel stubs, ~8px total
-      return `<g transform="translate(${sx}, ${sy})" opacity="0.55" pointer-events="none">
-        <rect x="-2.5" y="-2" width="5" height="4" rx="1" fill="#667" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
-        <rect x="-8" y="-1" width="5" height="2" rx="0.5" fill="#48a" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
-        <rect x="3" y="-1" width="5" height="2" rx="0.5" fill="#48a" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
-      </g>`;
-    }).join('');
-
-    return `<g class="planet__satellite-decoration" pointer-events="none">
-      <ellipse cx="${cx}" cy="${cy}" rx="${orbitRx}" ry="${orbitRy}"
-               fill="none" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3 4"
-               transform="rotate(-8 ${cx} ${cy})"/>
-      ${sats}
-    </g>`;
-  }
-
-  /**
    * Completed forest decoration — same geometry as _forestZoneSVG but non-interactive,
    * rendered in fully-repaired state (green patches, visible trees) with no animation.
    * Shown as civilisation background when a more advanced fault is active.
@@ -935,9 +906,7 @@ const Planet = (() => {
 
       <!-- Civilisation decorations — repaired-state background, below active fault zones -->
       <!-- Colonisation arc order: satellite(75) → asteroid(80) → tectonic(85) → ocean(90) → terraform(95) → city(100) → satellite expansion(105) -->
-      <!-- Satellite orbit: shown when satellite was established before the current fault -->
-      ${!hasSatellite && (hasAsteroid || hasTectonic || hasOcean || hasForest || hasCity)
-        ? _satelliteDecorationSVG(cx, cy, r) : ''}
+      <!-- Satellite decoration removed — the space station vehicle already represents the established satellite in the scene -->
       <!-- Terraform scatter: shown when city is active, or satellite expansion after city was built -->
       ${!hasForest && (hasCity || (hasSatellite && GameState.get('satelliteExpanded')))
         ? _forestDecorationSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
