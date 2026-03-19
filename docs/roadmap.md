@@ -18,28 +18,16 @@
   - `SPAWN_REGISTRY` + `pickVehicle()` in game.js eliminates vehicle if/else chain
   - Unified `--vehicle-colour` CSS var; paint fills cascade `--vehicle-colour → per-vehicle fallback`
   - Shield generator relocated to mid-fuselage to fix engine/shield overlap on multi-fault spawns
-
-- **Planet doctor** — new vehicle type (build cities, plant forests, put down fires); deep space theme with sun/satellite; 3 geometry types (rocky, gas, ringed); zoom-in entry, orbital exit; tier 70 unlock
-- Planet faults — tectonic repair (tier 75), ocean cleanup (tier 80), asteroid defence (tier 90), satellite network (tier 95)
-- **City expansion** (tier 95 → now tier 90 per reorder) — 3 shape-aware city zones (continent positions for rocky/ringed, construction band for gas); zone-choice interaction: all zones shown simultaneously, player taps one to place a building sticker, others dismiss
-- **Zone-choice infrastructure** — `RepairTemplates.zoneChoice()` factory + `_listenForZoneChoice` / `_waitForToolThenZoneChoice` in Picker; reusable for car sticker spots, forest biomes, and future multi-zone placement
-- **Terraforming** (tier 85) — expands forest fault to 3 sequential zones (water → plants → animals) with shape-aware positions (ocean/landmass/island for rocky/ringed; atmosphere/band for gas); generic `pickerItems` step field for custom emoji pools
+- **v0.8.0 — Planet Doctor** — new vehicle type and full colonisation arc (tiers 70–105)
+  - Planet vehicle: 3 geometry types (rocky, gas, ringed); deep space theme; zoom-in entry, orbital exit; tier 70 unlock
+  - Colonisation arc faults: satellite network (survey orbit), asteroid defence (secure orbit), tectonic repair (stabilise surface), ocean cleanup (make habitable)
+  - **Terraforming** expansion (tier 95) — 3 sequential zones (water → plants → animals); shape-aware positions; custom emoji pools per step
+  - **City expansion** (tier 100) — 3 shape-aware city zones; zone-choice interaction (all zones shown simultaneously, tap one to place)
+  - **Satellite expansion** (tier 105) — dish + solar styles; style picker unlocked
+  - **Zone-choice infrastructure** — `RepairTemplates.zoneChoice()` + `_listenForZoneChoice` / `_waitForToolThenZoneChoice`; reusable for future multi-zone placements
+  - Background decorations follow colonisation arc: each fault shows earlier-completed work via `_satelliteDecorationSVG`, `_forestDecorationSVG`, `_cityDecorationSVG`
 
 ## Next up
-
-Planet expansion unlocks (colonisation arc: survey orbit → secure orbit → stabilise surface → make habitable → seed life → settle):
-
-| Tier | Type | Unlock |
-|------|------|--------|
-| 75 | new fault | ✅ Satellite network (survey from orbit) |
-| 80 | new fault | ✅ Asteroid defence (secure the orbit) |
-| 85 | new fault | ✅ Tectonic repair (stabilise the surface before building) |
-| 90 | new fault | ✅ Ocean cleanup (make it habitable) |
-| 95 | expansion | ✅ Terraforming (seed life) |
-| 100 | expansion | ✅ City expansion (settle) |
-| 105 | expansion | ✅ Satellite expansion (expand orbital infrastructure — dish + solar styles; style picker unlocked) |
-
-Background decorations per active fault follow the colonisation arc: each fault shows earlier-completed work behind the active zone. Implemented in `_planetSVG` via `_satelliteDecorationSVG`, `_forestDecorationSVG`, `_cityDecorationSVG`.
 
 ### Game feel
 
