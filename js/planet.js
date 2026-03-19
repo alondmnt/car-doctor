@@ -874,7 +874,7 @@ const Planet = (() => {
     const hasLand = !isGas; // Rocky and ringed have continents
 
     const tremorCls = hasTectonic ? ' planet__svg--tremor' : '';
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" class="planet__svg${tremorCls}"
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="31 17 339 203" class="planet__svg${tremorCls}"
       <!-- Atmosphere glow — outer ring -->
       <circle class="planet__atmosphere planet__atmosphere--outer" cx="${cx}" cy="${cy}" r="${r + 14}"
               fill="none" stroke="rgba(100,180,255,0.06)" stroke-width="4"/>
