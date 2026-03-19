@@ -936,14 +936,14 @@ const Planet = (() => {
         ? _cityDecorationSVG(cx, cy, r, shape) : ''}
 
       <!-- Fault zones (shown per active faults) -->
-      <!-- fire/ocean/asteroid/satellite/tectonic first, then forest/city on top -->
+      <!-- fire/ocean/asteroid/tectonic/forest/city first, satellite on top (visually above all) -->
       ${hasFire ? _fireZoneSVG(cx, cy) : ''}
       ${hasOcean ? _oceanZoneSVG(cx, cy, shape) : ''}
       ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
-      ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy, GameState.get('cityExpanded'), shape) : ''}
+      ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->
       ${isRinged ? _ringFrontSVG(cx, cy, r) : ''}
@@ -1114,7 +1114,8 @@ const Planet = (() => {
       sats += `
       <g class="planet__satellite planet__satellite--${i} planet__satellite--broken" data-role="interactive"
          data-tilt="${tilt}"
-         transform="translate(${sx}, ${sy}) rotate(${tilt})">
+         transform="translate(${sx}, ${sy}) rotate(${tilt})"
+         pointer-events="auto">
         <!-- Hit area — near-zero opacity so visiblePainted semantics work reliably -->
         <rect x="-28" y="-16" width="56" height="28" fill="rgba(0,0,0,0.001)"/>
         <!-- Visual layers (style-swappable via applySatelliteStyle) -->
@@ -1124,7 +1125,7 @@ const Planet = (() => {
       </g>`;
     });
 
-    return `<g class="planet__satellite-zone">
+    return `<g class="planet__satellite-zone" pointer-events="none">
       <ellipse class="planet__sat-orbit" cx="${cx}" cy="${cy}"
                rx="${orbitRx}" ry="${orbitRy}"
                fill="none" stroke="rgba(255,255,255,0.08)" stroke-dasharray="4 3"
