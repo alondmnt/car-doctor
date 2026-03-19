@@ -193,7 +193,7 @@ const Planet = (() => {
     const bands = [];
     const offsets = [-55, -35, -15, 5, 25, 45];
     const widths = [12, 10, 14, 10, 12, 8];
-    const opacities = [0.12, 0.06, 0.15, 0.08, 0.12, 0.05];
+    const opacities = [0.22, 0.06, 0.28, 0.08, 0.22, 0.05];
     const lightBands = [1, 3, 5]; // Alternating lighter bands
 
     for (let i = 0; i < offsets.length; i++) {
@@ -377,7 +377,7 @@ const Planet = (() => {
 
   /* ─── Zone position helpers (single source of truth) ─── */
   function _forestPos(cx, cy) { return [cx - 45, cy - 30]; }
-  function _cityPos(cx, cy)   { return [cx + 25, cy + 32]; }
+  function _cityPos(cx, cy)   { return [cx + 25, cy + 24]; }
 
   /**
    * Render one dashed placement zone box at (fx, fy) with a CSS class prefix and
@@ -483,18 +483,18 @@ const Planet = (() => {
   /** Rocky/ringed expanded zones — southern continent, northern landmass, island */
   function _cityZonesForLand(cx, cy) {
     return [
-      [cx + 25, cy + 32],   // southern continent (same as _cityPos)
-      [cx - 22, cy - 32],   // northern landmass
-      [cx + 26, cy - 26],   // island/archipelago
+      [cx + 25, cy + 24],   // southern continent (same as _cityPos)
+      [cx - 22, cy - 40],   // northern landmass
+      [cx + 26, cy - 34],   // island/archipelago
     ];
   }
 
   /** Gas expanded zones — spread along construction band */
   function _cityZonesForGas(cx, cy) {
     return [
-      [cx + 42, cy + 44],   // band right
-      [cx,      cy + 44],   // band centre
-      [cx - 42, cy + 44],   // band left
+      [cx + 42, cy + 40],   // band right
+      [cx,      cy + 40],   // band centre
+      [cx - 42, cy + 40],   // band left
     ];
   }
 
