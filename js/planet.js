@@ -879,7 +879,7 @@ const Planet = (() => {
    * shadow → atmosphere (outer + inner) → ring-back (ringed only)
    * → body circle → ocean shimmer → continents → terminator shading
    * → geometry overlay (craters/bands) → ice caps → specular highlights
-   * → civilisation decorations (forest/city background) → fault zones
+   * → civilisation decorations (satellite orbit/forest/city background) → fault zones
    *   (fire/ocean/asteroid/satellite/tectonic → forest/city on top) → ring-front (ringed only)
    */
   function _planetSVG(opts) {

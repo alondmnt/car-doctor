@@ -32,16 +32,14 @@ Planet expansion unlocks (colonisation arc: survey orbit → secure orbit → st
 | Tier | Type | Unlock |
 |------|------|--------|
 | 75 | new fault | ✅ Satellite network (survey from orbit) |
-| 80 | new fault | ✅ Asteroid defence (secure the orbit; could be more dramatic if city decoration is already present when meteors approach — stakes are visible) |
+| 80 | new fault | ✅ Asteroid defence (secure the orbit) |
 | 85 | new fault | ✅ Tectonic repair (stabilise the surface before building) |
 | 90 | new fault | ✅ Ocean cleanup (make it habitable) |
 | 95 | expansion | ✅ Terraforming (seed life) |
 | 100 | expansion | ✅ City expansion (settle) |
-| 105 | expansion | Satellite expansion (expand orbital infrastructure) |
+| 105 | expansion | ✅ Satellite expansion (expand orbital infrastructure — dish + solar styles; style picker unlocked) |
 
-**TODO (code changes required):**
-- **Tiers** — update `UNLOCK_TIERS` in `config.js` to match the table above
-- **Overlays** — update `_planetSVG` in `planet.js` to show earlier-completed work as background decoration per colonisation order Each fault shows earlier completed work as background decoration. Current overlay logic (`_forestDecorationSVG`, `_cityDecorationSVG` in `planet.js`) was designed for the old order and needs to be revised: e.g. tectonic decoration should appear behind ocean/terraform/city; satellite decoration behind asteroid; terraform decoration behind city.
+Background decorations per active fault follow the colonisation arc: each fault shows earlier-completed work behind the active zone. Implemented in `_planetSVG` via `_satelliteDecorationSVG`, `_forestDecorationSVG`, `_cityDecorationSVG`.
 
 ### Game feel
 
