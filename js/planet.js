@@ -764,6 +764,35 @@ const Planet = (() => {
   }
 
   /**
+   * Satellite orbit decoration — dim orbit ring with 3 simplified fixed satellites.
+   * Non-interactive background shown when a higher-tier planet fault is active.
+   * No broken filter, no animation, no hit areas.
+   */
+  function _satelliteDecorationSVG(cx, cy, r) {
+    const orbitRx = r + 28;
+    const orbitRy = Math.round(r * 0.75);
+    // Fixed angles at 60°, 180°, 300° for even visual spread
+    const angles = [Math.PI / 3, Math.PI, (5 * Math.PI) / 3];
+    const sats = angles.map(angle => {
+      const sx = (cx + orbitRx * Math.cos(angle)).toFixed(1);
+      const sy = (cy + orbitRy * Math.sin(angle)).toFixed(1);
+      // Simplified silhouette: core box + two small panel stubs, ~8px total
+      return `<g transform="translate(${sx}, ${sy})" opacity="0.55" pointer-events="none">
+        <rect x="-2.5" y="-2" width="5" height="4" rx="1" fill="#667" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+        <rect x="-8" y="-1" width="5" height="2" rx="0.5" fill="#48a" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+        <rect x="3" y="-1" width="5" height="2" rx="0.5" fill="#48a" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+      </g>`;
+    }).join('');
+
+    return `<g class="planet__satellite-decoration" pointer-events="none">
+      <ellipse cx="${cx}" cy="${cy}" rx="${orbitRx}" ry="${orbitRy}"
+               fill="none" stroke="rgba(255,255,255,0.05)" stroke-dasharray="3 4"
+               transform="rotate(-8 ${cx} ${cy})"/>
+      ${sats}
+    </g>`;
+  }
+
+  /**
    * Completed forest decoration — same geometry as _forestZoneSVG but non-interactive,
    * rendered in fully-repaired state (green patches, visible trees) with no animation.
    * Shown as civilisation background when a more advanced fault is active.
@@ -905,10 +934,16 @@ const Planet = (() => {
                transform="rotate(-20 ${cx - 30} ${cy - 35})"/>
 
       <!-- Civilisation decorations — repaired-state background, below active fault zones -->
-      <!-- Forest shown when city/asteroid/satellite fault is active (but not if forest itself is active) -->
-      <!-- City shown when asteroid/satellite fault is active (but not if city itself is active) -->
-      ${(hasCity || hasAsteroid || hasSatellite) && !hasForest ? _forestDecorationSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
-      ${(hasAsteroid || hasSatellite) && !hasCity ? _cityDecorationSVG(cx, cy, r, shape) : ''}
+      <!-- Colonisation arc order: satellite(75) → asteroid(80) → tectonic(85) → ocean(90) → terraform(95) → city(100) → satellite expansion(105) -->
+      <!-- Satellite orbit: shown when satellite was established before the current fault -->
+      ${!hasSatellite && (hasAsteroid || hasTectonic || hasOcean || hasForest || hasCity)
+        ? _satelliteDecorationSVG(cx, cy, r) : ''}
+      <!-- Terraform scatter: shown when city is active, or satellite expansion after city was built -->
+      ${!hasForest && (hasCity || (hasSatellite && GameState.get('satelliteExpanded')))
+        ? _forestDecorationSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
+      <!-- City: shown when satellite expansion is active (satellite fault, post-city unlock) -->
+      ${!hasCity && hasSatellite && GameState.get('satelliteExpanded')
+        ? _cityDecorationSVG(cx, cy, r, shape) : ''}
 
       <!-- Fault zones (shown per active faults) -->
       <!-- fire/ocean/asteroid/satellite/tectonic first, then forest/city on top -->
