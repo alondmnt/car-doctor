@@ -916,6 +916,10 @@ const Planet = (() => {
       <!-- Polar ice caps -->
       ${_iceCapsSVG(cx, cy, r)}
 
+      <!-- Polar aurora — reaction anchor, opacity 0 by default -->
+      <ellipse class="planet__aurora" cx="${cx}" cy="${cy - r + 10}" rx="${Math.round(r * 0.55)}" ry="7"
+               fill="rgba(100,220,180,0.65)" pointer-events="none"/>
+
       <!-- Specular highlight — main -->
       <ellipse class="planet__highlight" cx="${cx - 25}" cy="${cy - 30}"
                rx="35" ry="25" fill="rgba(255,255,255,0.18)"

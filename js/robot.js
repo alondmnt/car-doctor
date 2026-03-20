@@ -419,10 +419,12 @@ const Robot = (() => {
         <g class="robot__head">
           <rect class="robot__head-box svg-robot-paint" x="160" y="10" width="80" height="45" rx="4"/>
           <!-- Dial eyes -->
-          <circle cx="182" cy="32" r="10" style="fill:#222;stroke:#aaa;stroke-width:2"/>
-          <circle cx="182" cy="32" r="5" style="fill:#4ae;stroke:#3ad;stroke-width:1"/>
-          <circle cx="218" cy="32" r="10" style="fill:#222;stroke:#aaa;stroke-width:2"/>
-          <circle cx="218" cy="32" r="5" style="fill:#4ae;stroke:#3ad;stroke-width:1"/>
+          <g class="robot__eyes">
+            <circle cx="182" cy="32" r="10" style="fill:#222;stroke:#aaa;stroke-width:2"/>
+            <circle class="robot__eye-iris" cx="182" cy="32" r="5" style="fill:#4ae;stroke:#3ad;stroke-width:1"/>
+            <circle cx="218" cy="32" r="10" style="fill:#222;stroke:#aaa;stroke-width:2"/>
+            <circle class="robot__eye-iris" cx="218" cy="32" r="5" style="fill:#4ae;stroke:#3ad;stroke-width:1"/>
+          </g>
           <!-- Mouth grille -->
           <rect x="185" y="44" width="30" height="6" rx="1" style="fill:#555"/>
           <line x1="192" y1="44" x2="192" y2="50" style="stroke:#444;stroke-width:1"/>

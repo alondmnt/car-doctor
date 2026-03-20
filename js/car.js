@@ -251,8 +251,10 @@ const Car = (() => {
         <g class="car__driver">
           <ellipse cx="172" cy="56" rx="10" ry="12" fill="${skinColour}"/>
           <path d="M 162 50 Q 162 41 172 39 Q 182 41 182 50 Q 180 47 172 46 Q 164 47 162 50 Z" fill="${hairColour}"/>
-          <circle cx="168" cy="54" r="1.8" fill="#222"/>
-          <circle cx="176" cy="54" r="1.8" fill="#222"/>
+          <g class="car__driver-eyes">
+            <circle class="car__eye-iris" cx="168" cy="54" r="1.8" fill="#222"/>
+            <circle class="car__eye-iris" cx="176" cy="54" r="1.8" fill="#222"/>
+          </g>
         </g>
 
         <!-- Headlight -->
@@ -356,8 +358,10 @@ const Car = (() => {
         <g class="car__driver">
           <ellipse cx="155" cy="38" rx="10" ry="12" fill="${skinColour}"/>
           <path d="M 145 32 Q 145 23 155 21 Q 165 23 165 32 Q 163 29 155 28 Q 147 29 145 32 Z" fill="${hairColour}"/>
-          <circle cx="151" cy="36" r="1.8" fill="#222"/>
-          <circle cx="159" cy="36" r="1.8" fill="#222"/>
+          <g class="car__driver-eyes">
+            <circle class="car__eye-iris" cx="151" cy="36" r="1.8" fill="#222"/>
+            <circle class="car__eye-iris" cx="159" cy="36" r="1.8" fill="#222"/>
+          </g>
         </g>
 
         <!-- Headlight (big rectangular) -->
@@ -459,8 +463,10 @@ const Car = (() => {
         <g class="car__driver">
           <ellipse cx="245" cy="72" rx="8" ry="10" fill="${skinColour}"/>
           <path d="M 237 67 Q 237 60 245 58 Q 253 60 253 67 Q 251 64 245 63 Q 239 64 237 67 Z" fill="${hairColour}"/>
-          <circle cx="242" cy="71" r="1.5" fill="#222"/>
-          <circle cx="248" cy="71" r="1.5" fill="#222"/>
+          <g class="car__driver-eyes">
+            <circle class="car__eye-iris" cx="242" cy="71" r="1.5" fill="#222"/>
+            <circle class="car__eye-iris" cx="248" cy="71" r="1.5" fill="#222"/>
+          </g>
         </g>
 
         <!-- Headlight (aggressive wedge) -->
