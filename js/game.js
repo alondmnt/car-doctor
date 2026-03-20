@@ -276,13 +276,12 @@ const Game = (() => {
     Audio.play(step.sound);
     step.action(targetEl, currentCar.el, picked);
 
-    if (currentCar.type === 'planet') Reactions.aurora(currentCar);
-    else Reactions.wiggle(currentCar);
-
     stepIndex++;
 
     if (stepIndex >= steps.length) {
       // Fault complete
+      if (currentCar.type === 'planet') Reactions.aurora(currentCar);
+      else Reactions.wiggle(currentCar);
       Picker.hideToolbox();
       const meta = FaultRegistry.META[currentFault];
       const indicator = meta && currentCar.el.querySelector(meta.indicator);
