@@ -2510,6 +2510,12 @@ html, body {
   100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
 }
 
+@keyframes splash-arc {
+  0%   { transform: translate(0, 0) scale(1);                                    opacity: 1; }
+  40%  { transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) - 12px)) scale(0.85); opacity: 0.9; }
+  100% { transform: translate(var(--dx), calc(var(--dy) + 24px)) scale(0);       opacity: 0; }
+}
+
 .spark {
   position: fixed;
   width: 4px;
@@ -2518,6 +2524,16 @@ html, body {
   pointer-events: none;
   z-index: 9999;
   animation: spark-fly 0.48s ease-out forwards;
+}
+
+.splash-drop {
+  position: fixed;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  animation: splash-arc 0.65s ease-in forwards;
 }
 
 /* ===== Character reactions ===== */
