@@ -226,6 +226,8 @@ const Game = (() => {
       currentCar.slideIn();
       setTimeout(() => {
         if (generation !== gen) return;
+        Reactions.surprise(currentCar);
+        Reactions.startIdleBlink(currentCar);
         busy = false;
         const tapStep = steps[stepIndex];
         if (tapStep?.setup) {
@@ -273,6 +275,9 @@ const Game = (() => {
 
     Audio.play(step.sound);
     step.action(targetEl, currentCar.el, picked);
+
+    if (currentCar.type === 'planet') Reactions.aurora(currentCar);
+    else Reactions.wiggle(currentCar);
 
     stepIndex++;
 
@@ -335,6 +340,7 @@ const Game = (() => {
           Audio.play('success');
           setTimeout(() => {
             if (generation !== gen) return;
+            Reactions.stopIdleBlink();
             currentCar.driveAway().then(() => {
               if (generation !== gen) return;
               currentCar = null;

@@ -322,6 +322,7 @@ const Picker = (() => {
 
       if (toolEl.dataset.tool === step.tool) {
         Audio.play('tap');
+        Reactions.blink(car);
         // Explicitly remove before _listenForZoneChoice overwrites activeCleanup
         toolbox.removeEventListener('click', onToolClick);
         toolbox.removeEventListener('touchend', onToolClick);
@@ -357,6 +358,7 @@ const Picker = (() => {
 
       if (toolEl.dataset.tool === step.tool) {
         Audio.play('tap');
+        Reactions.blink(car);
         toolbox.removeEventListener('click', onToolClick);
         toolbox.removeEventListener('touchend', onToolClick);
         activeTool = step.tool;

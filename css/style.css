@@ -2500,6 +2500,65 @@ html, body {
   animation: paint-shine 0.6s ease-out;
 }
 
+/* ===== Character reactions ===== */
+
+@keyframes blink {
+  0%, 100% { transform: scaleY(1); }
+  45%       { transform: scaleY(0.05); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-6deg); }
+  75%      { transform: rotate(6deg); }
+}
+
+@keyframes surprise {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.5); }
+}
+
+@keyframes aurora-pulse {
+  0%, 100% { opacity: 0; }
+  35%, 65% { opacity: 1; }
+}
+
+/* Blink — eye group scaleY */
+.car__driver-eyes.reacting--blink,
+.robot__eyes.reacting--blink,
+.ship__eyes.reacting--blink {
+  animation: blink 0.2s ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Wiggle — head group rotate */
+.car__driver.reacting--wiggle,
+.robot__head.reacting--wiggle,
+.ship__cockpit.reacting--wiggle {
+  animation: wiggle 0.5s ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+/* Surprise — iris scale */
+.car__eye-iris.reacting--surprise,
+.robot__eye-iris.reacting--surprise,
+.ship__eye-iris.reacting--surprise {
+  animation: surprise 0.4s ease-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Aurora — planet polar shimmer */
+.planet__aurora {
+  opacity: 0;
+  pointer-events: none;
+}
+.planet__aurora.reacting--aurora {
+  animation: aurora-pulse 0.9s ease-in-out;
+}
+
 /* ===== Tectonic volcanic fault zone ===== */
 .planet__svg--tremor {
   animation: planet-tremor 0.15s ease-in-out infinite;
