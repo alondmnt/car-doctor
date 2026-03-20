@@ -2503,6 +2503,23 @@ html, body {
   animation: paint-shine 0.6s ease-out;
 }
 
+/* ===== Sparks ===== */
+
+@keyframes spark-fly {
+  0%   { transform: translate(0, 0) scale(1);    opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+.spark {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  animation: spark-fly 0.48s ease-out forwards;
+}
+
 /* ===== Character reactions ===== */
 
 @keyframes blink {

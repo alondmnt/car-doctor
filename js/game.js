@@ -275,6 +275,7 @@ const Game = (() => {
 
     Audio.play(step.sound);
     step.action(targetEl, currentCar.el, picked);
+    if (step.tool === 'drill' && targetEl) Sparks.burst(targetEl);
 
     stepIndex++;
 
