@@ -111,10 +111,13 @@ const RobotRepair = (() => {
     });
   }
 
-  /** Badge/emblem — hand tool, emoji picker */
+  /** Badge/emblem — 1 step: choose from 3 zones */
   function badge(_car) {
-    return RepairTemplates.stickerApply({
-      zoneSelector: '.robot__badge-zone',
+    return RepairTemplates.zoneChoice({
+      id: 'pick-sticker',
+      description: 'Select a spot and place a badge',
+      zones: ['.robot__badge-zone--0', '.robot__badge-zone--1', '.robot__badge-zone--2'],
+      picker: 'sticker',
     });
   }
 

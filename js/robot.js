@@ -308,8 +308,9 @@ const Robot = (() => {
         <line x1="220" y1="100" x2="238" y2="95" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
-      <!-- Badge zone (sticker equivalent) -->
-      <g class="robot__badge-zone ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
+      <!-- Badge zones (3 placement choices) -->
+      <!-- Zone 0: chest centre -->
+      <g class="robot__badge-zone robot__badge-zone--0 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
         <rect x="164" y="78" width="72" height="40" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="164" y="78" width="72" height="40" rx="4"
@@ -317,6 +318,26 @@ const Robot = (() => {
         <text class="robot__badge-text" x="200" y="98"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="164" y="78" width="72" height="40" fill="transparent"/>
+      </g>
+      <!-- Zone 1: upper-left shoulder area -->
+      <g class="robot__badge-zone robot__badge-zone--1 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
+        <rect x="148" y="63" width="36" height="22" rx="4"
+              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+        <rect x="148" y="63" width="36" height="22" rx="4"
+              fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+        <text class="robot__badge-text" x="166" y="74"
+              text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+        <rect x="148" y="63" width="36" height="22" fill="transparent"/>
+      </g>
+      <!-- Zone 2: shin / lower leg area -->
+      <g class="robot__badge-zone robot__badge-zone--2 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
+        <rect x="170" y="122" width="60" height="24" rx="4"
+              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+        <rect x="170" y="122" width="60" height="24" rx="4"
+              fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+        <text class="robot__badge-text" x="200" y="134"
+              text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+        <rect x="170" y="122" width="60" height="24" fill="transparent"/>
       </g>
 
       <!-- Oil grime (wash equivalent — dark grey-blue splatters) -->
