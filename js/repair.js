@@ -84,10 +84,13 @@ const Repair = (() => {
     });
   }
 
-  /** Sticker — 1 step */
+  /** Sticker — 1 step: choose from 3 zones */
   function sticker(_car) {
-    return RepairTemplates.stickerApply({
-      zoneSelector: '.car__sticker-zone',
+    return RepairTemplates.zoneChoice({
+      id: 'pick-sticker',
+      description: 'Select a spot and place a sticker',
+      zones: ['.car__sticker-zone--0', '.car__sticker-zone--1', '.car__sticker-zone--2'],
+      picker: 'sticker',
     });
   }
 

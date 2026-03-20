@@ -88,10 +88,10 @@ const Car = (() => {
     </g>`;
   }
 
-  /** Bonnet, engine bay, paint damage, sticker zone, mud overlay — shared structure */
+  /** Bonnet, engine bay, paint damage, sticker zones, mud overlay — shared structure */
   function _interactiveSVG(opts, layout) {
     const { hasEngine, hasPaint, hasSticker, hasWash } = opts;
-    const { bonnet, engine, paint, sticker, mud } = layout;
+    const { bonnet, engine, paint, stickers, mud } = layout;
 
     // Smoke puff positions — staggered across the bonnet top
     const smokeX = bonnet.x + bonnet.w / 2;
@@ -144,16 +144,17 @@ const Car = (() => {
         }).join('')}
       </g>
 
-      <!-- Sticker zone -->
-      <g class="car__sticker-zone ${hasSticker ? '' : 'car__sticker-zone--hidden'}" data-role="sticker-zone">
-        <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" rx="5"
+      <!-- Sticker zones (3 placement choices) -->
+      ${stickers.map((s, i) => `
+      <g class="car__sticker-zone car__sticker-zone--${i} ${hasSticker ? '' : 'car__sticker-zone--hidden'}" data-role="sticker-zone">
+        <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="5"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="5 3" stroke-width="3.5"/>
-        <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" rx="5"
+        <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="5"
               fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="5 3" stroke-width="2"/>
-        <text class="car__sticker-text" x="${sticker.x + sticker.w/2}" y="${sticker.y + sticker.h/2}"
+        <text class="car__sticker-text" x="${s.x + s.w/2}" y="${s.y + s.h/2}"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-        <rect x="${sticker.x}" y="${sticker.y}" width="${sticker.w}" height="${sticker.h}" fill="transparent"/>
-      </g>
+        <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="transparent"/>
+      </g>`).join('')}
 
       <!-- Mud overlay (car wash fault) — splatter shapes with drips -->
       <g class="car__mud ${hasWash ? '' : 'car__mud--hidden'}" data-role="wash-target">
@@ -188,7 +189,11 @@ const Car = (() => {
         { cx: 330, cy: 100, rx: 18, ry: 12, o: 0.45, ang: 10 },
         { cx: 180, cy: 138, rx: 20, ry: 10, o: 0.45, ang: -30 },
       ],
-      sticker: { x: 248, y: 86, w: 80, h: 50 },
+      stickers: [
+        { x: 248, y: 86,  w: 80, h: 50 },   // door panel
+        { x: 308, y: 118, w: 44, h: 28 },   // rear boot area
+        { x:  56, y: 82,  w: 58, h: 35 },   // bonnet
+      ],
       mud: [
         { cx: 80, cy: 120, rx: 26, ry: 10, o: 0.8 },
         { cx: 160, cy: 125, rx: 35, ry: 12, o: 0.65 },
@@ -287,7 +292,11 @@ const Car = (() => {
         { cx: 330, cy: 90, rx: 18, ry: 12, o: 0.45, ang: -35 },
         { cx: 180, cy: 130, rx: 22, ry: 10, o: 0.45, ang: -10 },
       ],
-      sticker: { x: 240, y: 72, w: 85, h: 55 },
+      stickers: [
+        { x: 240, y: 72,  w: 85, h: 55 },   // door panel
+        { x: 306, y: 110, w: 44, h: 28 },   // rear area
+        { x:  48, y: 68,  w: 54, h: 34 },   // bonnet
+      ],
       mud: [
         { cx: 75, cy: 115, rx: 28, ry: 10, o: 0.8 },
         { cx: 160, cy: 120, rx: 36, ry: 12, o: 0.65 },
@@ -386,7 +395,11 @@ const Car = (() => {
         { cx: 350, cy: 108, rx: 16, ry: 10, o: 0.45, ang: 8 },
         { cx: 200, cy: 135, rx: 22, ry: 10, o: 0.45, ang: -22 },
       ],
-      sticker: { x: 270, y: 92, w: 75, h: 42 },
+      stickers: [
+        { x: 270, y: 92,  w: 75, h: 42 },   // door panel
+        { x: 310, y: 118, w: 44, h: 28 },   // rear bumper
+        { x:  48, y: 95,  w: 76, h: 36 },   // bonnet/hood
+      ],
       mud: [
         { cx: 85, cy: 125, rx: 26, ry: 10, o: 0.8 },
         { cx: 170, cy: 128, rx: 34, ry: 10, o: 0.65 },
