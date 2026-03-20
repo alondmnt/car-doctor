@@ -247,11 +247,11 @@ const Audio = (() => {
 
   /** Vibration patterns (ms) keyed by sound name. */
   const HAPTICS = {
-    ratchet: [35],
-    clank:   [80],
-    tap:     [15],
-    success: [50, 50, 50],
-    coin:    [20, 30, 20],
+    ratchet: [60],
+    clank:   [120],
+    tap:     [40],
+    success: [80, 60, 80],
+    coin:    [40, 50, 40],
   };
 
   function play(name) {
