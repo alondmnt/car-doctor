@@ -188,9 +188,9 @@ const Picker = (() => {
 
   function showColourPicker(onPick, carEl = null) {
     const palette = GameState.get('carPalette');
-    const current = carEl && getComputedStyle(carEl).getPropertyValue('--vehicle-colour').trim();
-    const items = (current && !palette.includes(current))
-      ? [current, ...palette]
+    const current = carEl && carEl.style.getPropertyValue('--vehicle-colour').trim();
+    const items = current
+      ? [current, ...palette.filter(c => c !== current)]
       : palette;
     _showPicker({
       containerClass: 'picker-row',
