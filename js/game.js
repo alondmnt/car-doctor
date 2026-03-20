@@ -345,7 +345,7 @@ const Game = (() => {
               currentCar = null;
               setTimeout(nextCar, 400 / CONFIG.gameSpeed);
             });
-          }, 500 / CONFIG.gameSpeed);
+          }, 800 / CONFIG.gameSpeed);
         }, 300 / CONFIG.gameSpeed);
       }
     } else {

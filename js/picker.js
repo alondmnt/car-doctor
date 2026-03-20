@@ -163,9 +163,9 @@ const Picker = (() => {
     const picker = document.createElement('div');
     picker.className = containerClass;
     let picked = false;
-    items.forEach(item => {
+    items.forEach((item, i) => {
       const btn = document.createElement('div');
-      renderItem(btn, item);
+      renderItem(btn, item, i);
       function pick(e) {
         e.preventDefault();
         if (picked) return;
@@ -195,7 +195,11 @@ const Picker = (() => {
     _showPicker({
       containerClass: 'picker-row',
       items,
-      renderItem: (btn, c) => { btn.className = 'colour-picker__swatch'; btn.style.background = c; },
+      renderItem: (btn, c, i) => {
+        btn.className = 'colour-picker__swatch';
+        if (i === 0 && current) btn.classList.add('colour-picker__swatch--current');
+        btn.style.background = c;
+      },
       onPick,
     });
   }
