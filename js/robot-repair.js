@@ -117,6 +117,7 @@ const RobotRepair = (() => {
       id: 'pick-sticker',
       description: 'Select a spot and place a badge',
       zones: ['.robot__badge-zone--0', '.robot__badge-zone--1', '.robot__badge-zone--2'],
+      tool: 'hand',
       picker: 'sticker',
     });
   }

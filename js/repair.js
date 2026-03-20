@@ -90,6 +90,7 @@ const Repair = (() => {
       id: 'pick-sticker',
       description: 'Select a spot and place a sticker',
       zones: ['.car__sticker-zone--0', '.car__sticker-zone--1', '.car__sticker-zone--2'],
+      tool: 'hand',
       picker: 'sticker',
     });
   }

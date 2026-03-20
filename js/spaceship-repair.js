@@ -95,6 +95,7 @@ const SpaceshipRepair = (() => {
       id: 'pick-sticker',
       description: 'Select a spot and place an emblem',
       zones: ['.ship__emblem-zone--0', '.ship__emblem-zone--1', '.ship__emblem-zone--2'],
+      tool: 'hand',
       picker: 'sticker',
     });
   }
