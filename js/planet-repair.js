@@ -2,7 +2,7 @@
  * Planet repair step logic — planet-specific faults:
  *   fire → extinguish (hose tool, reuses hoseWash template)
  *   forest → plant trees (hand tool, custom 1-step tap)
- *   city → build cities (hand tool, reuses stickerApply template with city emojis)
+ *   city → build cities (hand tool, uses zoneChoice template with city emojis)
  */
 const PlanetRepair = (() => {
 

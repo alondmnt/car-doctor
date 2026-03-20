@@ -189,23 +189,6 @@ const RepairTemplates = (() => {
   }
 
   /**
-   * 1-step sticker/badge: hand tool + sticker picker.
-   * @param {object} d
-   * @param {string} d.zoneSelector
-   */
-  function stickerApply(d) {
-    return [{
-      id: 'pick-sticker',
-      description: 'Select hand tool and tap the zone',
-      target: d.zoneSelector,
-      tool: 'hand',
-      sound: 'tap',
-      picker: 'sticker',
-      action: () => {},
-    }];
-  }
-
-  /**
    * 1-step hose wash: hose tool → wash animation + sparkle body parts.
    * @param {object} d
    * @param {string} d.grimeSelector, d.grimeWashClass, d.grimeHiddenClass
@@ -262,5 +245,5 @@ const RepairTemplates = (() => {
     }];
   }
 
-  return { boltSwap, panelSwap, spray, stickerApply, hoseWash, zoneChoice };
+  return { boltSwap, panelSwap, spray, hoseWash, zoneChoice };
 })();
