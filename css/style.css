@@ -2495,6 +2495,11 @@ html, body {
   transition: filter 0.4s;
 }
 
+/* Colour flash after terraform colour selection */
+.planet__body--colour-flash {
+  animation: paint-shine 0.6s ease-out;
+}
+
 /* ===== Tectonic volcanic fault zone ===== */
 .planet__svg--tremor {
   animation: planet-tremor 0.15s ease-in-out infinite;

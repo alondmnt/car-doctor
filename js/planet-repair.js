@@ -50,7 +50,7 @@ const PlanetRepair = (() => {
       { id: 'terraform-plants',  target: '.planet__terraform-zone--1', pickerItems: CONFIG.terraformPlantsStickers,  desc: 'Tap the land zone to seed plant life' },
       { id: 'terraform-animals', target: '.planet__terraform-zone--2', pickerItems: CONFIG.terraformAnimalsStickers, desc: 'Tap the wildlife zone to introduce animals' },
     ];
-    return categories.map(({ id, target, pickerItems, desc }, i) => ({
+    const steps = categories.map(({ id, target, pickerItems, desc }, i) => ({
       id,
       description: desc,
       target,
@@ -60,6 +60,23 @@ const PlanetRepair = (() => {
       pickerItems,
       action: () => {},  // applyStickerOrBadge in dispatchPicker handles sticker placement
     }));
+
+    steps.push({
+      id: 'terraform-colour',
+      description: 'Tap the planet to choose its colour',
+      target: '.planet__body',
+      sound: 'tap',
+      picker: 'colour',
+      action: (_el, carEl) => {
+        const body = carEl.querySelector('.planet__body');
+        if (body) {
+          body.classList.add('planet__body--colour-flash');
+          setTimeout(() => body.classList.remove('planet__body--colour-flash'), 600);
+        }
+      },
+    });
+
+    return steps;
   }
 
   /** Build cities — jack (crane) tool + zone-choice picker, tap any zone to place a city */
