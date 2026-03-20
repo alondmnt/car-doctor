@@ -2532,7 +2532,7 @@ html, body {
 .robot__head.reacting--wiggle,
 .ship__cockpit.reacting--wiggle,
 .planet__flag.reacting--wiggle {
-  animation: wiggle 0.5s ease-in-out;
+  animation: wiggle 1s ease-in-out;
   transform-box: fill-box;
   transform-origin: center bottom;
 }

@@ -31,7 +31,7 @@ const Reactions = (() => {
   function wiggle(car) {
     const sel = _headGroup[car.type];
     if (!sel) return;
-    _flash(car.el.querySelector(sel), 'reacting--wiggle', 500);
+    _flash(car.el.querySelector(sel), 'reacting--wiggle', 1000);
   }
 
   /** Surprise — scale up iris elements. On fault spawn. */
@@ -46,7 +46,7 @@ const Reactions = (() => {
     const el = car.el.querySelector('.planet__flag');
     if (!el) return;
     el.classList.remove('planet__flag--hidden');
-    _flash(el, 'reacting--wiggle', 500);
+    _flash(el, 'reacting--wiggle', 1000);
   }
 
   /** Start random idle blink loop (3–8 s interval). Stops previous loop. */
