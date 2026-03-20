@@ -146,7 +146,7 @@ const Car = (() => {
 
       <!-- Sticker zones (3 placement choices) -->
       ${stickers.map((s, i) => {
-        const fs = Math.round(Math.min(s.w, s.h) * 0.75);
+        const fs = Math.round(Math.min(s.w, s.h) * 0.9);
         return `
       <g class="car__sticker-zone car__sticker-zone--${i} ${hasSticker ? '' : 'car__sticker-zone--hidden'}"
          data-role="sticker-zone" style="--sticker-fs: ${fs}px">

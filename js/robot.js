@@ -311,7 +311,7 @@ const Robot = (() => {
       <!-- Badge zones (3 placement choices) -->
       <!-- Zone 0: chest centre (72×40 → 30px) -->
       <g class="robot__badge-zone robot__badge-zone--0 ${hasSticker ? '' : 'robot__badge-zone--hidden'}"
-         data-role="sticker-zone" style="--sticker-fs: 30px">
+         data-role="sticker-zone" style="--sticker-fs: 36px">
         <rect x="164" y="78" width="72" height="40" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="164" y="78" width="72" height="40" rx="4"
