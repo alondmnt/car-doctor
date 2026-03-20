@@ -309,8 +309,9 @@ const Robot = (() => {
       </g>
 
       <!-- Badge zones (3 placement choices) -->
-      <!-- Zone 0: chest centre -->
-      <g class="robot__badge-zone robot__badge-zone--0 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
+      <!-- Zone 0: chest centre (72×40 → 30px) -->
+      <g class="robot__badge-zone robot__badge-zone--0 ${hasSticker ? '' : 'robot__badge-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 30px">
         <rect x="164" y="78" width="72" height="40" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="164" y="78" width="72" height="40" rx="4"
@@ -319,25 +320,27 @@ const Robot = (() => {
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="164" y="78" width="72" height="40" fill="transparent"/>
       </g>
-      <!-- Zone 1: upper-left shoulder area -->
-      <g class="robot__badge-zone robot__badge-zone--1 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
-        <rect x="148" y="63" width="36" height="22" rx="4"
+      <!-- Zone 1: upper-right torso / shoulder area (clear of left arm at x:118–146); 34×24 → 18px -->
+      <g class="robot__badge-zone robot__badge-zone--1 ${hasSticker ? '' : 'robot__badge-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 18px">
+        <rect x="218" y="63" width="34" height="24" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-        <rect x="148" y="63" width="36" height="22" rx="4"
+        <rect x="218" y="63" width="34" height="24" rx="4"
               fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-        <text class="robot__badge-text" x="166" y="74"
+        <text class="robot__badge-text" x="235" y="75"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-        <rect x="148" y="63" width="36" height="22" fill="transparent"/>
+        <rect x="218" y="63" width="34" height="24" fill="transparent"/>
       </g>
-      <!-- Zone 2: shin / lower leg area -->
-      <g class="robot__badge-zone robot__badge-zone--2 ${hasSticker ? '' : 'robot__badge-zone--hidden'}" data-role="sticker-zone">
-        <rect x="170" y="122" width="60" height="24" rx="4"
+      <!-- Zone 2: shin / lower leg (above boots at y:150); 64×26 → 20px -->
+      <g class="robot__badge-zone robot__badge-zone--2 ${hasSticker ? '' : 'robot__badge-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 20px">
+        <rect x="168" y="122" width="64" height="26" rx="4"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-        <rect x="170" y="122" width="60" height="24" rx="4"
+        <rect x="168" y="122" width="64" height="26" rx="4"
               fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-        <text class="robot__badge-text" x="200" y="134"
+        <text class="robot__badge-text" x="200" y="135"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-        <rect x="170" y="122" width="60" height="24" fill="transparent"/>
+        <rect x="168" y="122" width="64" height="26" fill="transparent"/>
       </g>
 
       <!-- Oil grime (wash equivalent — dark grey-blue splatters) -->

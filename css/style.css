@@ -1120,13 +1120,11 @@ html, body {
   animation: arrow-bounce-down 0.8s ease-in-out infinite;
 }
 
-/* Generic sticker-zone applied (replaces per-vehicle applied classes) */
+/* Generic sticker-zone applied — font size set per-zone via --sticker-fs CSS variable */
 .sticker-zone--applied text {
-  font-size: 40px;
+  font-size: var(--sticker-fs, 36px);
 }
-/* Smaller text in compact zones (robot badge, ship emblem, planet city) */
-.robot__badge-zone.sticker-zone--applied text,
-.ship__emblem-zone.sticker-zone--applied text,
+/* Planet city zones have a fixed layout not tied to --sticker-fs */
 .planet__city-zone.sticker-zone--applied text {
   font-size: 32px;
 }

@@ -145,8 +145,11 @@ const Car = (() => {
       </g>
 
       <!-- Sticker zones (3 placement choices) -->
-      ${stickers.map((s, i) => `
-      <g class="car__sticker-zone car__sticker-zone--${i} ${hasSticker ? '' : 'car__sticker-zone--hidden'}" data-role="sticker-zone">
+      ${stickers.map((s, i) => {
+        const fs = Math.round(Math.min(s.w, s.h) * 0.75);
+        return `
+      <g class="car__sticker-zone car__sticker-zone--${i} ${hasSticker ? '' : 'car__sticker-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: ${fs}px">
         <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="5"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="5 3" stroke-width="3.5"/>
         <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" rx="5"
@@ -154,7 +157,8 @@ const Car = (() => {
         <text class="car__sticker-text" x="${s.x + s.w/2}" y="${s.y + s.h/2}"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="${s.x}" y="${s.y}" width="${s.w}" height="${s.h}" fill="transparent"/>
-      </g>`).join('')}
+      </g>`;
+      }).join('')}
 
       <!-- Mud overlay (car wash fault) — splatter shapes with drips -->
       <g class="car__mud ${hasWash ? '' : 'car__mud--hidden'}" data-role="wash-target">
@@ -190,9 +194,9 @@ const Car = (() => {
         { cx: 180, cy: 138, rx: 20, ry: 10, o: 0.45, ang: -30 },
       ],
       stickers: [
-        { x: 248, y: 86,  w: 80, h: 50 },   // door panel
-        { x: 308, y: 118, w: 44, h: 28 },   // rear boot area
-        { x:  56, y: 82,  w: 58, h: 35 },   // bonnet
+        { x: 248, y: 86, w: 72, h: 40 },   // rear quarter panel (bottom clears wheel top at y:130)
+        { x: 145, y: 88, w: 72, h: 40 },   // front door (starts past front wheel at x:128)
+        { x:  50, y: 84, w: 60, h: 38 },   // bonnet (clear of front wheel arch at y:130)
       ],
       mud: [
         { cx: 80, cy: 120, rx: 26, ry: 10, o: 0.8 },
@@ -293,9 +297,9 @@ const Car = (() => {
         { cx: 180, cy: 130, rx: 22, ry: 10, o: 0.45, ang: -10 },
       ],
       stickers: [
-        { x: 240, y: 72,  w: 85, h: 55 },   // door panel
-        { x: 306, y: 110, w: 44, h: 28 },   // rear area
-        { x:  48, y: 68,  w: 54, h: 34 },   // bonnet
+        { x: 238, y: 72, w: 72, h: 50 },   // rear door (bottom clears wheel top at y:128)
+        { x: 128, y: 72, w: 72, h: 50 },   // front door (starts past front wheel at x:125)
+        { x:  48, y: 70, w: 52, h: 36 },   // bonnet (clear of front wheel at y:128)
       ],
       mud: [
         { cx: 75, cy: 115, rx: 28, ry: 10, o: 0.8 },
@@ -396,9 +400,9 @@ const Car = (() => {
         { cx: 200, cy: 135, rx: 22, ry: 10, o: 0.45, ang: -22 },
       ],
       stickers: [
-        { x: 270, y: 92,  w: 75, h: 42 },   // door panel
-        { x: 310, y: 118, w: 44, h: 28 },   // rear bumper
-        { x:  48, y: 95,  w: 76, h: 36 },   // bonnet/hood
+        { x: 262, y: 92, w: 66, h: 34 },   // rear quarter (bottom clears wheel top at y:132, right clears spoiler at x:340)
+        { x: 130, y: 94, w: 82, h: 32 },   // door (starts past front wheel at x:116)
+        { x:  50, y: 96, w: 70, h: 30 },   // bonnet (clear of front wheel arch at y:132)
       ],
       mud: [
         { cx: 85, cy: 125, rx: 26, ry: 10, o: 0.8 },

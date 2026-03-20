@@ -226,28 +226,31 @@ const Spaceship = (() => {
       </g>
 
       <!-- Emblem zones (3 placement choices) -->
-      <!-- Zone 0: mid-fuselage (widest section) -->
-      <g class="ship__emblem-zone ship__emblem-zone--0 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
-        <rect x="150" y="65" width="60" height="30" rx="0"
+      <!-- Zone 0: mid-fuselage widest section (56×30 → 23px) -->
+      <g class="ship__emblem-zone ship__emblem-zone--0 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 23px">
+        <rect x="155" y="65" width="56" height="30" rx="0"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-        <rect x="150" y="65" width="60" height="30" rx="0"
+        <rect x="155" y="65" width="56" height="30" rx="0"
               fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-        <text class="ship__emblem-text" x="180" y="80"
+        <text class="ship__emblem-text" x="183" y="80"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-        <rect x="150" y="65" width="60" height="30" fill="transparent"/>
+        <rect x="155" y="65" width="56" height="30" fill="transparent"/>
       </g>
-      <!-- Zone 1: forward fuselage / nose section -->
-      <g class="ship__emblem-zone ship__emblem-zone--1 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
-        <rect x="68" y="66" width="44" height="28" rx="0"
+      <!-- Zone 1: forward fuselage past cockpit (cockpit ends ~x:124); 40×30 → 23px -->
+      <g class="ship__emblem-zone ship__emblem-zone--1 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 23px">
+        <rect x="126" y="65" width="40" height="30" rx="0"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
-        <rect x="68" y="66" width="44" height="28" rx="0"
+        <rect x="126" y="65" width="40" height="30" rx="0"
               fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
-        <text class="ship__emblem-text" x="90" y="80"
+        <text class="ship__emblem-text" x="146" y="80"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
-        <rect x="68" y="66" width="44" height="28" fill="transparent"/>
+        <rect x="126" y="65" width="40" height="30" fill="transparent"/>
       </g>
-      <!-- Zone 2: rear fuselage section -->
-      <g class="ship__emblem-zone ship__emblem-zone--2 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
+      <!-- Zone 2: rear fuselage past hatch (hatch ends x:296); 44×22 → 17px -->
+      <g class="ship__emblem-zone ship__emblem-zone--2 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}"
+         data-role="sticker-zone" style="--sticker-fs: 17px">
         <rect x="300" y="68" width="44" height="22" rx="0"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="300" y="68" width="44" height="22" rx="0"
