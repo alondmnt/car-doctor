@@ -225,8 +225,9 @@ const Spaceship = (() => {
         <line x1="210" y1="88" x2="235" y2="84" stroke="rgba(40,30,20,0.35)" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
-      <!-- Emblem zone (sticker equivalent) — on widest fuselage section -->
-      <g class="ship__emblem-zone ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
+      <!-- Emblem zones (3 placement choices) -->
+      <!-- Zone 0: mid-fuselage (widest section) -->
+      <g class="ship__emblem-zone ship__emblem-zone--0 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
         <rect x="150" y="65" width="60" height="30" rx="0"
               fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
         <rect x="150" y="65" width="60" height="30" rx="0"
@@ -234,6 +235,26 @@ const Spaceship = (() => {
         <text class="ship__emblem-text" x="180" y="80"
               text-anchor="middle" dominant-baseline="central" font-size="0"></text>
         <rect x="150" y="65" width="60" height="30" fill="transparent"/>
+      </g>
+      <!-- Zone 1: forward fuselage / nose section -->
+      <g class="ship__emblem-zone ship__emblem-zone--1 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
+        <rect x="68" y="66" width="44" height="28" rx="0"
+              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+        <rect x="68" y="66" width="44" height="28" rx="0"
+              fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+        <text class="ship__emblem-text" x="90" y="80"
+              text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+        <rect x="68" y="66" width="44" height="28" fill="transparent"/>
+      </g>
+      <!-- Zone 2: rear fuselage section -->
+      <g class="ship__emblem-zone ship__emblem-zone--2 ${hasSticker ? '' : 'ship__emblem-zone--hidden'}" data-role="sticker-zone">
+        <rect x="300" y="68" width="44" height="22" rx="0"
+              fill="transparent" stroke="rgba(255,255,255,0.4)" stroke-dasharray="4 3" stroke-width="3.5"/>
+        <rect x="300" y="68" width="44" height="22" rx="0"
+              fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"/>
+        <text class="ship__emblem-text" x="322" y="79"
+              text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+        <rect x="300" y="68" width="44" height="22" fill="transparent"/>
       </g>
 
       <!-- Space dust (wash equivalent — smaller, lighter cosmic dust) -->

@@ -89,10 +89,13 @@ const SpaceshipRepair = (() => {
     });
   }
 
-  /** Emblem — hand tool, emoji picker */
+  /** Emblem — 1 step: choose from 3 zones */
   function emblem(_car) {
-    return RepairTemplates.stickerApply({
-      zoneSelector: '.ship__emblem-zone',
+    return RepairTemplates.zoneChoice({
+      id: 'pick-sticker',
+      description: 'Select a spot and place an emblem',
+      zones: ['.ship__emblem-zone--0', '.ship__emblem-zone--1', '.ship__emblem-zone--2'],
+      picker: 'sticker',
     });
   }
 
