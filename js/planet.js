@@ -14,7 +14,7 @@ const Planet = (() => {
   const VB_W  = Math.round(SVG_W / SCALE);
   const VB_H  = Math.round(SVG_H / SCALE);
   const VB_X  = Math.round((SVG_W - VB_W) / 2);
-  const VB_Y  = Math.round((SVG_H - VB_H) / 2);
+  const VB_Y  = Math.round((SVG_H - VB_H) / 2) - 15;  // extra headroom above pole for flag
 
   function _pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -895,14 +895,6 @@ const Planet = (() => {
       <!-- Ring back half (ringed only — behind body) -->
       ${isRinged ? _ringBackSVG(cx, cy, r) : ''}
 
-      <!-- Polar aurora — behind body so only the rim around the pole cap is visible; opacity 0 by default -->
-      <g class="planet__aurora" pointer-events="none">
-        <ellipse cx="${cx}" cy="${cy - r + 10}" rx="60" ry="18"
-                 fill="${_complementRGBA(colour, 0.28)}"/>
-        <ellipse cx="${cx}" cy="${cy - r + 10}" rx="46" ry="11"
-                 fill="${_complementRGBA(colour, 0.52)}"/>
-      </g>
-
       <!-- Main body -->
       <circle class="planet__body svg-planet-paint" cx="${cx}" cy="${cy}" r="${r}"/>
 
@@ -923,6 +915,14 @@ const Planet = (() => {
 
       <!-- Polar ice caps -->
       ${_iceCapsSVG(cx, cy, r)}
+
+      <!-- Victory flag planted at north pole — hidden until all faults resolved -->
+      <g class="planet__flag planet__flag--hidden" pointer-events="none">
+        <line x1="${cx}" y1="${cy - r - 12}" x2="${cx}" y2="${cy - r + 14}"
+              stroke="rgba(220,220,220,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+        <polygon points="${cx},${cy-r-12} ${cx+14},${cy-r-7} ${cx},${cy-r-2}"
+                 fill="rgba(255,255,255,0.92)" stroke="rgba(200,200,200,0.3)" stroke-width="0.5"/>
+      </g>
 
       <!-- Specular highlight — main -->
       <ellipse class="planet__highlight" cx="${cx - 25}" cy="${cy - 30}"

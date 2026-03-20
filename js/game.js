@@ -280,8 +280,6 @@ const Game = (() => {
 
     if (stepIndex >= steps.length) {
       // Fault complete
-      if (currentCar.type === 'planet') Reactions.aurora(currentCar);
-      else Reactions.wiggle(currentCar);
       Picker.hideToolbox();
       const meta = FaultRegistry.META[currentFault];
       const indicator = meta && currentCar.el.querySelector(meta.indicator);
@@ -333,6 +331,8 @@ const Game = (() => {
 
         if (!currentCar.el.dataset.asteroidFailed) {
           addCoins(currentCar.faults.length);
+          if (currentCar.type === 'planet') Reactions.flag(currentCar);
+          else Reactions.wiggle(currentCar);
         }
         setTimeout(() => {
           if (generation !== gen) return;

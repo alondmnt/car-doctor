@@ -2518,11 +2518,6 @@ html, body {
   50%      { transform: scale(1.5); }
 }
 
-@keyframes aurora-pulse {
-  0%, 100% { opacity: 0; }
-  35%, 65% { opacity: 1; }
-}
-
 /* Blink — eye group scaleY */
 .car__driver-eyes.reacting--blink,
 .robot__eyes.reacting--blink,
@@ -2532,10 +2527,11 @@ html, body {
   transform-origin: center;
 }
 
-/* Wiggle — head group rotate */
+/* Wiggle — head group and planet flag rotate */
 .car__driver.reacting--wiggle,
 .robot__head.reacting--wiggle,
-.ship__cockpit.reacting--wiggle {
+.ship__cockpit.reacting--wiggle,
+.planet__flag.reacting--wiggle {
   animation: wiggle 0.5s ease-in-out;
   transform-box: fill-box;
   transform-origin: center bottom;
@@ -2550,13 +2546,9 @@ html, body {
   transform-origin: center;
 }
 
-/* Aurora — planet polar shimmer */
-.planet__aurora {
-  opacity: 0;
-  pointer-events: none;
-}
-.planet__aurora.reacting--aurora {
-  animation: aurora-pulse 0.9s ease-in-out;
+/* Planet flag — hidden until all faults resolved */
+.planet__flag--hidden {
+  display: none;
 }
 
 /* ===== Tectonic volcanic fault zone ===== */

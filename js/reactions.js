@@ -41,9 +41,12 @@ const Reactions = (() => {
     car.el.querySelectorAll(sel).forEach(el => _flash(el, 'reacting--surprise', 400));
   }
 
-  /** Aurora shimmer — opacity pulse on planet polar band. Each fault completion. */
-  function aurora(car) {
-    _flash(car.el.querySelector('.planet__aurora'), 'reacting--aurora', 900);
+  /** Raise and wave the victory flag on the planet pole. All-faults-done reaction. */
+  function flag(car) {
+    const el = car.el.querySelector('.planet__flag');
+    if (!el) return;
+    el.classList.remove('planet__flag--hidden');
+    _flash(el, 'reacting--wiggle', 500);
   }
 
   /** Start random idle blink loop (3–8 s interval). Stops previous loop. */
@@ -63,5 +66,5 @@ const Reactions = (() => {
     if (_blinkTimer) { clearTimeout(_blinkTimer); _blinkTimer = null; }
   }
 
-  return { blink, wiggle, surprise, aurora, startIdleBlink, stopIdleBlink };
+  return { blink, wiggle, surprise, flag, startIdleBlink, stopIdleBlink };
 })();
