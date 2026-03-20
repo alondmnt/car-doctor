@@ -245,9 +245,20 @@ const Audio = (() => {
     },
   };
 
+  /** Vibration patterns (ms) keyed by sound name. */
+  const HAPTICS = {
+    ratchet: [35],
+    clank:   [80],
+    tap:     [15],
+    success: [50, 50, 50],
+    coin:    [20, 30, 20],
+  };
+
   function play(name) {
     if (!unlocked || muted) return;
     if (effects[name]) effects[name]();
+    const pattern = HAPTICS[name];
+    if (pattern && navigator.vibrate) navigator.vibrate(pattern);
   }
 
   function isMuted() { return muted; }
