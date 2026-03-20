@@ -186,10 +186,15 @@ const Picker = (() => {
     _garage.appendChild(picker);
   }
 
-  function showColourPicker(onPick) {
+  function showColourPicker(onPick, carEl = null) {
+    const palette = GameState.get('carPalette');
+    const current = carEl && getComputedStyle(carEl).getPropertyValue('--vehicle-colour').trim();
+    const items = (current && !palette.includes(current))
+      ? [current, ...palette]
+      : palette;
     _showPicker({
       containerClass: 'picker-row',
-      items: GameState.get('carPalette'),
+      items,
       renderItem: (btn, c) => { btn.className = 'colour-picker__swatch'; btn.style.background = c; },
       onPick,
     });
@@ -238,7 +243,7 @@ const Picker = (() => {
       showColourPicker((colour) => {
         car.el.style.setProperty('--vehicle-colour', colour);
         onPick(colour);
-      });
+      }, car.el);
     } else if (step.picker === 'sticker') {
       showStickerPicker((emoji) => {
         applyStickerOrBadge(car, emoji, step.target);
