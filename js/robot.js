@@ -242,6 +242,10 @@ const Robot = (() => {
     const toolSVG = s.tool(midX, y + h, w);
 
     return `<g class="robot__arm robot__arm--${side}" data-arm-style="${style}">
+      <!-- Wide invisible hit areas (fill-box unaffected: stroke excluded, circle same r) -->
+      <circle cx="${midX}" cy="${y}" r="5" fill="none" stroke="rgba(0,0,0,0.001)" stroke-width="22"/>
+      <path d="${path}" style="fill:none;stroke:rgba(0,0,0,0.001);stroke-width:24;stroke-linejoin:round;stroke-linecap:round"/>
+      <!-- Visible elements -->
       <circle cx="${midX}" cy="${y}" r="5" style="fill:${s.colour};stroke:${s.strokeColour};stroke-width:1.5"/>
       <path d="${path}" style="fill:none;stroke:${s.colour};stroke-width:5;stroke-linejoin:round;stroke-linecap:round"/>
       ${toolSVG}
@@ -387,6 +391,8 @@ const Robot = (() => {
 
       <!-- Chest strap (rendered on top of torso, after interactive layer) -->
       <g class="robot__jetpack robot__jetpack--hidden">
+        <!-- Wide invisible hit area covering the full strap -->
+        <rect x="140" y="74" width="120" height="16" fill="rgba(0,0,0,0.001)" stroke="none"/>
         <line x1="148" y1="82" x2="252" y2="82" stroke="#555" stroke-width="2.5"/>
         <rect x="188" y="78" width="24" height="8" rx="2" fill="#777" stroke="#666" stroke-width="1"/>
       </g>`;
@@ -487,9 +493,15 @@ const Robot = (() => {
         ${_armSVG(118, 70, 28, 44, 'left')}
         ${_armSVG(254, 70, 28, 44, 'right')}
 
-        <!-- Legs -->
-        <rect class="robot__leg robot__leg--left" x="168" y="122" width="16" height="28" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
-        <rect class="robot__leg robot__leg--right" x="216" y="122" width="16" height="28" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        <!-- Legs — wrapped in <g> so the wider hit rect is inside the target element -->
+        <g class="robot__leg robot__leg--left">
+          <rect x="160" y="122" width="32" height="28" fill="rgba(0,0,0,0.001)" stroke="none"/>
+          <rect x="168" y="122" width="16" height="28" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        </g>
+        <g class="robot__leg robot__leg--right">
+          <rect x="208" y="122" width="32" height="28" fill="rgba(0,0,0,0.001)" stroke="none"/>
+          <rect x="216" y="122" width="16" height="28" rx="2" style="fill:#999;stroke:#888;stroke-width:1"/>
+        </g>
 
         ${interactive}
       </g>

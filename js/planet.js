@@ -633,9 +633,9 @@ const Planet = (() => {
     cracks.forEach((d, i) => {
       svg += `
       <g class="planet__magma-crack planet__magma-crack--${i}">
-        <!-- Wide near-zero-opacity stroke — hit area; visiblePainted needs painted stroke -->
-        <path d="${d}" fill="none"
-              stroke="rgba(0,0,0,0.001)" stroke-width="16" stroke-linecap="round"/>
+        <!-- Wide hit area — pointer-events="all" fires regardless of paint opacity -->
+        <path d="${d}" fill="none" pointer-events="all"
+              stroke="rgba(0,0,0,0.001)" stroke-width="24" stroke-linecap="round"/>
         <!-- Dark outline — visible on light surfaces -->
         <path d="${d}" fill="none"
               stroke="rgba(0,0,0,0.45)" stroke-width="6" stroke-linecap="round"
