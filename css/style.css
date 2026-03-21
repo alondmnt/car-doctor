@@ -2732,7 +2732,7 @@ html, body {
 
 /* ===== Forest fault zone ===== */
 .planet__forests { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.planet__terraform-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.planet__terraform-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; will-change: transform; }
 .planet__barren-patch {
   transition: opacity 0.6s, fill 0.6s;
 }
@@ -2852,7 +2852,9 @@ html, body {
 
 /* ===== City fault zone ===== */
 .planet__cities { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.planet__city-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+/* will-change: transform isolates city zones from compositing-layer changes elsewhere
+   in the SVG (e.g. hint-glow drop-shadows), preventing subpixel text jitter. */
+.planet__city-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; will-change: transform; }
 
 /* ===== Satellite network fault zone ===== */
 .planet__satellite--broken {
