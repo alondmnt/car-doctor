@@ -175,6 +175,15 @@ const Game = (() => {
     });
   }
 
+  /** All fault keys across every currently-enabled vehicle type. */
+  function _allEnabledFaultTypes() {
+    const car    = Object.keys(CONFIG.faultWeights);
+    const robot  = GameState.get('robotEnabled')    ? Object.keys(GameState.get('robotFaultWeights'))                       : [];
+    const ship   = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
+    const planet = GameState.get('planetEnabled')   ? Object.keys(GameState.get('planetFaultWeights'))                      : [];
+    return [...new Set([...car, ...robot, ...ship, ...planet])];
+  }
+
   /** Bring in a new car, robot, or spaceship with 1–2 random faults */
   function nextCar() {
     generation++;
@@ -212,8 +221,8 @@ const Game = (() => {
       FaultRegistry.ORDER.indexOf(a) - FaultRegistry.ORDER.indexOf(b)
     );
 
-    // Auto-enable hints if vehicle has any fault type not yet seen (overrides explicit)
-    if (faults.some(f => !seenFaults.has(f))) {
+    // Auto-enable hints if any currently-enabled fault type hasn't been seen yet (overrides explicit)
+    if (_allEnabledFaultTypes().some(f => !seenFaults.has(f))) {
       hintsExplicit = false;
       GameState.setHintsOn(true);
       document.getElementById('hint-btn').classList.remove('hint-btn--off');
@@ -321,12 +330,7 @@ const Game = (() => {
       } else {
         // All faults fixed — track seen types and auto-disable hints
         currentCar.faults.forEach(f => seenFaults.add(f));
-        const allCarFaults = Object.keys(CONFIG.faultWeights);
-        const allRobotFaults = GameState.get('robotEnabled') ? Object.keys(GameState.get('robotFaultWeights')) : [];
-        const allShipFaults = GameState.get('spaceshipEnabled') ? Object.keys(GameState.get('spaceshipFaultWeights') || CONFIG.faultWeights) : [];
-        const allPlanetFaults = GameState.get('planetEnabled') ? Object.keys(GameState.get('planetFaultWeights')) : [];
-        const allFaultTypes = [...new Set([...allCarFaults, ...allRobotFaults, ...allShipFaults, ...allPlanetFaults])];
-        if (!hintsExplicit && GameState.hintsOn() && allFaultTypes.every(f => seenFaults.has(f))) {
+        if (!hintsExplicit && GameState.hintsOn() && _allEnabledFaultTypes().every(f => seenFaults.has(f))) {
           GameState.setHintsOn(false);
           document.getElementById('hint-btn').classList.add('hint-btn--off');
         }
