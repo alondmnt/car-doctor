@@ -8,18 +8,21 @@ const Robot = (() => {
 
   /* ─── SVG helpers ─── */
 
-  /** Boot with 3 tappable bolt screws (tyre equivalent) */
+  /** Boot with 2 tappable bolt screws (tyre equivalent).
+   *  Two bolts instead of three — non-overlapping tap zones, each covering half the boot sole. */
   function _bootSVG(x, y, position) {
     const bw = 40, bh = 26;
     const boltR = 3;
-    const touchR = boltR * 2.8;
-    // 3 bolts across the boot sole
-    const bolts = [0, 1, 2].map((i) => {
-      const bx = x + 8 + i * 12;
-      const by = y + bh - 6;
+    // 2 bolts, symmetric at x+10 and x+30
+    const bolts = [0, 1].map((i) => {
+      const bx = x + 10 + i * 20;
+      const by = y + bh - 7;
       const cr = boltR * 0.6;
+      // Transparent rect covers each bolt's half of the sole — no overlap with the other bolt
+      const tzX = x + i * (bw / 2);
+      const tzY = y + bh - 16;
       return `<g class="robot__bolt robot__bolt--${i+1}" data-bolt="${i+1}">
-        <circle class="robot__bolt-halo" cx="${bx}" cy="${by}" r="${touchR}" style="fill:transparent"/>
+        <rect class="robot__bolt-halo" x="${tzX}" y="${tzY}" width="${bw / 2}" height="16" style="fill:transparent"/>
         <circle cx="${bx}" cy="${by}" r="${boltR}" style="fill:#999;stroke:#777;stroke-width:1.5"/>
         <line x1="${bx-cr}" y1="${by}" x2="${bx+cr}" y2="${by}" style="stroke:#555;stroke-width:1.5"/>
         <line x1="${bx}" y1="${by-cr}" x2="${bx}" y2="${by+cr}" style="stroke:#555;stroke-width:1.5"/>
