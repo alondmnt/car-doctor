@@ -776,9 +776,8 @@ const Planet = (() => {
    */
   function _cityZoneSVG(cx, cy, expanded, shape) {
     const isGas = shape === 'gas';
-    const positions = expanded
-      ? (isGas ? _cityZonesForGas(cx, cy) : _cityZonesForLand(cx, cy))
-      : [_cityPos(cx, cy)];
+    const allPositions = isGas ? _cityZonesForGas(cx, cy) : _cityZonesForLand(cx, cy);
+    const positions = expanded ? allPositions : [allPositions[0]];
 
     // 20% smaller than default (60×40 → 48×32) to sit within continent boundaries
     return positions.map(([fx, fy], id) => _zoneSVG(fx, fy, id, 'planet__city-zone', 24, 16)).join('');
