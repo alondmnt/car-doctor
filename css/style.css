@@ -1958,8 +1958,10 @@ html, body {
 }
 .ship__hatch--hidden { display: none; }
 .ship__hatch-lid {
-  transform-box: fill-box;
-  transform-origin: left bottom;
+  /* transform-origin pinned to the lid's left-bottom corner (248,98 in viewBox units)
+     so that adding the padded touch-target rect doesn't shift the rotation pivot. */
+  transform-box: view-box;
+  transform-origin: 248px 98px;
   transition: transform 0.4s ease-out;
 }
 .ship__hatch--open .ship__hatch-lid {

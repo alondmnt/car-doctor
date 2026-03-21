@@ -396,7 +396,7 @@ const Robot = (() => {
       <!-- Chest strap (rendered on top of torso, after interactive layer) -->
       <g class="robot__jetpack robot__jetpack--hidden">
         <!-- Wide invisible hit area covering the full strap -->
-        <rect x="140" y="74" width="120" height="16" fill="rgba(0,0,0,0.001)" stroke="none"/>
+        <rect x="140" y="68" width="120" height="28" fill="rgba(0,0,0,0.001)" stroke="none"/>
         <line x1="148" y1="82" x2="252" y2="82" stroke="#555" stroke-width="2.5"/>
         <rect x="188" y="78" width="24" height="8" rx="2" fill="#777" stroke="#666" stroke-width="1"/>
       </g>`;

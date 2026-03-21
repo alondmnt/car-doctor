@@ -191,9 +191,14 @@ const Spaceship = (() => {
     return `
       <!-- Booster hatch (bonnet equivalent — on mid-rear fuselage) -->
       <g class="ship__hatch ${hasEngine ? '' : 'ship__hatch--hidden'}">
-        <polygon class="ship__hatch-lid svg-ship-paint"
-                 points="248,62 296,68 296,92 248,98" opacity="0.9"/>
-        <rect x="248" y="62" width="48" height="50" fill="transparent"/>
+        <!-- Lid wrapped in group so the touch-target rect rotates with it;
+             transform-origin pinned in CSS to (248,98) — the left-bottom corner. -->
+        <g class="ship__hatch-lid">
+          <polygon class="svg-ship-paint"
+                   points="248,62 296,68 296,92 248,98" opacity="0.9"/>
+          <!-- Padded touch target — rotates with lid, easier to close on mobile -->
+          <rect x="240" y="54" width="64" height="52" fill="transparent"/>
+        </g>
       </g>
 
       <!-- Booster bay (engine bay equivalent) -->
