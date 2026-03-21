@@ -2562,6 +2562,14 @@ html, body {
   75%      { transform: rotate(6deg); }
 }
 
+@keyframes wiggle-large {
+  0%, 100% { transform: rotate(0deg); }
+  20%      { transform: rotate(-18deg); }
+  40%      { transform: rotate(14deg); }
+  60%      { transform: rotate(-10deg); }
+  80%      { transform: rotate(6deg); }
+}
+
 @keyframes surprise {
   0%, 100% { transform: scale(1); }
   50%      { transform: scale(1.5); }
@@ -2577,11 +2585,16 @@ html, body {
 }
 
 /* Wiggle — head group and planet flag rotate */
+.robot__head.reacting--wiggle {
+  animation: wiggle 1s ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
 .car__driver.reacting--wiggle,
-.robot__head.reacting--wiggle,
 .ship__pilot.reacting--wiggle,
 .planet__flag.reacting--wiggle {
-  animation: wiggle 1s ease-in-out;
+  animation: wiggle-large 1s ease-in-out;
   transform-box: fill-box;
   transform-origin: center bottom;
 }
