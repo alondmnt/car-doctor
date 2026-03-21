@@ -409,7 +409,7 @@ const Planet = (() => {
             fill="transparent" stroke="rgba(0,0,0,0.45)" stroke-dasharray="4 3" stroke-width="2"
             pointer-events="none"/>
       <text class="${prefix}-text" x="${fx}" y="${fy}"
-            text-anchor="middle" dominant-baseline="central" font-size="0"></text>
+            text-anchor="middle" dy="0.35em" font-size="0"></text>
       <rect x="${fx - hw}" y="${fy - hh}" width="${hw * 2}" height="${hh * 2}" fill="rgba(0,0,0,0.001)"/>
     </g>`;
   }
@@ -440,7 +440,7 @@ const Planet = (() => {
     const texts = SCATTER_SLOTS.map(s => {
       const angle = Math.round(Math.random() * 30 - 15);  // -15° to +15°
       return `<text class="${prefix}-text" x="${fx + s.dx}" y="${fy + s.dy}"
-            text-anchor="middle" dominant-baseline="central"
+            text-anchor="middle" dy="0.35em"
             transform="rotate(${angle} ${fx + s.dx} ${fy + s.dy})"
             style="font-size:${s.size}px"></text>`;
     }).join('\n      ');
@@ -826,7 +826,7 @@ const Planet = (() => {
         ${SCATTER_SLOTS.map(s => {
           const angle = Math.round(Math.random() * 30 - 15);
           return `<text x="${fx + s.dx}" y="${fy + s.dy}" text-anchor="middle"
-                 dominant-baseline="central" font-size="${s.size}"
+                 dy="0.35em" font-size="${s.size}"
                  transform="rotate(${angle} ${fx + s.dx} ${fy + s.dy})">${pick}</text>`;
         }).join('\n        ')}`;
       }).join('\n      ')}
@@ -854,7 +854,7 @@ const Planet = (() => {
       [fx +  2, fy + 14, 22],
     ];
     const stickers = slots.map(([x, y, size], i) =>
-      `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central"
+      `<text x="${x}" y="${y}" text-anchor="middle" dy="0.35em"
              font-size="${size}">${picks[i]}</text>`
     ).join('\n      ');
     return `<g class="planet__city-decoration" pointer-events="none">
