@@ -76,6 +76,14 @@ const Game = (() => {
     },
   ];
 
+  /** Fault count for the next vehicle, scaled by current coins. */
+  function _faultCount() {
+    const coins = Progress.getCoins();
+    const step = [...CONFIG.difficultySteps].reverse().find(s => coins >= s.coins);
+    if (Math.random() >= step.multiFaultChance) return 1;
+    return Math.random() < step.tripleFaultChance ? 3 : 2;
+  }
+
   /** Pick a vehicle from the spawn registry.
    *  @param {object} [spec] - showcase override with .vehicle property */
   function pickVehicle(spec) {
@@ -201,7 +209,7 @@ const Game = (() => {
     garage.dataset.theme = entry.theme;
     if (entry.theme === 'space') _randomiseShipFlyby();
 
-    const faultCount = Math.random() < CONFIG.multiFaultChance ? 2 : 1;
+    const faultCount = _faultCount();
     const weights = entry.weights();
 
     // Force showcased fault into the fault list

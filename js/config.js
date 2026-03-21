@@ -15,7 +15,13 @@ const CONFIG = {
     sticker: 3,
     wash: 2,
   },
-  multiFaultChance: 0.3,    // chance of 2 faults per car
+  /** Difficulty ramp — each step applies once coins reach its threshold.
+   *  multiFaultChance: P(≥2 faults); tripleFaultChance: P(3 | ≥2). */
+  difficultySteps: [
+    { coins: 0,   multiFaultChance: 0.3, tripleFaultChance: 0   },
+    { coins: 100, multiFaultChance: 0.5, tripleFaultChance: 0.3 },
+    { coins: 111, multiFaultChance: 1.0, tripleFaultChance: 0.6 },
+  ],
   wheelStyles: ['standard'],  // unlockable: 'racing', 'offroad'
 
   /* Robot settings — activated by tier 20 unlock */
