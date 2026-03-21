@@ -295,7 +295,7 @@ const RobotRepair = (() => {
       {
         id: 'attach-jetpack',
         description: 'Bolt the booster on with a wrench',
-        target: '.robot__jetpack',
+        target: '.robot__jetpack--strap',
         tool: 'wrench',
         sound: 'ratchet',
         action: (_el, carEl) => {

@@ -394,7 +394,7 @@ const Robot = (() => {
       </g>
 
       <!-- Chest strap (rendered on top of torso, after interactive layer) -->
-      <g class="robot__jetpack robot__jetpack--hidden">
+      <g class="robot__jetpack robot__jetpack--strap robot__jetpack--hidden">
         <!-- Wide invisible hit area covering the full strap -->
         <rect x="140" y="68" width="120" height="28" fill="rgba(0,0,0,0.001)" stroke="none"/>
         <line x1="148" y1="82" x2="252" y2="82" stroke="#555" stroke-width="2.5"/>
@@ -650,11 +650,16 @@ const Robot = (() => {
       if (style === 'propeller') flames.classList.add('robot__jetpack-flames--idle');
     }
 
-    // Replace/show chest strap (second .robot__jetpack group)
-    const allJetpack = carEl.querySelectorAll('.robot__jetpack');
-    if (allJetpack.length > 1) {
-      const strap = allJetpack[1];
+    // Replace/show chest strap; re-inject touch rect since s.strap() doesn't include it
+    const strap = carEl.querySelector('.robot__jetpack--strap');
+    if (strap) {
       strap.innerHTML = s.strap();
+      const ns = 'http://www.w3.org/2000/svg';
+      const tr = document.createElementNS(ns, 'rect');
+      tr.setAttribute('x', '140'); tr.setAttribute('y', '68');
+      tr.setAttribute('width', '120'); tr.setAttribute('height', '28');
+      tr.setAttribute('fill', 'transparent');
+      strap.appendChild(tr);
       strap.classList.remove('robot__jetpack--hidden');
       strap.classList.add('robot__jetpack--visible');
     }
