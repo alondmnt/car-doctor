@@ -144,6 +144,8 @@ const Game = (() => {
 
     Progress.load();
     coins = Progress.getCoins();
+    // Pre-populate seenFaults so the auto-enable check doesn't fire for experienced players
+    if (coins >= 100) _allEnabledFaultTypes().forEach(f => seenFaults.add(f));
     // Sync hint button to initial state (may have been defaulted off by Progress.load)
     document.getElementById('hint-btn').classList.toggle('hint-btn--off', !GameState.hintsOn());
   }
