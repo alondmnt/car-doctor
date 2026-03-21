@@ -139,6 +139,8 @@ const Game = (() => {
 
     Progress.load();
     coins = Progress.getCoins();
+    // Sync hint button to initial state (may have been defaulted off by Progress.load)
+    document.getElementById('hint-btn').classList.toggle('hint-btn--off', !GameState.hintsOn());
   }
 
   function start(e) {

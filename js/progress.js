@@ -28,6 +28,10 @@ const Progress = (() => {
     }
 
     applyUnlocks();
+
+    // All content unlocked — default hints off so experienced players aren't hand-held
+    if (coins >= 100) GameState.setHintsOn(false);
+
     renderPreview();
 
     // Restore coin jar display
