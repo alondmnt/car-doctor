@@ -808,6 +808,18 @@ html, body {
   animation: svg-bounce 0.4s ease-out;
 }
 
+/* ===== Wheel roll — entry (CW) and exit (CCW) ===== */
+
+@keyframes wheel-roll-ccw { to { transform: rotate(-360deg); } }
+
+.car--rolling-in .car__tyre:not(.car__tyre--flat) {
+  animation: wheel-roll-ccw 0.5s linear;
+}
+
+.car--rolling-out .car__tyre:not(.car__tyre--flat) {
+  animation: wheel-roll-ccw 0.5s linear infinite;
+}
+
 /* ===== Screw states ===== */
 .car__screw {
   cursor: pointer;

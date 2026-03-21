@@ -44,6 +44,8 @@ const Vehicle = (() => {
         el.offsetHeight;  // force reflow for transition
         el.classList.remove('car--entering');
         el.classList.add('car--parked');
+        el.classList.add('car--rolling-in');
+        setTimeout(() => el.classList.remove('car--rolling-in'), 500);
 
         /** Reveal dashboard and fire afterEntry once vehicle settles */
         function onSettled(e) {
@@ -77,6 +79,7 @@ const Vehicle = (() => {
             el.appendChild(flame);
           }
           el.classList.add(`car--exit-${anim}`);
+          if (opts.type === 'car') el.classList.add('car--rolling-out');
           el.addEventListener('animationend', (e) => {
             if (e.target !== el) return;
             el.remove();
