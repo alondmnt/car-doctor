@@ -350,8 +350,8 @@ const Spaceship = (() => {
             <path d="M110,18 Q120,8 130,18" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="4" stroke-linecap="round"/>
             <path d="M110,18 Q120,8 130,18" fill="none" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
             <circle cx="120" cy="14" r="3" fill="#4ae" stroke="#3ad" stroke-width="1"/>
-            <!-- Touch target -->
-            <rect x="108" y="6" width="24" height="16" fill="transparent"/>
+            <!-- Touch target — wider and taller for accessibility -->
+            <rect x="104" y="2" width="32" height="20" fill="transparent"/>
           </g>
           <!-- Signal rings (concentric) -->
           <g class="ship__antenna-signal ship__antenna-signal--dead">
