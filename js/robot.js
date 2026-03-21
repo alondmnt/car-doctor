@@ -22,7 +22,8 @@ const Robot = (() => {
       const tzX = x + i * (bw / 2);
       const tzY = y + bh - 16;
       return `<g class="robot__bolt robot__bolt--${i+1}" data-bolt="${i+1}">
-        <rect class="robot__bolt-halo" x="${tzX}" y="${tzY}" width="${bw / 2}" height="16" style="fill:transparent"/>
+        <rect x="${tzX}" y="${tzY}" width="${bw / 2}" height="16" style="fill:transparent"/>
+        <circle class="robot__bolt-halo" cx="${bx}" cy="${by}" r="${boltR * 2.8}" style="fill:transparent"/>
         <circle cx="${bx}" cy="${by}" r="${boltR}" style="fill:#999;stroke:#777;stroke-width:1.5"/>
         <line x1="${bx-cr}" y1="${by}" x2="${bx+cr}" y2="${by}" style="stroke:#555;stroke-width:1.5"/>
         <line x1="${bx}" y1="${by-cr}" x2="${bx}" y2="${by+cr}" style="stroke:#555;stroke-width:1.5"/>
