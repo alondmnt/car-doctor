@@ -35,6 +35,7 @@ const RobotRepair = (() => {
       partSelector: bootSelector,
       fastenerName: 'bolt',
       fastenerClass: 'robot__bolt',
+      fastenerCount: 2,
       fastenerAction: (mode) => (el) => {
         // Set transform-origin from bolt circle centre (CSS fill-box unreliable inside transformed parent)
         const circle = el.querySelector('circle:not(.robot__bolt-halo)');

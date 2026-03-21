@@ -6,12 +6,13 @@
 const RepairTemplates = (() => {
 
   /**
-   * 10-step bolt/screw swap: 3 unfasten → lift → remove → add → 3 refasten → lower.
+   * Bolt/screw swap: N unfasten → lift → remove → add → N refasten → lower.
    * @param {object} d
    * @param {string} d.partSelector       - target part (e.g. '.car__tyre--front')
    * @param {string} d.fastenerName       - human label ('screw' or 'bolt')
    * @param {string} d.fastenerClass      - CSS class prefix ('car__screw' or 'robot__bolt')
    * @param {function} d.fastenerAction   - (mode) => (el) => void
+   * @param {number} [d.fastenerCount=3]  - number of fasteners (default 3)
    * @param {string} d.liftId             - step id for lift
    * @param {string} d.liftDesc           - step description
    * @param {string} d.liftSelector       - lift mechanism selector
@@ -28,7 +29,8 @@ const RepairTemplates = (() => {
    * @param {string} d.lowerDesc          - step description
    */
   function boltSwap(d) {
-    const fastenSteps = (mode) => [1, 2, 3].map(n => ({
+    const count = d.fastenerCount ?? 3;
+    const fastenSteps = (mode) => Array.from({ length: count }, (_, i) => i + 1).map(n => ({
       id: `${mode}-${d.fastenerName}-${n}`,
       description: `Tap ${d.fastenerName} ${n} to ${mode} it`,
       target: `${d.partSelector} .${d.fastenerClass}--${n}`,
