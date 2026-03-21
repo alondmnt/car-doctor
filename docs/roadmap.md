@@ -26,14 +26,12 @@
   - **Satellite expansion** (tier 105) — dish + solar styles; style picker unlocked
   - **Zone-choice infrastructure** — `RepairTemplates.zoneChoice()` + `_listenForZoneChoice` / `_waitForToolThenZoneChoice`; reusable for future multi-zone placements
   - Background decorations follow colonisation arc: each fault shows earlier-completed work via `_satelliteDecorationSVG`, `_forestDecorationSVG`, `_cityDecorationSVG`
-- **Character reactions** — `Reactions` module: blink (scaleY on eye group) on correct tool pick, surprise (scale irises) on spawn, wiggle (1 s rotate on head group) on successful exit; planet raises a white victory flag at the north pole (wiggles before exit); idle blink loop (3–8 s); hooks in `game.js` and `picker.js`
-
-- **Haptics** — `navigator.vibrate()` patterns paired to audio cues in `Audio.play()`: ratchet `[35]`, clank `[80]`, tap `[15]`, success `[50,50,50]`, coin `[20,30,20]`; no-ops silently on desktop
-- **Colour picker polish** — current vehicle colour prepended as first swatch with inset ring indicator; wiggle completes before exit (driveAway delayed to 1100 ms)
-
 - **v0.9.0 — Master Mechanic**
+  - **Character reactions** — `Reactions` module: blink (scaleY on eye group) on correct tool pick, surprise (scale irises) on spawn, wiggle (1 s rotate on head group) on successful exit; planet raises a white victory flag at the north pole (wiggles before exit); idle blink loop (3–8 s)
+  - **CSS particles** — spark burst on drill (absolute-positioned divs), splash droplets on hose wash (blue-white arc)
+  - **Colour picker polish** — current vehicle colour prepended as first swatch with inset ring indicator; wiggle completes before exit (driveAway delayed to 1100 ms)
   - Rolling wheel animation on car entry (CCW spin matching slide direction) and exit (continuous spin until DOM removal)
-  - Larger wiggle animation (`wiggle-large`) for person/alien/flag characters; robot head keeps original ±6° wiggle
+  - Larger wiggle (`wiggle-large`) for person/alien/flag; robot head keeps original ±6° wiggle
   - Tap accessibility: robot boot bolts restructured to 2 non-overlapping rect zones; jetpack strap/flames dynamic tap target; ship antenna enlarged; ship hatch-lid padded with transparent rect
   - Chrome mobile SVG rendering fix: replaced `dominant-baseline="central"` with `dy="0.35em"` on all planet text elements to prevent subpixel snap shifts on repaint
   - Planet tier redistribution: colonisation arc compressed from 70–105 to 70–100 (70→75→79→83→87→91→96→100)
