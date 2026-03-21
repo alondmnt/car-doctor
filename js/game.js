@@ -85,10 +85,15 @@ const Game = (() => {
   }
 
   /** Pick a vehicle from the spawn registry.
+   *  In ultimate mode all enabled types are equally likely (p=0.25 each).
    *  @param {object} [spec] - showcase override with .vehicle property */
   function pickVehicle(spec) {
     if (spec?.vehicle) {
       return SPAWN_REGISTRY.find(e => e.type === spec.vehicle) || SPAWN_REGISTRY.at(-1);
+    }
+    if (GameState.get('ultimateMode')) {
+      const enabled = SPAWN_REGISTRY.filter(e => e.enabled());
+      return enabled[Math.floor(Math.random() * enabled.length)];
     }
     for (const entry of SPAWN_REGISTRY) {
       if (entry.enabled() && Math.random() < entry.chance) return entry;

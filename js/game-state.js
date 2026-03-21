@@ -30,6 +30,7 @@ const GameState = (() => {
       _booleans.satelliteExpanded = true;
       _arrays.satelliteStyles = [...(_arrays.satelliteStyles || []), 'dish', 'solar'];
     },
+    ultimateMode: () => { _booleans.ultimateMode = true; },
   };
 
   /**
