@@ -31,6 +31,16 @@
 - **Haptics** — `navigator.vibrate()` patterns paired to audio cues in `Audio.play()`: ratchet `[35]`, clank `[80]`, tap `[15]`, success `[50,50,50]`, coin `[20,30,20]`; no-ops silently on desktop
 - **Colour picker polish** — current vehicle colour prepended as first swatch with inset ring indicator; wiggle completes before exit (driveAway delayed to 1100 ms)
 
+- **v0.9.0 — Master Mechanic**
+  - Rolling wheel animation on car entry (CCW spin matching slide direction) and exit (continuous spin until DOM removal)
+  - Larger wiggle animation (`wiggle-large`) for person/alien/flag characters; robot head keeps original ±6° wiggle
+  - Tap accessibility: robot boot bolts restructured to 2 non-overlapping rect zones; jetpack strap/flames dynamic tap target; ship antenna enlarged; ship hatch-lid padded with transparent rect
+  - Chrome mobile SVG rendering fix: replaced `dominant-baseline="central"` with `dy="0.35em"` on all planet text elements to prevent subpixel snap shifts on repaint
+  - Planet tier redistribution: colonisation arc compressed from 70–105 to 70–100 (70→75→79→83→87→91→96→100)
+  - **Difficulty scaling** — `difficultySteps` in config.js; multi-fault ramp after tier 100 (30%→50%→100% chance of ≥2 faults; triple-fault chance introduced at 100, dominant at 111)
+  - **Ultimate Garage** (tier 111) — uniform 25% spawn probability across all vehicle types; replaces cascading probability chain
+  - **Hints off by default** once all content unlocked (coins ≥ 100): `seenFaults` pre-populated at load, manual toggle still works
+
 ## Next up
 
 ### Game feel
@@ -40,12 +50,12 @@
    - CSS particles: sparks (drill), bubbles (hose), splatter (spray) — absolute-positioned divs with `@keyframes`
 2. ✅ **Multi-zone placement** — `RepairTemplates.zoneChoice()` + Picker routing; zones shown simultaneously, player picks one, others dismiss. `applyStickerOrBadge()` accepts zone selector. Applied to city zones; pending: car sticker spots (bumper vs door), forest biomes.
 3. **Fault choice** — on multi-fault vehicles, let the player tap a dashboard indicator to pick which fault to fix first. Small change: replace `FaultRegistry.ORDER` sort in `game.js` with a picker UI before `startNextFault()`.
-4. **Difficulty scaling** — config-driven: increase max faults per vehicle as coins grow, tighten meteor timing, shorten hint auto-disable window. Tunable via `config.js` thresholds.
+4. ✅ **Difficulty scaling** — `difficultySteps` config array; multi-fault ramp after tier 100; triple-fault cap at 111.
 
 ### New content
 
 1. **People doctor** — new vehicle type post-refactor
-2. **Ultimate level** — unlocks after all tiers complete. Uniform spawn probability across all vehicle types; max faults (3–4) from all unlocked types. No new systems — just a spawn rule in `pickVehicle()`.
+2. ✅ **Ultimate level** — tier 111 (🌟 Ultimate Garage!); uniform 25% spawn across all vehicle types.
 
 ## On hold
 
