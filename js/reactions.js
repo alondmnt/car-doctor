@@ -16,7 +16,7 @@ const Reactions = (() => {
   /** Eye group selector by vehicle type. */
   const _eyeGroup = { car: '.car__driver-eyes', robot: '.robot__eyes', spaceship: '.ship__eyes' };
   /** Head group selector by vehicle type. */
-  const _headGroup = { car: '.car__driver', robot: '.robot__head', spaceship: '.ship__cockpit' };
+  const _headGroup = { car: '.car__driver', robot: '.robot__head', spaceship: '.ship__pilot' };
   /** Iris selector by vehicle type (querySelectorAll). */
   const _irisClass = { car: '.car__eye-iris', robot: '.robot__eye-iris', spaceship: '.ship__eye-iris' };
 

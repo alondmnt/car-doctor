@@ -397,14 +397,16 @@ const Spaceship = (() => {
           <polygon points="86,70 94,64 106,64 114,70 106,74 94,74"
                    fill="rgba(255,255,255,0.12)" style="pointer-events:none"/>
           <!-- Alien pilot (big eyes) -->
-          <ellipse cx="100" cy="80" rx="8" ry="10" fill="#8fbc8f"/>
-          <g class="ship__eyes">
-            <circle cx="95" cy="77" r="5" fill="#222"/>
-            <circle class="ship__eye-iris" cx="95" cy="77" r="2.5" fill="#4ae"/>
-            <circle cx="105" cy="77" r="5" fill="#222"/>
-            <circle class="ship__eye-iris" cx="105" cy="77" r="2.5" fill="#4ae"/>
+          <g class="ship__pilot">
+            <ellipse cx="100" cy="80" rx="8" ry="10" fill="#8fbc8f"/>
+            <g class="ship__eyes">
+              <circle cx="95" cy="77" r="5" fill="#222"/>
+              <circle class="ship__eye-iris" cx="95" cy="77" r="2.5" fill="#4ae"/>
+              <circle cx="105" cy="77" r="5" fill="#222"/>
+              <circle class="ship__eye-iris" cx="105" cy="77" r="2.5" fill="#4ae"/>
+            </g>
+            <ellipse cx="100" cy="86" rx="3" ry="1.5" fill="#6a9a6a"/>
           </g>
-          <ellipse cx="100" cy="86" rx="3" ry="1.5" fill="#6a9a6a"/>
         </g>
 
         <!-- Dashboard indicators row -->
