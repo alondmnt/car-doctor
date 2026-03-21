@@ -2340,6 +2340,9 @@ html, body {
   height: 100%;
   overflow: visible;
   -webkit-tap-highlight-color: transparent;
+  /* Promote to GPU compositor layer — SVG mutations repaint the GPU texture in isolation,
+     preventing subpixel shifts of terraform/city zone text on Chrome mobile. */
+  transform: translateZ(0);
 }
 
 /* ===== Planet SVG paint — fill via CSS variable ===== */
