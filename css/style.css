@@ -2332,6 +2332,7 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: visible;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ===== Planet SVG paint — fill via CSS variable ===== */
@@ -2427,7 +2428,7 @@ html, body {
 }
 
 /* ===== Fire fault zone ===== */
-.planet__fires { cursor: pointer; }
+.planet__fires { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .planet__fires--hidden { display: none; }
 .planet__fires--washing .planet__fire-patch,
 .planet__fires--washing .planet__ember-glow,
@@ -2615,9 +2616,11 @@ html, body {
   animation: magma-glow 1.2s ease-in-out infinite alternate;
   fill: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .planet__eruption {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 @keyframes magma-glow {
   0%   { stroke-opacity: 0.6; }
@@ -2654,7 +2657,7 @@ html, body {
 .planet__tectonic-zone--hidden { display: none; }
 
 /* ===== Ocean cleanup fault zone ===== */
-.planet__ocean-spill { cursor: pointer; }
+.planet__ocean-spill { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .planet__ocean-spill--hidden { display: none; }
 .planet__ocean-spill--washing .planet__oil-slick,
 .planet__ocean-spill--washing .planet__oil-edge,
@@ -2708,8 +2711,8 @@ html, body {
 }
 
 /* ===== Forest fault zone ===== */
-.planet__forests { cursor: pointer; }
-.planet__terraform-zone { cursor: pointer; }
+.planet__forests { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.planet__terraform-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .planet__barren-patch {
   transition: opacity 0.6s, fill 0.6s;
 }
@@ -2739,6 +2742,7 @@ html, body {
 .planet__asteroid-zone .planet__meteor-group {
   opacity: 1;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   animation: meteor-approach 4s linear both;
   /* Paused until game.js adds --active; animation is unpaused and the JS timeout
      are started on the same tick so they stay in sync. */
@@ -2827,13 +2831,14 @@ html, body {
 }
 
 /* ===== City fault zone ===== */
-.planet__cities { cursor: pointer; }
-.planet__city-zone { cursor: pointer; }
+.planet__cities { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.planet__city-zone { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
 /* ===== Satellite network fault zone ===== */
 .planet__satellite--broken {
   filter: grayscale(1) brightness(0.6);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .planet__sat-spark {
   animation: sat-spark 0.5s ease-in-out infinite alternate;
