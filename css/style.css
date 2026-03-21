@@ -1352,6 +1352,11 @@ html, body {
 }
 /* Idle speed before test fires */
 .robot__jetpack-flames--idle .robot__propeller-blade { --blade-speed: 0.6s; }
+/* Attach-step tap target — set dynamically per booster style */
+.robot__jetpack--tap-target {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 @keyframes propeller-sweep {
   0%   { translate: calc(-1 * var(--blade-sweep, 56px)); }
   100% { translate: var(--blade-sweep, 56px); }

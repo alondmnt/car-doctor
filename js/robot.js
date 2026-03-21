@@ -642,27 +642,28 @@ const Robot = (() => {
     // Replace flames — show immediately for styles where the body is in the flames group
     // (balloon, propeller), keep hidden for jetpack/rocket (only shown during exit)
     const flames = carEl.querySelector('.robot__jetpack-flames');
+    const strapStyles = ['jetpack', 'rocket'];
     if (flames) {
       flames.innerHTML = s.flames();
-      const showImmediately = !['jetpack', 'rocket'].includes(style);
+      const showImmediately = !strapStyles.includes(style);
       flames.classList.toggle('robot__jetpack-flames--hidden', !showImmediately);
-      // Propeller starts at idle speed until test fires
       if (style === 'propeller') flames.classList.add('robot__jetpack-flames--idle');
     }
 
-    // Replace/show chest strap; re-inject touch rect since s.strap() doesn't include it
+    // Replace/show chest strap
     const strap = carEl.querySelector('.robot__jetpack--strap');
     if (strap) {
       strap.innerHTML = s.strap();
-      const ns = 'http://www.w3.org/2000/svg';
-      const tr = document.createElementNS(ns, 'rect');
-      tr.setAttribute('x', '140'); tr.setAttribute('y', '68');
-      tr.setAttribute('width', '120'); tr.setAttribute('height', '28');
-      tr.setAttribute('fill', 'transparent');
-      strap.appendChild(tr);
       strap.classList.remove('robot__jetpack--hidden');
       strap.classList.add('robot__jetpack--visible');
     }
+
+    // Mark the tap target for the attach step — strap for jetpack/rocket (visible chest strap),
+    // flames group for propeller/balloon (booster body is above the robot, not on chest)
+    carEl.querySelectorAll('.robot__jetpack--tap-target')
+      .forEach(el => el.classList.remove('robot__jetpack--tap-target'));
+    const tapTarget = strapStyles.includes(style) ? strap : flames;
+    if (tapTarget) tapTarget.classList.add('robot__jetpack--tap-target');
 
     // Store chosen exit animation on the element
     carEl.dataset.boosterExit = s.exitAnim;
