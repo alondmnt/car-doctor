@@ -492,9 +492,9 @@ const Planet = (() => {
   /** Gas expanded zones — spread along construction band */
   function _cityZonesForGas(cx, cy) {
     return [
-      [cx + 42, cy + 40],   // band right
-      [cx,      cy + 40],   // band centre
-      [cx - 42, cy + 40],   // band left
+      [cx + 42, cy + 37],   // band right
+      [cx,      cy + 37],   // band centre
+      [cx - 42, cy + 37],   // band left
     ];
   }
 
