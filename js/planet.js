@@ -722,10 +722,10 @@ const Planet = (() => {
    * Spawn at r*1.5 distance; random sorted delays [0, 1.5s] stored as data-delay
    * so planet-repair.js can compute per-meteor step timeouts.
    */
-  function _asteroidZoneSVG(cx, cy, r) {
+  function _asteroidZoneSVG(cx, cy, r, count, maxDelay) {
     const spawnDist = r * 1.5;
-    const angles = Array.from({length: 4}, () => Math.random() * 2 * Math.PI);
-    const delays = Array.from({length: 4}, () => Math.random() * 1.5).sort((a, b) => a - b);
+    const angles = Array.from({length: count}, () => Math.random() * 2 * Math.PI);
+    const delays = Array.from({length: count}, () => Math.random() * maxDelay).sort((a, b) => a - b);
 
     const groups = angles.map((angle, i) => {
       // Spawn at orbit distance
@@ -950,7 +950,9 @@ const Planet = (() => {
       ${hasTectonic ? _tectonicZoneSVG(cx, cy, r, shape) : ''}
       ${hasForest ? _forestZoneSVG(cx, cy, GameState.get('terraformExpanded'), shape) : ''}
       ${hasCity ? _cityZoneSVG(cx, cy, GameState.get('cityExpanded'), shape) : ''}
-      ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r) : ''}
+      ${hasAsteroid ? _asteroidZoneSVG(cx, cy, r,
+          GameState.get('ultimateMode') ? Math.floor(Math.random() * 3) + 4 : 4,
+          GameState.get('ultimateMode') ? 1.0 : 1.5) : ''}
       ${hasSatellite ? _satelliteZoneSVG(cx, cy, r) : ''}
 
       <!-- Ring front half (ringed only — in front of body) -->

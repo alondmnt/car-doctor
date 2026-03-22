@@ -115,7 +115,6 @@ const PlanetRepair = (() => {
    * missed, asteroidFailed is set on the car element and no coins are awarded.
    */
   function asteroidDefence(_car) {
-    const count = 4;
     return [{
       id: 'asteroid-defence',
       sound: null,
@@ -125,6 +124,7 @@ const PlanetRepair = (() => {
        * @param {Function} done — called once all meteors are resolved
        */
       setup: (carEl, done) => {
+        const count = carEl.querySelectorAll('.planet__meteor-group').length || 4;
         let resolved = 0;
         let missCount = 0;
         const zone = carEl.querySelector('.planet__asteroid-zone');  // cached once
