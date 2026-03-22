@@ -262,6 +262,7 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition: opacity 0.4s;
 }
 .splash--hidden {
@@ -937,6 +938,7 @@ html, body {
 .car__body {
   cursor: pointer;
   pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Fresh paint flash */
