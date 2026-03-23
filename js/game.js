@@ -148,6 +148,8 @@ const Game = (() => {
     if (coins >= 100) _allEnabledFaultTypes().forEach(f => seenFaults.add(f));
     // Sync hint button to initial state (may have been defaulted off by Progress.load)
     document.getElementById('hint-btn').classList.toggle('hint-btn--off', !GameState.hintsOn());
+    // Ultimate mode: hide fault dashboard (players should know what they're doing)
+    if (GameState.get('ultimateMode')) garage.classList.add('garage--dashboard-off');
   }
 
   function start(e) {
