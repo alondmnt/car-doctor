@@ -355,6 +355,12 @@ html, body {
 #sound-btn:active { transform: scale(0.9); }
 #sound-btn.sound-btn--off { opacity: 0.35; }
 
+/* ===== Ultimate mode — hide fault dashboard ===== */
+.garage--dashboard-off .car__dashboard {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ===== Coin jar ===== */
 #coin-jar {
   position: fixed;
@@ -664,6 +670,16 @@ html, body {
 /* Entry / parked states */
 .car--entering { transform: translateX(120vw); }
 .car--parked   { transform: translateX(0); }
+
+/* Entry animation for cars and robots — animationend is more reliable than
+   transitionend when starting off-screen (e.g. on mobile/iOS Safari). */
+@keyframes car-drive-in {
+  from { transform: translateX(120vw); }
+  to   { transform: translateX(0); }
+}
+.car--parked:not(.car--spaceship):not(.car--planet) {
+  animation: car-drive-in 0.5s ease-out forwards;
+}
 
 /* ===== Inline SVG ===== */
 .car__svg {
