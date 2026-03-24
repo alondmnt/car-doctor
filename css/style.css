@@ -1182,7 +1182,7 @@ html, body {
 }
 
 /* Engine — bright outline when highlighted inside dark engine bay */
-.car__engine.hint-glow {
+.car__engine.hint-glow > rect:nth-child(2) {
   stroke: rgba(255, 255, 50, 0.8) !important;
   stroke-width: 3 !important;
 }
@@ -2197,6 +2197,10 @@ html, body {
 }
 .ship__antenna-mast-bar--extended {
   transform: scaleY(1);
+}
+.ship__antenna-dish,
+.ship__antenna-mast {
+  -webkit-tap-highlight-color: transparent;
 }
 .ship__antenna-dish {
   transform-box: fill-box;

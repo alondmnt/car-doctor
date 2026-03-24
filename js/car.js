@@ -116,11 +116,14 @@ const Car = (() => {
       <!-- Engine bay -->
       <g class="car__engine-bay ${hasEngine ? '' : 'car__engine-bay--hidden'}">
         <rect x="${engine.x}" y="${engine.y}" width="${engine.w}" height="${engine.h}" rx="3" fill="#333"/>
-        <rect class="car__engine car__engine--broken"
-              x="${engine.x+8}" y="${engine.y+8}" width="${engine.w-16}" height="${engine.h-16}" rx="3"
-              fill="#666" stroke="#555" stroke-width="1.5"/>
-        <rect x="${engine.x+14}" y="${engine.y+14}" width="${engine.w*0.3}" height="${engine.h*0.25}" rx="2" fill="#555"/>
-        <circle cx="${engine.x+engine.w*0.5}" cy="${engine.y+engine.h-10}" r="4" fill="#444" stroke="#555" stroke-width="1"/>
+        <g class="car__engine car__engine--broken">
+          <!-- Touch target — larger than visual for easier tapping behind mud -->
+          <rect x="${engine.x}" y="${engine.y}" width="${engine.w}" height="${engine.h}" fill="transparent"/>
+          <rect x="${engine.x+8}" y="${engine.y+8}" width="${engine.w-16}" height="${engine.h-16}" rx="3"
+                fill="#666" stroke="#555" stroke-width="1.5" style="pointer-events:none"/>
+          <rect x="${engine.x+14}" y="${engine.y+14}" width="${engine.w*0.3}" height="${engine.h*0.25}" rx="2" fill="#555" style="pointer-events:none"/>
+          <circle cx="${engine.x+engine.w*0.5}" cy="${engine.y+engine.h-10}" r="4" fill="#444" stroke="#555" stroke-width="1" style="pointer-events:none"/>
+        </g>
       </g>
 
       <!-- Paint damage -->
