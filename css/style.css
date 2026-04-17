@@ -286,6 +286,27 @@ html, body {
   text-shadow: 0 3px 8px rgba(0,0,0,0.5);
   letter-spacing: 2px;
 }
+.splash__intro {
+  margin-top: 0.6em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+.splash__rule {
+  font-size: min(4.2vw, 1.05rem);
+  color: #f4e7c3;
+  text-align: left;
+  padding-left: 0.4em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+.splash__tap {
+  margin-top: 0.8em;
+  font-size: min(3.8vw, 0.95rem);
+  color: #ffd24d;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: pulse 1.5s ease-in-out infinite;
+}
 
 /* ===== Reset button ===== */
 #reset-btn {
