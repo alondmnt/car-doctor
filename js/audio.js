@@ -65,6 +65,16 @@ const Audio = (() => {
   // Each melody is [freq, absoluteBeat, durBeats] across the 32-beat loop.
   // Beats ending in .5 are swung off-8ths.
 
+  // Planet — ambient breath: a single held note every other bar (m1, m3, m5, m7).
+  // m2/m4/m6/m8 are lead-silent; the pad and bass carry the harmony through them.
+  // Pitches form a soft arc: E5 → F5 → A5 (peak) → G5, then silence to close.
+  const _PLANET_MELODY = [
+    /* m1 Am — first breath */ [_N.E5, 0,  4],
+    /* m3 F  — gentle lift */  [_N.F5, 8,  4],
+    /* m5 Am — peak */         [_N.A5, 16, 4],
+    /* m7 Em — exhale */       [_N.G5, 24, 4],
+  ];
+
   // Spaceship — cinematic float: sparse held notes, wide leaps, lift-off in m1
   // climbing to an A5 peak in m5, then gentle descent home through m6-m8.
   // Vangelis-ish, no swing — sustained motion only.
@@ -128,10 +138,10 @@ const Audio = (() => {
       swing: 0,
     },
     planet: {
-      lead: { type: 'triangle', octave: 0, vol: 0.08 },
+      lead: { type: 'sine',     octave: 0, vol: 0.10 },
       bass: { type: 'sine',     octave: 0, vol: 0.15 },
-      pad:  { type: 'sine',     octave: 1, vol: 0.04 },
-      melody: _CAR_MELODY,
+      pad:  { type: 'sine',     octave: 1, vol: 0.06 },
+      melody: _PLANET_MELODY,
       swing: 0,
     },
   };
