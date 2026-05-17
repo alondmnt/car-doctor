@@ -61,9 +61,11 @@ const Audio = (() => {
     _N.A2, _N.C3, _N.E3, _N.A2,
   ];
 
-  // Melody: [freq, absoluteBeat, durBeats] across the 32-beat loop.
+  // Each melody is [freq, absoluteBeat, durBeats] across the 32-beat loop.
   // Beats ending in .5 are swung off-8ths.
-  const _MELODY = [
+
+  // Car — workshop hum: jaunty 8-bar arc, climb to G5 in m5, settle home in m8.
+  const _CAR_MELODY = [
     /* m1 Am — open */    [_N.A4, 0, 1], [_N.C5, 1.5, 0.5], [_N.E5, 2, 1.5],
     /* m2 C  — settle */  [_N.D5, 4, 0.5], [_N.C5, 4.5, 0.5], [_N.E5, 5, 1], [_N.C5, 6, 2],
     /* m3 F  — warm */    [_N.A4, 8, 1], [_N.C5, 9.5, 0.5], [_N.A4, 10, 1], [_N.F4, 11, 1],
@@ -74,35 +76,33 @@ const Audio = (() => {
     /* m8 Am — home */    [_N.C5, 28, 1], [_N.B4, 29.5, 0.5], [_N.A4, 30, 2],
   ];
 
-  // Voice banks — each layer is {type, octave, vol}. Optional flags:
-  //   swing: 0–1 amount of triplet-feel push on off-8ths
-  //   thin: skip melody notes shorter than 1 beat (spaceship)
-  //   ambient: skip melody notes shorter than 1.5 beats (planet)
-  //   tinker: 8th-note pulse on chord root (robot)
-  //   pad: sustained chord-root layer (planet)
+  // Voice banks — each carries its own melody plus layer descriptors.
+  // Layer shape: { type, octave, vol }. Optional layers: pad (sustained chord root).
+  // swing: 0–1 amount of triplet-feel push on off-8ths.
   const _VOICES = {
     car: {
       lead: { type: 'triangle', octave: 0, vol: 0.10 },
       bass: { type: 'sine',     octave: 0, vol: 0.12 },
+      melody: _CAR_MELODY,
       swing: 1,
     },
     robot: {
       lead: { type: 'triangle', octave: 0, vol: 0.09 },
       bass: { type: 'sine',     octave: 0, vol: 0.10 },
-      tinker: { type: 'sine',   octave: 1, vol: 0.04 },
+      melody: _CAR_MELODY,
       swing: 0.5,
     },
     spaceship: {
       lead: { type: 'sine',     octave: 0, vol: 0.10 },
       bass: { type: 'sine',     octave: 0, vol: 0.14 },
-      thin: true,
+      melody: _CAR_MELODY,
       swing: 0.25,
     },
     planet: {
       lead: { type: 'triangle', octave: 0, vol: 0.08 },
       bass: { type: 'sine',     octave: 0, vol: 0.15 },
       pad:  { type: 'sine',     octave: 1, vol: 0.04 },
-      ambient: true,
+      melody: _CAR_MELODY,
       swing: 0,
     },
   };
@@ -150,23 +150,13 @@ const Audio = (() => {
     const bassFreq = _BASS[_barIndex];
     if (bassFreq) _playVoiced(voice.bass, bassFreq, offset, _BAR * 0.95);
 
-    for (const [freq, beat, dur] of _MELODY) {
+    for (const [freq, beat, dur] of voice.melody) {
       if (beat < barBeatStart || beat >= barBeatStart + _BEATS_PER_BAR) continue;
-      if (voice.ambient && dur < 1.5) continue;
-      if (voice.thin    && dur < 1)   continue;
       const isOffEighth = (beat * 2) % 2 === 1;
       const local = (beat - barBeatStart) * _BEAT + (isOffEighth ? swingNudge : 0);
       _playVoiced(voice.lead, freq, offset + local, dur * _BEAT * 0.9);
     }
 
-    if (voice.tinker && bassFreq) {
-      for (let b = 0; b < _BEATS_PER_BAR; b += 0.5) {
-        const isOffEighth = (b * 2) % 2 === 1;
-        _playVoiced(voice.tinker, bassFreq,
-          offset + b * _BEAT + (isOffEighth ? swingNudge : 0),
-          _BEAT * 0.3);
-      }
-    }
     if (voice.pad && bassFreq) {
       _playVoiced(voice.pad, bassFreq, offset, _BAR * 0.98);
     }
