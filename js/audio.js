@@ -161,7 +161,7 @@ const Audio = (() => {
     flatTyre:         { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A2, beat: 2.5, dur: 0.5  },
     engine:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E3, beat: 0,   dur: 0.4  },
     wash:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.G4, beat: 1.5, dur: 0.25 },
-    paint:            { type: 'sine',     octave: 0, vol: 0.05, freq: _N.C5, beat: 3,   dur: 1    },
+    paint:            { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A5, beat: 3,   dur: 1    },
     sticker:          { type: 'triangle', octave: 0, vol: 0.06, freq: _N.E5, beat: 1,   dur: 0.25 },
     /* robot-only */
     armJoint:         { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 0.5, dur: 0.25 },
