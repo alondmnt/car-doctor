@@ -52,7 +52,8 @@ const Audio = (() => {
     D3: 146.83, E3: 164.81, F3: 174.61, G3: 196,
     A3: 220, B3: 246.94, C4: 261.63, D4: 293.66, E4: 329.63,
     F4: 349.23, G4: 392, A4: 440, B4: 493.88,
-    C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99,
+    C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99,
+    A5: 880, C6: 1046.50,
   };
 
   // Bass: one chord root per bar — Am C F G | Am C Em Am
@@ -63,6 +64,20 @@ const Audio = (() => {
 
   // Each melody is [freq, absoluteBeat, durBeats] across the 32-beat loop.
   // Beats ending in .5 are swung off-8ths.
+
+  // Robot — wind-up clockwork: per-bar chord-arpeggio in straight 8ths (1-3-5-8)
+  // followed by the top note held for 2 beats. Identical rhythm every bar (the
+  // "mechanical" feel); m8 descends back to A4 to close the loop.
+  const _ROBOT_MELODY = [
+    /* m1 Am */ [_N.A4, 0,    0.5], [_N.C5, 0.5,  0.5], [_N.E5, 1,    0.5], [_N.A5, 1.5,  0.5], [_N.A5, 2,  2],
+    /* m2 C  */ [_N.C5, 4,    0.5], [_N.E5, 4.5,  0.5], [_N.G5, 5,    0.5], [_N.C6, 5.5,  0.5], [_N.C6, 6,  2],
+    /* m3 F  */ [_N.F4, 8,    0.5], [_N.A4, 8.5,  0.5], [_N.C5, 9,    0.5], [_N.F5, 9.5,  0.5], [_N.F5, 10, 2],
+    /* m4 G  */ [_N.G4, 12,   0.5], [_N.B4, 12.5, 0.5], [_N.D5, 13,   0.5], [_N.G5, 13.5, 0.5], [_N.G5, 14, 2],
+    /* m5 Am */ [_N.A4, 16,   0.5], [_N.C5, 16.5, 0.5], [_N.E5, 17,   0.5], [_N.A5, 17.5, 0.5], [_N.A5, 18, 2],
+    /* m6 C  */ [_N.C5, 20,   0.5], [_N.E5, 20.5, 0.5], [_N.G5, 21,   0.5], [_N.C6, 21.5, 0.5], [_N.C6, 22, 2],
+    /* m7 Em */ [_N.E4, 24,   0.5], [_N.G4, 24.5, 0.5], [_N.B4, 25,   0.5], [_N.E5, 25.5, 0.5], [_N.E5, 26, 2],
+    /* m8 Am */ [_N.A4, 28,   0.5], [_N.C5, 28.5, 0.5], [_N.E5, 29,   0.5], [_N.C5, 29.5, 0.5], [_N.A4, 30, 2],
+  ];
 
   // Car — workshop hum: jaunty 8-bar arc, climb to G5 in m5, settle home in m8.
   const _CAR_MELODY = [
@@ -87,10 +102,10 @@ const Audio = (() => {
       swing: 1,
     },
     robot: {
-      lead: { type: 'triangle', octave: 0, vol: 0.09 },
-      bass: { type: 'sine',     octave: 0, vol: 0.10 },
-      melody: _CAR_MELODY,
-      swing: 0.5,
+      lead: { type: 'triangle', octave: 0, vol: 0.08 },
+      bass: { type: 'sine',     octave: 0, vol: 0.12 },
+      melody: _ROBOT_MELODY,
+      swing: 0,
     },
     spaceship: {
       lead: { type: 'sine',     octave: 0, vol: 0.10 },
