@@ -38,6 +38,146 @@ const Audio = (() => {
     osc.stop(t + dur);
   }
 
+  /* ─── Background music: shared skeleton + per-vehicle voice banks ─── */
+
+  const _BPM = 100;
+  const _BEAT = 60 / _BPM;
+  const _BEATS_PER_BAR = 4;
+  const _BAR = _BEAT * _BEATS_PER_BAR;
+  const _LOOP_BARS = 8;
+
+  // A natural minor / Aeolian pitch table
+  const _N = {
+    F2: 87.31, G2: 98, A2: 110, B2: 123.47, C3: 130.81,
+    D3: 146.83, E3: 164.81, F3: 174.61, G3: 196,
+    A3: 220, B3: 246.94, C4: 261.63, D4: 293.66, E4: 329.63,
+    F4: 349.23, G4: 392, A4: 440, B4: 493.88,
+    C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99,
+  };
+
+  // Bass: one chord root per bar — Am C F G | Am C Em Am
+  const _BASS = [
+    _N.A2, _N.C3, _N.F2, _N.G2,
+    _N.A2, _N.C3, _N.E3, _N.A2,
+  ];
+
+  // Melody: [freq, absoluteBeat, durBeats] across the 32-beat loop.
+  // Beats ending in .5 are swung off-8ths.
+  const _MELODY = [
+    /* m1 Am — open */    [_N.A4, 0, 1], [_N.C5, 1.5, 0.5], [_N.E5, 2, 1.5],
+    /* m2 C  — settle */  [_N.D5, 4, 0.5], [_N.C5, 4.5, 0.5], [_N.E5, 5, 1], [_N.C5, 6, 2],
+    /* m3 F  — warm */    [_N.A4, 8, 1], [_N.C5, 9.5, 0.5], [_N.A4, 10, 1], [_N.F4, 11, 1],
+    /* m4 G  — rise */    [_N.G4, 12, 1], [_N.B4, 13, 1], [_N.D5, 14, 1], [_N.B4, 15, 1],
+    /* m5 Am — peak */    [_N.A4, 16, 1], [_N.E5, 17.5, 0.5], [_N.G5, 18, 2],
+    /* m6 C  — descend */ [_N.E5, 20, 0.5], [_N.D5, 20.5, 0.5], [_N.E5, 21, 1], [_N.C5, 22, 2],
+    /* m7 Em — suspend */ [_N.B4, 24, 1], [_N.D5, 25.5, 0.5], [_N.E5, 26, 1], [_N.D5, 27, 1],
+    /* m8 Am — home */    [_N.C5, 28, 1], [_N.B4, 29.5, 0.5], [_N.A4, 30, 2],
+  ];
+
+  // Voice banks — each layer is {type, octave, vol}. Optional flags:
+  //   swing: 0–1 amount of triplet-feel push on off-8ths
+  //   thin: skip melody notes shorter than 1 beat (spaceship)
+  //   ambient: skip melody notes shorter than 1.5 beats (planet)
+  //   tinker: 8th-note pulse on chord root (robot)
+  //   pad: sustained chord-root layer (planet)
+  const _VOICES = {
+    car: {
+      lead: { type: 'triangle', octave: 0, vol: 0.10 },
+      bass: { type: 'sine',     octave: 0, vol: 0.12 },
+      swing: 1,
+    },
+    robot: {
+      lead: { type: 'triangle', octave: 0, vol: 0.09 },
+      bass: { type: 'sine',     octave: 0, vol: 0.10 },
+      tinker: { type: 'sine',   octave: 1, vol: 0.04 },
+      swing: 0.5,
+    },
+    spaceship: {
+      lead: { type: 'sine',     octave: 0, vol: 0.10 },
+      bass: { type: 'sine',     octave: 0, vol: 0.14 },
+      thin: true,
+      swing: 0.25,
+    },
+    planet: {
+      lead: { type: 'triangle', octave: 0, vol: 0.08 },
+      bass: { type: 'sine',     octave: 0, vol: 0.15 },
+      pad:  { type: 'sine',     octave: 1, vol: 0.04 },
+      ambient: true,
+      swing: 0,
+    },
+  };
+
+  /** Play one note shaped by a voice descriptor (oscillator type, octave, volume). */
+  function _playVoiced(voice, freq, startOffset, durSec) {
+    if (!voice || !ctx || ctx.state !== 'running') return;
+    const t = ctx.currentTime + startOffset;
+    const f = freq * Math.pow(2, voice.octave || 0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = voice.type;
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(voice.vol, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + durSec);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + durSec);
+  }
+
+  let _musicWanted = false;
+  let _musicPlaying = false;
+  let _musicTimer = null;
+  let _currentVoice = 'car';
+  let _pendingVoice = null;
+  let _barIndex = 0;
+  let _nextBarTime = 0;
+
+  /** Schedule one bar of bass + melody + voice extras, then queue the next. */
+  function _scheduleBar() {
+    if (!ctx || !_musicPlaying || ctx.state !== 'running') return;
+
+    // Voice swap is quantised to the bar boundary — bass and melody pitches
+    // are shared across voices, so the swap is harmonically continuous.
+    if (_pendingVoice && _VOICES[_pendingVoice]) {
+      _currentVoice = _pendingVoice;
+      _pendingVoice = null;
+    }
+    const voice = _VOICES[_currentVoice];
+    const offset = _nextBarTime - ctx.currentTime;
+    const barBeatStart = _barIndex * _BEATS_PER_BAR;
+    const swingNudge = (_BEAT / 3) * (voice.swing || 0);
+
+    const bassFreq = _BASS[_barIndex];
+    if (bassFreq) _playVoiced(voice.bass, bassFreq, offset, _BAR * 0.95);
+
+    for (const [freq, beat, dur] of _MELODY) {
+      if (beat < barBeatStart || beat >= barBeatStart + _BEATS_PER_BAR) continue;
+      if (voice.ambient && dur < 1.5) continue;
+      if (voice.thin    && dur < 1)   continue;
+      const isOffEighth = (beat * 2) % 2 === 1;
+      const local = (beat - barBeatStart) * _BEAT + (isOffEighth ? swingNudge : 0);
+      _playVoiced(voice.lead, freq, offset + local, dur * _BEAT * 0.9);
+    }
+
+    if (voice.tinker && bassFreq) {
+      for (let b = 0; b < _BEATS_PER_BAR; b += 0.5) {
+        const isOffEighth = (b * 2) % 2 === 1;
+        _playVoiced(voice.tinker, bassFreq,
+          offset + b * _BEAT + (isOffEighth ? swingNudge : 0),
+          _BEAT * 0.3);
+      }
+    }
+    if (voice.pad && bassFreq) {
+      _playVoiced(voice.pad, bassFreq, offset, _BAR * 0.98);
+    }
+
+    _nextBarTime += _BAR;
+    _barIndex = (_barIndex + 1) % _LOOP_BARS;
+
+    const wait = Math.max(0, (_nextBarTime - ctx.currentTime - 0.08) * 1000);
+    _musicTimer = setTimeout(_scheduleBar, wait);
+  }
+
   /** Sound effect catalogue — short musical motifs */
   const effects = {
     // Gentle bubble: sine pitch bend down
@@ -251,7 +391,59 @@ const Audio = (() => {
   }
 
   function isMuted() { return muted; }
-  function setMuted(v) { muted = v; }
 
-  return { unlock, play, isMuted, setMuted };
+  /** Set mute state. Pauses/resumes the music loop accordingly. */
+  function setMuted(v) {
+    muted = v;
+    if (muted) {
+      _musicPlaying = false;
+      if (_musicTimer) { clearTimeout(_musicTimer); _musicTimer = null; }
+    } else if (_musicWanted && !_musicPlaying && ctx && ctx.state === 'running') {
+      _musicPlaying = true;
+      _barIndex = 0;
+      _nextBarTime = ctx.currentTime + 0.05;
+      _scheduleBar();
+    }
+  }
+
+  /** Start the background music loop. */
+  function startMusic(vehicle) {
+    _musicWanted = true;
+    if (vehicle && _VOICES[vehicle]) _currentVoice = vehicle;
+    if (!unlocked || muted || _musicPlaying) return;
+    _musicPlaying = true;
+    _barIndex = 0;
+    const begin = () => { _nextBarTime = ctx.currentTime + 0.05; _scheduleBar(); };
+    if (ctx.state === 'suspended') ctx.resume().then(begin);
+    else begin();
+  }
+
+  /** Stop the background music loop. */
+  function stopMusic() {
+    _musicWanted = false;
+    _musicPlaying = false;
+    if (_musicTimer) { clearTimeout(_musicTimer); _musicTimer = null; }
+  }
+
+  /** Queue a voice-bank swap that takes effect at the next bar boundary. */
+  function setVehicle(name) {
+    if (!_VOICES[name]) return;
+    if (!_musicPlaying) { _currentVoice = name; return; }
+    _pendingVoice = name;
+  }
+
+  /** Resume AudioContext (and music if wanted) after device sleep. */
+  function resume() {
+    if (!ctx || ctx.state !== 'suspended') return;
+    ctx.resume().then(() => {
+      if (_musicWanted && !muted && !_musicPlaying) {
+        _musicPlaying = true;
+        _barIndex = 0;
+        _nextBarTime = ctx.currentTime + 0.05;
+        _scheduleBar();
+      }
+    });
+  }
+
+  return { unlock, resume, play, isMuted, setMuted, startMusic, stopMusic, setVehicle };
 })();

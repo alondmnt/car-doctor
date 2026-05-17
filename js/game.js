@@ -155,6 +155,7 @@ const Game = (() => {
   function start(e) {
     e.preventDefault();
     Audio.unlock();
+    Audio.startMusic();
     document.getElementById('splash').classList.add('splash--hidden');
     nextCar();
   }
@@ -218,6 +219,7 @@ const Game = (() => {
 
     const entry = pickVehicle(spec);
     garage.dataset.theme = entry.theme;
+    Audio.setVehicle(entry.type);
     if (entry.theme === 'space') _randomiseShipFlyby();
 
     const faultCount = _faultCount();
