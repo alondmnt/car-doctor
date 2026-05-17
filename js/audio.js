@@ -138,9 +138,12 @@ const Audio = (() => {
       swing: 0,
     },
     planet: {
-      lead: { type: 'sine',     octave: 0, vol: 0.10 },
-      bass: { type: 'sine',     octave: 0, vol: 0.15 },
-      pad:  { type: 'sine',     octave: 1, vol: 0.06 },
+      lead:  { type: 'sine', octave: 0, vol: 0.10 },
+      bass:  { type: 'sine', octave: 0, vol: 0.15 },
+      pad:   { type: 'sine', octave: 1, vol: 0.06 },
+      // Constant low pedal tone — same A2 every bar regardless of chord.
+      // Gives planet a "background hum" identity that nothing else has.
+      drone: { type: 'sine', octave: 0, vol: 0.05, freq: _N.A2 },
       melody: _PLANET_MELODY,
       swing: 0,
     },
@@ -196,6 +199,9 @@ const Audio = (() => {
       _playVoiced(voice.lead, freq, offset + local, dur * _BEAT * 0.9);
     }
 
+    if (voice.drone) {
+      _playVoiced(voice.drone, voice.drone.freq, offset, _BAR * 0.98);
+    }
     if (voice.pad && bassFreq) {
       _playVoiced(voice.pad, bassFreq, offset, _BAR * 0.98);
     }
