@@ -65,6 +65,20 @@ const Audio = (() => {
   // Each melody is [freq, absoluteBeat, durBeats] across the 32-beat loop.
   // Beats ending in .5 are swung off-8ths.
 
+  // Spaceship — cinematic float: sparse held notes, wide leaps, lift-off in m1
+  // climbing to an A5 peak in m5, then gentle descent home through m6-m8.
+  // Vangelis-ish, no swing — sustained motion only.
+  const _SPACESHIP_MELODY = [
+    /* m1 Am — lift-off */ [_N.A4, 0,  1], [_N.E5, 1,  3],
+    /* m2 C  — cruise */   [_N.G5, 4,  4],
+    /* m3 F  — drift */    [_N.C5, 8,  2], [_N.F5, 10, 2],
+    /* m4 G  — settle */   [_N.D5, 12, 2], [_N.B4, 14, 2],
+    /* m5 Am — peak */     [_N.A4, 16, 1], [_N.E5, 17, 1], [_N.A5, 18, 2],
+    /* m6 C  — descend */  [_N.G5, 20, 4],
+    /* m7 Em — further */  [_N.E5, 24, 2], [_N.B4, 26, 2],
+    /* m8 Am — home */     [_N.A4, 28, 4],
+  ];
+
   // Robot — wind-up clockwork: per-bar chord-arpeggio in straight 8ths (1-3-5-8)
   // followed by the top note held for 2 beats. Identical rhythm every bar (the
   // "mechanical" feel); m8 descends back to A4 to close the loop.
@@ -108,10 +122,10 @@ const Audio = (() => {
       swing: 0,
     },
     spaceship: {
-      lead: { type: 'sine',     octave: 0, vol: 0.10 },
+      lead: { type: 'sine',     octave: 0, vol: 0.12 },
       bass: { type: 'sine',     octave: 0, vol: 0.14 },
-      melody: _CAR_MELODY,
-      swing: 0.25,
+      melody: _SPACESHIP_MELODY,
+      swing: 0,
     },
     planet: {
       lead: { type: 'triangle', octave: 0, vol: 0.08 },
