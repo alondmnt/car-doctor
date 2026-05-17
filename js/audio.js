@@ -149,6 +149,39 @@ const Audio = (() => {
     },
   };
 
+  // Fault layers — short playful motifs that play once per bar while the fault
+  // is unfixed. Each layer = one voiced note at a fixed beat. Layers stack
+  // additively over the current vehicle voice. Bar-aligned: changes take effect
+  // at the next bar boundary.
+  //
+  // Pitches favour A/E/G/C/D (consonant over Am-C-F-G | Am-C-Em-Am). Beats and
+  // pitches are spread across the bar so combinations form little grooves.
+  const _FAULT_LAYERS = {
+    /* car (+ shared with robot/spaceship) */
+    flatTyre:         { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A2, beat: 2.5, dur: 0.5  },
+    engine:           { type: 'sine',     octave: 0, vol: 0.05, freq: _N.E3, beat: 0,   dur: 0.4  },
+    wash:             { type: 'triangle', octave: 0, vol: 0.05, freq: _N.G4, beat: 1.5, dur: 0.25 },
+    paint:            { type: 'sine',     octave: 0, vol: 0.04, freq: _N.C5, beat: 3,   dur: 1    },
+    sticker:          { type: 'triangle', octave: 0, vol: 0.05, freq: _N.E5, beat: 1,   dur: 0.25 },
+    /* robot-only */
+    armJoint:         { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A4, beat: 0.5, dur: 0.25 },
+    legsRepair:       { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A2, beat: 0,   dur: 0.5  },
+    voiceModule:      { type: 'sine',     octave: 0, vol: 0.05, freq: _N.D5, beat: 2,   dur: 0.5  },
+    jetpack:          { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A4, beat: 3.5, dur: 0.5  },
+    /* spaceship-only */
+    laser:            { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A5, beat: 1,   dur: 0.15 },
+    shield:           { type: 'sine',     octave: 0, vol: 0.05, freq: _N.E5, beat: 3,   dur: 0.3  },
+    antenna:          { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 0.5, dur: 0.2  },
+    /* planet-only */
+    asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.06, freq: _N.F2, beat: 3.5, dur: 0.6  },
+    tectonicVolcanic: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A3, beat: 1,   dur: 1    },
+    fire:             { type: 'triangle', octave: 0, vol: 0.05, freq: _N.C5, beat: 1.5, dur: 0.3  },
+    oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.05, freq: _N.D4, beat: 2.5, dur: 0.4  },
+    satelliteNetwork: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 2,   dur: 0.25 },
+    forest:           { type: 'triangle', octave: 0, vol: 0.05, freq: _N.A3, beat: 0.5, dur: 0.4  },
+    city:             { type: 'triangle', octave: 0, vol: 0.05, freq: _N.C6, beat: 3,   dur: 0.3  },
+  };
+
   /** Play one note shaped by a voice descriptor (oscillator type, octave, volume). */
   function _playVoiced(voice, freq, startOffset, durSec) {
     if (!voice || !ctx || ctx.state !== 'running') return;
@@ -171,6 +204,8 @@ const Audio = (() => {
   let _musicTimer = null;
   let _currentVoice = 'car';
   let _pendingVoice = null;
+  let _activeFaults = new Set();
+  let _pendingFaults = null;
   let _barIndex = 0;
   let _nextBarTime = 0;
 
@@ -183,6 +218,10 @@ const Audio = (() => {
     if (_pendingVoice && _VOICES[_pendingVoice]) {
       _currentVoice = _pendingVoice;
       _pendingVoice = null;
+    }
+    if (_pendingFaults) {
+      _activeFaults = _pendingFaults;
+      _pendingFaults = null;
     }
     const voice = _VOICES[_currentVoice];
     const offset = _nextBarTime - ctx.currentTime;
@@ -204,6 +243,13 @@ const Audio = (() => {
     }
     if (voice.pad && bassFreq) {
       _playVoiced(voice.pad, bassFreq, offset, _BAR * 0.98);
+    }
+
+    // Fault layers — each active fault plays its tiny motif once this bar.
+    for (const faultKey of _activeFaults) {
+      const layer = _FAULT_LAYERS[faultKey];
+      if (!layer) continue;
+      _playVoiced(layer, layer.freq, offset + layer.beat * _BEAT, layer.dur * _BEAT);
     }
 
     _nextBarTime += _BAR;
@@ -458,6 +504,8 @@ const Audio = (() => {
     _musicWanted = false;
     _musicPlaying = false;
     if (_musicTimer) { clearTimeout(_musicTimer); _musicTimer = null; }
+    _activeFaults = new Set();
+    _pendingFaults = null;
   }
 
   /** Queue a voice-bank swap that takes effect at the next bar boundary. */
@@ -465,6 +513,13 @@ const Audio = (() => {
     if (!_VOICES[name]) return;
     if (!_musicPlaying) { _currentVoice = name; return; }
     _pendingVoice = name;
+  }
+
+  /** Replace the active fault set; takes effect at the next bar boundary. */
+  function setActiveFaults(faultKeys) {
+    const next = new Set(faultKeys);
+    if (!_musicPlaying) { _activeFaults = next; return; }
+    _pendingFaults = next;
   }
 
   /** Resume AudioContext (and music if wanted) after device sleep. */
@@ -480,5 +535,5 @@ const Audio = (() => {
     });
   }
 
-  return { unlock, resume, play, isMuted, setMuted, startMusic, stopMusic, setVehicle };
+  return { unlock, resume, play, isMuted, setMuted, startMusic, stopMusic, setVehicle, setActiveFaults };
 })();

@@ -241,6 +241,7 @@ const Game = (() => {
     faultQueue = [...faults].sort((a, b) =>
       FaultRegistry.ORDER.indexOf(a) - FaultRegistry.ORDER.indexOf(b)
     );
+    Audio.setActiveFaults(faults);
 
     // Auto-enable hints if any currently-enabled fault type hasn't been seen yet (overrides explicit)
     if (_allEnabledFaultTypes().some(f => !seenFaults.has(f))) {
@@ -322,6 +323,8 @@ const Game = (() => {
 
       // Asteroid strike — skip remaining faults and jump straight to exit
       if (currentCar.el.dataset.asteroidFailed) faultQueue.length = 0;
+
+      Audio.setActiveFaults(faultQueue);
 
       if (faultQueue.length > 0) {
         Audio.play('tap');
@@ -436,6 +439,7 @@ const Game = (() => {
     stepIndex = 0;
     steps = [];
     faultQueue = [];
+    Audio.setActiveFaults([]);
     busy = false;
     nextCar();
   }
