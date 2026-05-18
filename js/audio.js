@@ -173,7 +173,7 @@ const Audio = (() => {
     voiceModule:      { type: 'sine',     octave: 0, vol: 0.06, freq: _N.D5, beat: 2,   dur: 0.5  },
     jetpack:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 3.5, dur: 0.5  },
     /* spaceship-only */
-    laser:            { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A5, beat: 1,   dur: 0.15 },
+    laser:            { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 1.5, dur: 0.15 },
     shield:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 3,   dur: 0.3  },
     antenna:          { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 0.5, dur: 0.2  },
     /* planet-only */
