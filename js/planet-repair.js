@@ -357,7 +357,7 @@ const PlanetRepair = (() => {
           el.classList.add('planet__eruption--capped');
           const remainingCracks = carEl.querySelectorAll('.planet__magma-crack:not(.planet__magma-crack--sealed)');
           const remainingVolcanos = carEl.querySelectorAll('.planet__eruption:not(.planet__eruption--capped)');
-          if (!remainingCracks.length && remainingVolcanos.length <= 1) {
+          if (!remainingCracks.length && remainingVolcanos.length === 0) {
             const svg = carEl.querySelector('.planet__svg');
             if (svg) svg.classList.remove('planet__svg--tremor');
           }
