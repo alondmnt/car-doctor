@@ -191,16 +191,17 @@ const Audio = (() => {
     asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.12, notes: [
       [_N.F3, 0.5, 0.4], [_N.G3, 1.5, 0.4], [_N.F3, 2.5, 0.4], [_N.G3, 3.5, 0.4],
     ] },
-    // Tectonic — triangle triplet trill on beat 2: a tight E3 → D3 → C3
+    // Tectonic — triangle triplet trill on beat 2: an E3 → D3 → C3
     // descent that reads as "ground churn". Sits a third above the A2
     // drone so it doesn't merge into the planet's sustained bass bed, and
-    // below the asteroid/pad zone (F3+) so it doesn't clash above. Tight
-    // 0.2-beat spacing with 0.25 ring time creates a touch of overlap —
-    // the beating between adjacent scale steps gives a rumbly, gritty
-    // texture. Whole burst finishes by 1.65 (the asteroid offbeat at 1.5
-    // lands during the last hit's decay tail, an octave higher, no clash).
+    // below the asteroid/pad zone (F3+) so it doesn't clash above. Even
+    // 0.25-beat (clean sixteenth) spacing with 0.25 ring time — notes
+    // butt edge-to-edge, rumbly without smearing. Final C3 lands on 1.5
+    // alongside the asteroid offbeat (G3) and fire (C5, two octaves up):
+    // an octave-stacked accent on beat 1.5 rather than a 1.4→1.5 stutter
+    // against fire.
     tectonicVolcanic: { type: 'triangle', octave: 0, vol: 0.12, notes: [
-      [_N.E3, 1.0, 0.25], [_N.D3, 1.2, 0.25], [_N.C3, 1.4, 0.25],
+      [_N.E3, 1.0, 0.25], [_N.D3, 1.25, 0.25], [_N.C3, 1.5, 0.25],
     ] },
     fire:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.C5, beat: 1.5, dur: 0.3  },
     oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.07, freq: _N.D4, beat: 2.5, dur: 0.4  },
