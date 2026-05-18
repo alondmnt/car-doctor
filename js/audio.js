@@ -150,16 +150,19 @@ const Audio = (() => {
   };
 
   // Fault layers — short playful motifs that play once per bar while the fault
-  // is unfixed. Each layer = one voiced note at a fixed beat. Layers stack
-  // additively over the current vehicle voice. Bar-aligned: changes take effect
-  // at the next bar boundary.
+  // is unfixed. Default shape = one voiced note at a fixed beat (freq/beat/dur
+  // on the layer). A layer may instead carry a `notes: [[freq, beat, dur], …]`
+  // array for multi-note motifs (e.g. asteroidDefence's tension ostinato).
+  // Layers stack additively over the current vehicle voice. Bar-aligned:
+  // changes take effect at the next bar boundary.
   //
   // Pitches favour A/E/G/C/D (consonant over Am-C-F-G | Am-C-Em-Am). Beats and
   // pitches are spread across the bar so combinations form little grooves.
   // Volumes are tuned for equal *perceived* loudness across pitches: the ear
   // is less sensitive below ~200 Hz and above ~3 kHz, so sub-bass faults get
   // bumped and high faults get trimmed. Long sustained faults get a small
-  // additional cut to compensate for accumulated energy.
+  // additional cut to compensate for accumulated energy. Multi-note layers
+  // are trimmed further since hits compound across the bar.
   const _FAULT_LAYERS = {
     /* car (+ shared with robot/spaceship) */
     flatTyre:         { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 2.5, dur: 0.5  },
@@ -177,7 +180,17 @@ const Audio = (() => {
     shield:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 3,   dur: 0.3  },
     antenna:          { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 0.5, dur: 0.2  },
     /* planet-only */
-    asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.08, freq: _N.G2, beat: 3.5, dur: 0.6  },
+    // Asteroid is always the opening fault step (FaultRegistry order 0) and
+    // the only fault with a clock + fail state, so its layer is the one
+    // exception to the otherwise relaxed soundbed: an offbeat ostinato on
+    // every "and" (0.5/1.5/2.5/3.5), F3/G3 whole-step alternation. Sits a
+    // whole step apart so it churns without dissonance — kid-friendly
+    // Jaws-lite. Pitched above the planet bass/drone (A2/A2) so it's not
+    // masked, and above small-speaker sub-bass rolloff so it's actually
+    // audible on tablets and laptops.
+    asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.12, notes: [
+      [_N.F3, 0.5, 0.4], [_N.G3, 1.5, 0.4], [_N.F3, 2.5, 0.4], [_N.G3, 3.5, 0.4],
+    ] },
     tectonicVolcanic: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A3, beat: 1,   dur: 1    },
     fire:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.C5, beat: 1.5, dur: 0.3  },
     oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.07, freq: _N.D4, beat: 2.5, dur: 0.4  },
@@ -251,12 +264,15 @@ const Audio = (() => {
 
     // Fault layers — each active fault plays its tiny motif once this bar.
     // Faults sit straight on the grid (no swing) so they keep a mechanical,
-    // anxious feel against the melody's groove.
+    // anxious feel against the melody's groove. Multi-note layers carry a
+    // `notes` array; single-note layers expose freq/beat/dur directly.
     for (const faultKey of _activeFaults) {
       const layer = _FAULT_LAYERS[faultKey];
       if (!layer) continue;
-      const start = layer.beat * _BEAT;
-      _playVoiced(layer, layer.freq, offset + start, layer.dur * _BEAT);
+      const notes = layer.notes || [[layer.freq, layer.beat, layer.dur]];
+      for (const [freq, beat, dur] of notes) {
+        _playVoiced(layer, freq, offset + beat * _BEAT, dur * _BEAT);
+      }
     }
 
     _nextBarTime += _BAR;
