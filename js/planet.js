@@ -633,8 +633,11 @@ const Planet = (() => {
     cracks.forEach((d, i) => {
       svg += `
       <g class="planet__magma-crack planet__magma-crack--${i}">
-        <!-- Wide hit area — pointer-events="all" fires regardless of paint opacity -->
-        <path d="${d}" fill="none" pointer-events="all"
+        <!-- Wide hit area — inherits pointer-events from the group so it only
+             captures clicks when picker.js activates this crack as the current
+             step. Using "all" here would intercept clicks meant for underlying
+             fault zones (e.g. ocean spill) wherever the crack crosses them. -->
+        <path d="${d}" fill="none"
               stroke="rgba(0,0,0,0.001)" stroke-width="24" stroke-linecap="round"/>
         <!-- Dark outline — visible on light surfaces -->
         <path d="${d}" fill="none"
