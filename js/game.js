@@ -91,6 +91,10 @@ const Game = (() => {
     if (spec?.vehicle) {
       return SPAWN_REGISTRY.find(e => e.type === spec.vehicle) || SPAWN_REGISTRY.at(-1);
     }
+    const forced = Progress.getForcedVehicle();
+    if (forced) {
+      return SPAWN_REGISTRY.find(e => e.type === forced) || SPAWN_REGISTRY.at(-1);
+    }
     if (GameState.get('ultimateMode')) {
       const enabled = SPAWN_REGISTRY.filter(e => e.enabled());
       return enabled[Math.floor(Math.random() * enabled.length)];

@@ -7,6 +7,7 @@ const Progress = (() => {
   let coins = 0;
   let unlocked = [];  // thresholds already unlocked, e.g. [5, 10]
   let _showcaseTier = null;  // tier to force-spawn on next vehicle (one-shot)
+  let _forcedVehicle = null;  // ?tardis=<type> — forces every spawn to be this vehicle
 
   /** Load saved state from localStorage and apply unlocks */
   function load() {
@@ -25,6 +26,17 @@ const Progress = (() => {
       coins = val ? Math.max(0, parseInt(val, 10) || 0) : 999;
       unlocked = UNLOCK_TIERS.filter(t => t.coins <= coins).map(t => t.coins);
       _save();
+    }
+    // Tardis — ?tardis=<car|robot|spaceship|planet> locks every spawn to that vehicle.
+    // Implies full unlock so fault weights for the chosen type are populated.
+    if (params.has('tardis')) {
+      const dest = params.get('tardis');
+      if (['car', 'robot', 'spaceship', 'planet'].includes(dest)) {
+        _forcedVehicle = dest;
+        coins = Math.max(coins, 999);
+        unlocked = UNLOCK_TIERS.map(t => t.coins);
+        _save();
+      }
     }
 
     applyUnlocks();
@@ -167,5 +179,8 @@ const Progress = (() => {
     return tier;
   }
 
-  return { load, addCoins, getCoins, resetAll, renderPreview, consumeShowcase };
+  /** Vehicle type the player wants locked in via ?tardis=<type>, or null. */
+  function getForcedVehicle() { return _forcedVehicle; }
+
+  return { load, addCoins, getCoins, resetAll, renderPreview, consumeShowcase, getForcedVehicle };
 })();
