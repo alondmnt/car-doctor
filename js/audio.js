@@ -182,7 +182,7 @@ const Audio = (() => {
     fire:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.C5, beat: 1.5, dur: 0.3  },
     oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.07, freq: _N.D4, beat: 2.5, dur: 0.4  },
     satelliteNetwork: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 2,   dur: 0.25 },
-    forest:           { type: 'triangle', octave: 0, vol: 0.07, freq: _N.A3, beat: 0.5, dur: 0.4  },
+    forest:           { type: 'triangle', octave: 0, vol: 0.07, freq: _N.E4, beat: 0.5, dur: 0.4  },
     city:             { type: 'triangle', octave: 0, vol: 0.05, freq: _N.C6, beat: 3,   dur: 0.3  },
   };
 
