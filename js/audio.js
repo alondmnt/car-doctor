@@ -499,8 +499,10 @@ const Audio = (() => {
     _musicPlaying = true;
     _barIndex = 0;
     const begin = () => { _nextBarTime = ctx.currentTime + 0.05; _scheduleBar(); };
+    // Defer to next tick so synchronous setVehicle/setActiveFaults calls land
+    // before bar 1 is scheduled — splash → game then opens with the full theme.
     if (ctx.state === 'suspended') ctx.resume().then(begin);
-    else begin();
+    else setTimeout(begin, 0);
   }
 
   /** Stop the background music loop. */
