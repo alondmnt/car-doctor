@@ -156,30 +156,34 @@ const Audio = (() => {
   //
   // Pitches favour A/E/G/C/D (consonant over Am-C-F-G | Am-C-Em-Am). Beats and
   // pitches are spread across the bar so combinations form little grooves.
+  // Volumes are tuned for equal *perceived* loudness across pitches: the ear
+  // is less sensitive below ~200 Hz and above ~3 kHz, so sub-bass faults get
+  // bumped and high faults get trimmed. Long sustained faults get a small
+  // additional cut to compensate for accumulated energy.
   const _FAULT_LAYERS = {
     /* car (+ shared with robot/spaceship) */
-    flatTyre:         { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A2, beat: 2.5, dur: 0.5  },
-    engine:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E3, beat: 0,   dur: 0.4  },
+    flatTyre:         { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 2.5, dur: 0.5  },
+    engine:           { type: 'sine',     octave: 0, vol: 0.08, freq: _N.E3, beat: 0,   dur: 0.4  },
     wash:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.G4, beat: 3.5, dur: 0.25 },
-    paint:            { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A5, beat: 3,   dur: 1    },
-    sticker:          { type: 'triangle', octave: 0, vol: 0.06, freq: _N.A5, beat: 1,   dur: 0.25 },
+    paint:            { type: 'sine',     octave: 0, vol: 0.04, freq: _N.A5, beat: 3,   dur: 1    },
+    sticker:          { type: 'triangle', octave: 0, vol: 0.05, freq: _N.A5, beat: 1,   dur: 0.25 },
     /* robot-only */
-    armJoint:         { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E4, beat: 0.5, dur: 0.25 },
-    legsRepair:       { type: 'sine',     octave: 0, vol: 0.07, freq: _N.A2, beat: 0,   dur: 0.5  },
+    armJoint:         { type: 'sine',     octave: 0, vol: 0.07, freq: _N.E4, beat: 0.5, dur: 0.25 },
+    legsRepair:       { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 0,   dur: 0.5  },
     voiceModule:      { type: 'sine',     octave: 0, vol: 0.06, freq: _N.D5, beat: 2,   dur: 0.5  },
     jetpack:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 3.5, dur: 0.5  },
     /* spaceship-only */
-    laser:            { type: 'sine',     octave: 0, vol: 0.07, freq: _N.A5, beat: 1,   dur: 0.15 },
+    laser:            { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A5, beat: 1,   dur: 0.15 },
     shield:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 3,   dur: 0.3  },
-    antenna:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.G5, beat: 0.5, dur: 0.2  },
+    antenna:          { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 0.5, dur: 0.2  },
     /* planet-only */
-    asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.07, freq: _N.G2, beat: 3.5, dur: 0.6  },
-    tectonicVolcanic: { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A3, beat: 1,   dur: 1    },
+    asteroidDefence:  { type: 'sine',     octave: 0, vol: 0.08, freq: _N.G2, beat: 3.5, dur: 0.6  },
+    tectonicVolcanic: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.A3, beat: 1,   dur: 1    },
     fire:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.C5, beat: 1.5, dur: 0.3  },
-    oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.06, freq: _N.D4, beat: 2.5, dur: 0.4  },
-    satelliteNetwork: { type: 'sine',     octave: 0, vol: 0.06, freq: _N.G5, beat: 2,   dur: 0.25 },
-    forest:           { type: 'triangle', octave: 0, vol: 0.06, freq: _N.A3, beat: 0.5, dur: 0.4  },
-    city:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.C6, beat: 3,   dur: 0.3  },
+    oceanCleanup:     { type: 'sine',     octave: 0, vol: 0.07, freq: _N.D4, beat: 2.5, dur: 0.4  },
+    satelliteNetwork: { type: 'sine',     octave: 0, vol: 0.05, freq: _N.G5, beat: 2,   dur: 0.25 },
+    forest:           { type: 'triangle', octave: 0, vol: 0.07, freq: _N.A3, beat: 0.5, dur: 0.4  },
+    city:             { type: 'triangle', octave: 0, vol: 0.05, freq: _N.C6, beat: 3,   dur: 0.3  },
   };
 
   /** Play one note shaped by a voice descriptor (oscillator type, octave, volume). */
