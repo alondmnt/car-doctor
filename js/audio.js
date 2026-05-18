@@ -171,7 +171,7 @@ const Audio = (() => {
     armJoint:         { type: 'sine',     octave: 0, vol: 0.07, freq: _N.E4, beat: 0.5, dur: 0.25 },
     legsRepair:       { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 0,   dur: 0.5  },
     voiceModule:      { type: 'sine',     octave: 0, vol: 0.06, freq: _N.D5, beat: 2,   dur: 0.5  },
-    jetpack:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 3.5, dur: 0.5  },
+    jetpack:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 1.5, dur: 0.5  },
     /* spaceship-only */
     laser:            { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 1.5, dur: 0.15 },
     shield:           { type: 'sine',     octave: 0, vol: 0.06, freq: _N.E5, beat: 3,   dur: 0.3  },
