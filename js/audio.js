@@ -250,13 +250,12 @@ const Audio = (() => {
     }
 
     // Fault layers — each active fault plays its tiny motif once this bar.
-    // Off-8th beats (ending in .5) get the voice's swing nudge so they groove
-    // with the melody instead of sitting stiffly on the metric grid.
+    // Faults sit straight on the grid (no swing) so they keep a mechanical,
+    // anxious feel against the melody's groove.
     for (const faultKey of _activeFaults) {
       const layer = _FAULT_LAYERS[faultKey];
       if (!layer) continue;
-      const isOffEighth = (layer.beat * 2) % 2 === 1;
-      const start = layer.beat * _BEAT + (isOffEighth ? swingNudge : 0);
+      const start = layer.beat * _BEAT;
       _playVoiced(layer, layer.freq, offset + start, layer.dur * _BEAT);
     }
 
