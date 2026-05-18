@@ -165,14 +165,14 @@ const Audio = (() => {
   // are trimmed further since hits compound across the bar.
   const _FAULT_LAYERS = {
     /* car (+ shared with robot/spaceship) */
-    flatTyre:         { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 2.5, dur: 0.5  },
+    flatTyre:         { type: 'sine',     octave: 0, vol: 0.10, freq: _N.A2, beat: 2.5, dur: 0.5  },
     engine:           { type: 'sine',     octave: 0, vol: 0.08, freq: _N.E3, beat: 0,   dur: 0.4  },
     wash:             { type: 'triangle', octave: 0, vol: 0.06, freq: _N.G4, beat: 3.5, dur: 0.25 },
     paint:            { type: 'sine',     octave: 0, vol: 0.04, freq: _N.A5, beat: 3,   dur: 1    },
     sticker:          { type: 'triangle', octave: 0, vol: 0.05, freq: _N.A5, beat: 1,   dur: 0.25 },
     /* robot-only */
     armJoint:         { type: 'sine',     octave: 0, vol: 0.07, freq: _N.E4, beat: 0.5, dur: 0.25 },
-    legsRepair:       { type: 'sine',     octave: 0, vol: 0.08, freq: _N.A2, beat: 0,   dur: 0.5  },
+    legsRepair:       { type: 'sine',     octave: 0, vol: 0.10, freq: _N.A2, beat: 0,   dur: 0.5  },
     voiceModule:      { type: 'sine',     octave: 0, vol: 0.06, freq: _N.D5, beat: 2,   dur: 0.5  },
     jetpack:          { type: 'sine',     octave: 0, vol: 0.06, freq: _N.A4, beat: 1.5, dur: 0.5  },
     /* spaceship-only */
